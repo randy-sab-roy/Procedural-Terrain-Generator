@@ -1,0 +1,25 @@
+html {
+    background-color: rgb(24, 24, 24);
+    text-align: center;
+    color: white;
+}
+
+.container {
+    margin: auto;
+    width: 85vw;
+    height: 40vw;
+}
+
+.menu {
+    width: 23%;
+    height: 100%;
+    float: left;
+    background-color: rgb(73, 73, 73);
+}
+
+#c {
+    width: 75%;
+    height: 100%;
+    float: right;
+    background-color: white;
+}
