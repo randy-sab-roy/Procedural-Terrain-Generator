@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Browser Sync",
+			"command": "browser-sync . -w --no-notify --port 8080",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}
