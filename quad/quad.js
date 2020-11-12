@@ -16,6 +16,8 @@ class Quad {
     enableWire;
     KA;
     KD;
+    KS;
+    SV;
     amp;
     animationSpeed;
     cameraPos;
@@ -35,6 +37,8 @@ class Quad {
         this.locations.uv = gl.getAttribLocation(this.program, "uv");
         this.locations.ka = gl.getUniformLocation(this.program, "Ka");
         this.locations.kd = gl.getUniformLocation(this.program, "Kd");
+        this.locations.ks = gl.getUniformLocation(this.program, "Ks");
+        this.locations.sv = gl.getUniformLocation(this.program, "Sv");
         this.locations.amp = gl.getUniformLocation(this.program, "amp");
         this.locations.lightColorA = gl.getUniformLocation(this.program, "lightColorA");
         this.locations.lightColorD = gl.getUniformLocation(this.program, "lightColorD");
@@ -44,7 +48,7 @@ class Quad {
     }
 
     draw() {
-        /** @type {WebGLRenderingContext} */
+        const gl = this.gl;
         gl.useProgram(this.program);
         this.getValuesFromControls();
 
@@ -60,6 +64,8 @@ class Quad {
         this.enableWire = document.getElementById("wire").checked;
         this.KA = document.getElementById("ka").value;
         this.KD = document.getElementById("kd").value;
+        this.KS = document.getElementById("ks").value;
+        this.SV = document.getElementById("sv").value;
         this.amp = document.getElementById("amp").value;
         this.animationSpeed = document.getElementById("animSpeed").value;
         this.cameraPos = document.getElementById("camera").value;
@@ -123,6 +129,8 @@ class Quad {
         // Light
         gl.uniform1f(this.locations.ka, this.KA);
         gl.uniform1f(this.locations.kd, this.KD);
+        gl.uniform1f(this.locations.ks, this.KS);
+        gl.uniform1f(this.locations.sv, this.SV);
         gl.uniform3fv(this.locations.lightColorA, this.LIGHT_COLOR_A);
         gl.uniform3fv(this.locations.lightColorD, this.LIGHT_COLOR_D);
         gl.uniform3fv(this.locations.lightDir, this.LIGHT_DIR);
