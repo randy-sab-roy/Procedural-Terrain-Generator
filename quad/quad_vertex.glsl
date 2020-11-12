@@ -28,10 +28,15 @@ vec3 getNormal() {
 
 void main() {
     vec3 p = position;
-    p.z = p.z + (1.0 - texture2D(heightMap, vec2(uv.x, uv.y)).x);
+    normal = vec3(0.0, 1.0, 0.0);
+    float border = 0.01;
+    if (uv.x > border && uv.y > border && uv.x < 1.0-border && uv.y < 1.0-border)
+    {
+        p.z = p.z + (1.0 - texture2D(heightMap, vec2(uv.x, uv.y)).x);
+        normal = getNormal();
+    }
     gl_Position = projection * model * vec4( p, 1.0 );
 
-    normal = getNormal();
     fcolor = color;
     pos = vec3(gl_Position);
 }

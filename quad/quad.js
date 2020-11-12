@@ -1,11 +1,11 @@
 class Quad {
-    RES = 200;
+    RES = 250;
     ANIMATION_SPEED = 3;
     ENABLE_WIRE = false;
     DELTA_TIME = 0.01;
     KA = 0.15;
     KD = 0.7;
-    LIGHT_COLOR = [1.0, 0.82, 0.40]
+    LIGHT_COLOR = [0.9, 0.7, 0.5]
     LIGHT_DIR = [-0.7, -1.0, -0.6]
 
     /** @type {WebGLRenderingContext} */
