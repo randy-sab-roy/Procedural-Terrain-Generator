@@ -1,9 +1,7 @@
 class Quad {
     RES = 250;
-    ANIMATION_SPEED = 3;
-    DELTA_TIME = 0.01;
-    LIGHT_COLOR_A = [0.55, 0.0, 0.55]
-    LIGHT_COLOR_D = [1, 0.549, 0.113]
+    LIGHT_COLOR_A = [1, 0.73, 0.44]
+    LIGHT_COLOR_D = [1, 0.9, 0.7]
     LIGHT_DIR = [-0.7, -1.0, -0.6]
 
     /** @type {WebGLRenderingContext} */
@@ -12,11 +10,14 @@ class Quad {
     transforms = {}
     locations = {};
     time = 0;
+    rotation = MatUtils.rotateYMatrix(0, 0, 0);
 
     // Controlled by UI
     enableWire;
     KA;
     KD;
+    amp;
+    animationSpeed;
 
     async init(gl) {
         this.gl = gl;
@@ -33,6 +34,7 @@ class Quad {
         this.locations.uv = gl.getAttribLocation(this.program, "uv");
         this.locations.ka = gl.getUniformLocation(this.program, "Ka");
         this.locations.kd = gl.getUniformLocation(this.program, "Kd");
+        this.locations.amp = gl.getUniformLocation(this.program, "amp");
         this.locations.lightColorA = gl.getUniformLocation(this.program, "lightColorA");
         this.locations.lightColorD = gl.getUniformLocation(this.program, "lightColorD");
         this.locations.lightDir = gl.getUniformLocation(this.program, "lightDir");
@@ -50,26 +52,28 @@ class Quad {
         this.updateAttributesAndUniforms();
 
         gl.drawElements(this.enableWire ? gl.LINE_STRIP : gl.TRIANGLES, (this.RES * this.RES) * 6, gl.UNSIGNED_SHORT, 0);
-        this.time += this.DELTA_TIME;
+        this.time += this.animationSpeed;
     };
 
     getValuesFromControls() {
         this.enableWire = document.getElementById("wire").checked;
         this.KA = document.getElementById("ka").value;
         this.KD = document.getElementById("kd").value;
+        this.amp = document.getElementById("amp").value;
+        this.animationSpeed = document.getElementById("animSpeed").value;
     }
 
     computeModelMatrix() {
         const scale = MatUtils.scaleMatrix(20, 20, 20);
         const rotateX = MatUtils.rotateXMatrix(Math.PI / 2);
-        const rotateY = MatUtils.rotateYMatrix(Date.now() * this.ANIMATION_SPEED * 0.0001);
+        this.rotation = MatUtils.multiplyArrayOfMatrices([this.rotation, MatUtils.rotateYMatrix(this.animationSpeed)]);
         const rotateX2 = MatUtils.rotateXMatrix(-Math.PI / 6);
-        const position = MatUtils.translateMatrix(0, -8, -30);
+        const position = MatUtils.translateMatrix(0, 0, -30);
 
         this.transforms.model = MatUtils.multiplyArrayOfMatrices([
             position,
             rotateX2,
-            rotateY,
+            this.rotation,
             rotateX,
             scale
         ]);
@@ -109,6 +113,7 @@ class Quad {
         gl.enableVertexAttribArray(this.locations.position);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
         gl.vertexAttribPointer(this.locations.position, 3, gl.FLOAT, false, 0, 0);
+        gl.uniform1f(this.locations.amp, this.amp)
 
         // Colors
         gl.enableVertexAttribArray(this.locations.color);
