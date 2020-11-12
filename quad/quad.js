@@ -3,9 +3,9 @@ class Quad {
     ANIMATION_SPEED = 3;
     ENABLE_WIRE = false;
     DELTA_TIME = 0.01;
-    KA = 1;
-    KD = 1;
-    LIGHT_COLOR = [1.0, 0.82, 0.40, 1.0]
+    KA = 0.15;
+    KD = 0.7;
+    LIGHT_COLOR = [1.0, 0.82, 0.40]
     LIGHT_DIR = [-0.7, -1.0, -0.6]
 
     /** @type {WebGLRenderingContext} */
@@ -32,6 +32,7 @@ class Quad {
         this.locations.kd = gl.getUniformLocation(this.program, "Kd");
         this.locations.lightColor = gl.getUniformLocation(this.program, "lightColor");
         this.locations.lightDir = gl.getUniformLocation(this.program, "lightDir");
+        this.locations.res = gl.getUniformLocation(this.program, "res");
         gl.enable(gl.DEPTH_TEST);
     }
 
@@ -106,8 +107,9 @@ class Quad {
         // Light
         gl.uniform1f(this.locations.ka, this.KA);
         gl.uniform1f(this.locations.kd, this.KD);
-        gl.uniform4fv(this.locations.lightColor, this.LIGHT_COLOR);
+        gl.uniform3fv(this.locations.lightColor, this.LIGHT_COLOR);
         gl.uniform3fv(this.locations.lightDir, this.LIGHT_DIR);
+        gl.uniform1f(this.locations.res, this.RES);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
     };
