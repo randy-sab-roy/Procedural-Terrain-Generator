@@ -2,7 +2,7 @@ class Quad {
     RES = 250;
     LIGHT_COLOR_A = [1, 0.73, 0.44]
     LIGHT_COLOR_D = [1, 0.9, 0.7]
-    LIGHT_DIR = [-0.7, -1.0, -0.6]
+    LIGHT_DIR = [-1, -1, -1]
 
     /** @type {WebGLRenderingContext} */
     gl = null;
@@ -178,7 +178,7 @@ class Quad {
                 positions.push((2 * j - this.RES) / this.RES);
                 positions.push((2 * i - this.RES) / this.RES);
                 positions.push(0);
-                colors.push(i / this.RES, (i + j) / (2 * this.RES), j / this.RES, 1);
+                colors.push(i / (2*this.RES), (i + j) / (4 * this.RES), j / (2*this.RES), 1);
                 uv.push(i / this.RES, j / this.RES);
 
                 if (i != this.RES && j != this.RES) {
