@@ -18,6 +18,7 @@ class Quad {
     KD;
     amp;
     animationSpeed;
+    cameraPos;
 
     async init(gl) {
         this.gl = gl;
@@ -61,26 +62,25 @@ class Quad {
         this.KD = document.getElementById("kd").value;
         this.amp = document.getElementById("amp").value;
         this.animationSpeed = document.getElementById("animSpeed").value;
+        this.cameraPos = document.getElementById("camera").value;
     }
 
     computeModelMatrix() {
-        const scale = MatUtils.scaleMatrix(20, 20, 20);
-        const rotateX = MatUtils.rotateXMatrix(Math.PI / 2);
-        this.rotation = MatUtils.multiplyArrayOfMatrices([this.rotation, MatUtils.rotateYMatrix(this.animationSpeed)]);
-        const rotateX2 = MatUtils.rotateXMatrix(-Math.PI / 6);
-        const position = MatUtils.translateMatrix(0, 0, -30);
+        const scale = MatUtils.scaleMatrix(5, 5, 5);
+        this.rotation = MatUtils.multiplyArrayOfMatrices([this.rotation, MatUtils.rotateZMatrix(this.animationSpeed)]);
+        const rotateX = MatUtils.rotateXMatrix(Math.PI / 3);
+        const position = MatUtils.translateMatrix(0, 0, this.cameraPos);
 
         this.transforms.model = MatUtils.multiplyArrayOfMatrices([
             position,
-            rotateX2,
-            this.rotation,
             rotateX,
+            this.rotation,
             scale
         ]);
     };
 
     computePerspectiveMatrix() {
-        const fieldOfViewInRadians = Math.PI * 0.5;
+        const fieldOfViewInRadians = Math.PI * 0.35;
         const aspectRatio = this.gl.canvas.width / this.gl.canvas.height;
         const nearClippingPlaneDistance = 1;
         const farClippingPlaneDistance = 100;

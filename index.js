@@ -10,7 +10,7 @@ function draw() {
 
 async function init() {
     canvas = document.getElementById("c");
-    
+
     /** @type {WebGLRenderingContext} */
     gl = GlUtils.createContext(canvas)
     GlUtils.resetView(gl);
