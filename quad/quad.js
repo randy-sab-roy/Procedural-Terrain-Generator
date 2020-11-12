@@ -15,11 +15,12 @@ class Quad {
         this.locations.model = gl.getUniformLocation(this.program, "model");
         this.locations.projection = gl.getUniformLocation(this.program, "projection");
         this.locations.position = gl.getAttribLocation(this.program, "position");
+        this.locations.color = gl.getAttribLocation(this.program, "color");
         gl.enable(gl.DEPTH_TEST);
     }
 
     draw() {
-        var gl = this.gl;
+        const gl = this.gl;
         gl.useProgram(this.program);
 
         this.computeModelMatrix();
@@ -30,9 +31,9 @@ class Quad {
     };
 
     computeModelMatrix() {
-        var scale = MatUtils.scaleMatrix(10, 10, 10);
-        var rotateX = MatUtils.rotateXMatrix(1);
-        var position = MatUtils.translateMatrix(0, -5, -25);
+        const scale = MatUtils.scaleMatrix(10, 10, 10);
+        const rotateX = MatUtils.rotateXMatrix(1);
+        const position = MatUtils.translateMatrix(0, -5, -25);
 
         this.transforms.model = MatUtils.multiplyArrayOfMatrices([
             position,
@@ -42,10 +43,10 @@ class Quad {
     };
 
     computePerspectiveMatrix() {
-        var fieldOfViewInRadians = Math.PI * 0.5;
-        var aspectRatio = this.gl.canvas.width / this.gl.canvas.height;
-        var nearClippingPlaneDistance = 1;
-        var farClippingPlaneDistance = 50;
+        const fieldOfViewInRadians = Math.PI * 0.5;
+        const aspectRatio = this.gl.canvas.width / this.gl.canvas.height;
+        const nearClippingPlaneDistance = 1;
+        const farClippingPlaneDistance = 50;
 
         this.transforms.projection = MatUtils.perspectiveMatrix(
             fieldOfViewInRadians,
@@ -67,6 +68,11 @@ class Quad {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
         gl.vertexAttribPointer(this.locations.position, 3, gl.FLOAT, false, 0, 0);
 
+        // Colors
+        gl.enableVertexAttribArray(this.locations.color);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.colors);
+        gl.vertexAttribPointer(this.locations.color, 4, gl.FLOAT, false, 0, 0);
+
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
     };
 
@@ -78,13 +84,18 @@ class Quad {
         gl.bindBuffer(gl.ARRAY_BUFFER, positions);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quad.positions), gl.STATIC_DRAW);
 
+        const colors = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, colors);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quad.colors), gl.STATIC_DRAW);
+
         const elements = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elements);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(quad.elements), gl.STATIC_DRAW);
 
         return {
             positions: positions,
-            elements: elements
+            elements: elements,
+            colors: colors
         }
     }
 
@@ -96,11 +107,19 @@ class Quad {
             -1.0, 1.0, 0.0,
         ];
 
+        const colors = [
+            1.0, 0.0, 0.0, 1.0,
+            0.0, 1.0, 0.0, 1.0,
+            0.0, 0.0, 1.0, 1.0,
+            1.0, 1.0, 0.0, 1.0
+        ];
+        
         const elements = [0, 1, 2, 0, 2, 3]
 
         return {
             positions: positions,
-            elements: elements
+            elements: elements,
+            colors: colors
         }
     }
 }

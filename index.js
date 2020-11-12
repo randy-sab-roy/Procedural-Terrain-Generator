@@ -15,7 +15,7 @@ async function init() {
     gl = GlUtils.createContext(canvas)
     GlUtils.resetView(gl);
 
-    objects = [new Cube(), new Quad()];
+    objects = [new Quad()];
 
     for (const obj of objects) {
         await obj.init(gl);

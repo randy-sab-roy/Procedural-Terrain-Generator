@@ -81,15 +81,16 @@ class Cube {
 
     createBuffers(gl) {
         const cube = this.createCubeData();
+
         const positions = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, positions);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube.positions), gl.STATIC_DRAW);
 
-        var colors = gl.createBuffer();
+        const colors = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, colors);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube.colors), gl.STATIC_DRAW);
 
-        var elements = gl.createBuffer();
+        const elements = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elements);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cube.elements), gl.STATIC_DRAW);
 
