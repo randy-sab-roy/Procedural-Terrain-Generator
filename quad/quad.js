@@ -23,6 +23,7 @@ class Quad {
         this.locations.heightMap = gl.getUniformLocation(this.program, "heightMap");
         this.locations.position = gl.getAttribLocation(this.program, "position");
         this.locations.color = gl.getAttribLocation(this.program, "color");
+        this.locations.uv = gl.getAttribLocation(this.program, "uv");
         gl.enable(gl.DEPTH_TEST);
     }
 
@@ -39,11 +40,11 @@ class Quad {
     };
 
     computeModelMatrix() {
-        const scale = MatUtils.scaleMatrix(10, 10, 10);
+        const scale = MatUtils.scaleMatrix(20, 20, 20);
         const rotateX = MatUtils.rotateXMatrix(Math.PI / 2);
         const rotateY = MatUtils.rotateYMatrix(Date.now() * this.ANIMATION_SPEED * 0.0001);
-        const rotateX2 = MatUtils.rotateXMatrix(-Math.PI / 8);
-        const position = MatUtils.translateMatrix(0, -8, -25);
+        const rotateX2 = MatUtils.rotateXMatrix(-Math.PI / 6);
+        const position = MatUtils.translateMatrix(0, -8, -30);
 
         this.transforms.model = MatUtils.multiplyArrayOfMatrices([
             position,
@@ -80,6 +81,9 @@ class Quad {
 
         // Texture
         gl.uniform1i(this.locations.heightMap, 0);
+        gl.enableVertexAttribArray(this.locations.uv);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.uv);
+        gl.vertexAttribPointer(this.locations.uv, 2, gl.FLOAT, false, 0, 0);
 
         // Positions
         gl.enableVertexAttribArray(this.locations.position);
@@ -97,6 +101,7 @@ class Quad {
 
     async createBuffers() {
         const gl = this.gl;
+        const image = await GlUtils.loadImageAsync("sample/terrain.png");
         const quad = this.createQuadData();
 
         const positions = gl.createBuffer();
@@ -107,11 +112,14 @@ class Quad {
         gl.bindBuffer(gl.ARRAY_BUFFER, colors);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quad.colors), gl.STATIC_DRAW);
 
+        const uv = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, uv);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quad.uv), gl.STATIC_DRAW);
+
         const elements = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elements);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(quad.elements), gl.STATIC_DRAW);
 
-        const image = await GlUtils.loadImageAsync("sample/terrain.png");
         const texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
@@ -121,6 +129,7 @@ class Quad {
             positions: positions,
             elements: elements,
             colors: colors,
+            uv: uv,
             heightMap: texture
         }
     }
@@ -128,14 +137,16 @@ class Quad {
     createQuadData() {
         const positions = [];
         const colors = [];
-        const elements = []
+        const elements = [];
+        const uv = [];
 
         for (let i = 0; i <= this.RES; i++) {
             for (let j = 0; j <= this.RES; j++) {
                 positions.push((2 * j - this.RES) / this.RES);
                 positions.push((2 * i - this.RES) / this.RES);
                 positions.push(0);
-                colors.push(i / this.RES, 0, j / this.RES, 1);
+                colors.push(i / this.RES, (i+j)/(2*this.RES), j / this.RES, 1);
+                uv.push(i / this.RES, j / this.RES);
 
                 if (i != this.RES && j != this.RES) {
                     const row1 = i * (this.RES + 1);
@@ -149,7 +160,8 @@ class Quad {
         return {
             positions: positions,
             elements: elements,
-            colors: colors
+            colors: colors,
+            uv: uv
         }
     }
 }
