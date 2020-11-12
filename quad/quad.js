@@ -1,12 +1,14 @@
 class Quad {
-    resolution = 5;
-    animationSpeed = 3;
+    RES = 100;
+    ANIMATION_SPEED = 3;
+    ENABLE_WIRE = false;
+    DELTA_TIME = 0.01;
 
     transforms = {}
     locations = {};
-
     program = null;
     gl = null;
+    time = 0;
 
     async init(gl) {
         this.gl = gl;
@@ -16,26 +18,28 @@ class Quad {
 
         this.locations.model = gl.getUniformLocation(this.program, "model");
         this.locations.projection = gl.getUniformLocation(this.program, "projection");
+        this.locations.time = gl.getUniformLocation(this.program, "time");
         this.locations.position = gl.getAttribLocation(this.program, "position");
         this.locations.color = gl.getAttribLocation(this.program, "color");
         gl.enable(gl.DEPTH_TEST);
     }
 
     draw() {
-        const gl = this.gl;
+        /** @type {WebGLRenderingContext} */
         gl.useProgram(this.program);
 
         this.computeModelMatrix();
         this.computePerspectiveMatrix();
         this.updateAttributesAndUniforms();
 
-        gl.drawElements(gl.TRIANGLES, (this.resolution * this.resolution)*6, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(this.ENABLE_WIRE ? gl.LINE_STRIP : gl.TRIANGLES, (this.RES * this.RES)*6, gl.UNSIGNED_SHORT, 0);
+        this.time += this.DELTA_TIME;
     };
 
     computeModelMatrix() {
         const scale = MatUtils.scaleMatrix(10, 10, 10);
         const rotateX = MatUtils.rotateXMatrix(Math.PI/2);
-        const rotateY = MatUtils.rotateYMatrix(Date.now() * this.animationSpeed * 0.0001);
+        const rotateY = MatUtils.rotateYMatrix(Date.now() * this.ANIMATION_SPEED * 0.0001);
         const position = MatUtils.translateMatrix(0, -5, -25);
 
         this.transforms.model = MatUtils.multiplyArrayOfMatrices([
@@ -61,11 +65,13 @@ class Quad {
     };
 
     updateAttributesAndUniforms() {
+        /** @type {WebGLRenderingContext} */
         const gl = this.gl;
 
         // MVP Matrices
         gl.uniformMatrix4fv(this.locations.model, false, new Float32Array(this.transforms.model));
         gl.uniformMatrix4fv(this.locations.projection, false, new Float32Array(this.transforms.projection));
+        gl.uniform1f(this.locations.time, this.time);
 
         // Positions
         gl.enableVertexAttribArray(this.locations.position);
@@ -108,16 +114,16 @@ class Quad {
         const colors = [];
         const elements = []
 
-        for (let i = 0; i <= this.resolution; i++) {
-            for (let j = 0; j <= this.resolution; j++) {
-                positions.push((2 * j - this.resolution) / this.resolution);
-                positions.push((2 * i - this.resolution) / this.resolution);
+        for (let i = 0; i <= this.RES; i++) {
+            for (let j = 0; j <= this.RES; j++) {
+                positions.push((2 * j - this.RES) / this.RES);
+                positions.push((2 * i - this.RES) / this.RES);
                 positions.push(0);
-                colors.push(i / this.resolution, j / this.resolution, 0, 1);
+                colors.push(i / this.RES, j / this.RES, 0, 1);
 
-                if (i != this.resolution && j != this.resolution) {
-                    const row1 = i * (this.resolution + 1);
-                    const row2 = (i + 1) * (this.resolution + 1);
+                if (i != this.RES && j != this.RES) {
+                    const row1 = i * (this.RES + 1);
+                    const row2 = (i + 1) * (this.RES + 1);
                     elements.push(row1 + j, row1 + j + 1, row2 + j + 1);
                     elements.push(row1 + j, row2 + j + 1, row2 + j);
                 }
