@@ -37,13 +37,13 @@ class GlUtils {
     }
 
     static async createWebGLProgramFromPath(gl, vertexSourcePath, fragmentSourcePath) {
-        const vertexShaderSource = await(await fetch(vertexSourcePath)).text();
-        const fragmentShaderSource = await(await fetch(fragmentSourcePath)).text();
+        const vertexShaderSource = await (await fetch(vertexSourcePath)).text();
+        const fragmentShaderSource = await (await fetch(fragmentSourcePath)).text();
         return GlUtils.createWebGLProgram(gl, vertexShaderSource, fragmentShaderSource);
     }
 
     static createContext(canvas) {
-        var gl;
+        let gl;
 
         try {
             gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
@@ -54,10 +54,24 @@ class GlUtils {
             var message = "Unable to initialize WebGL. Your browser may not support it.";
             alert(message);
             throw new Error(message);
-            gl = null;
         }
 
         return gl;
+    }
+
+    static resetView(gl) {
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        const canvas = gl.canvas;
+        const displayWidth = canvas.clientWidth;
+        const displayHeight = canvas.clientHeight;
+
+        if (canvas.width != displayWidth || canvas.height != displayHeight) {
+            canvas.width = displayWidth;
+            canvas.height = displayHeight;
+        }
     }
 }
 

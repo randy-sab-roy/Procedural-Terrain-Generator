@@ -32,15 +32,12 @@ class Cube {
 
         // Perform the actual draw
         gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0);
-
-        // Run the draw as a loop
-        requestAnimationFrame(this.draw.bind(this));
     };
 
 
     computePerspectiveMatrix() {
         var fieldOfViewInRadians = Math.PI * 0.5;
-        var aspectRatio = window.innerWidth / window.innerHeight;
+        var aspectRatio = this.gl.canvas.width / this.gl.canvas.height;
         var nearClippingPlaneDistance = 1;
         var farClippingPlaneDistance = 50;
 

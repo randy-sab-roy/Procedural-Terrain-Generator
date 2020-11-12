@@ -1,20 +1,22 @@
-function resizeCanvasToDisplaySize(canvas) {
-    const displayWidth = canvas.clientWidth;
-    const displayHeight = canvas.clientHeight;
+let gl = null;
+let cube = null;
 
-    if (canvas.width != displayWidth || canvas.height != displayHeight) {
-        canvas.width = displayWidth;
-        canvas.height = displayHeight;
-    }
+
+function draw() {
+    
+    GlUtils.resetView(gl);
+    cube.draw();
+
+    requestAnimationFrame(draw);
 }
 
 async function init() {
-    const canvas = document.getElementById("c");
-    resizeCanvasToDisplaySize(canvas);
+    canvas = document.getElementById("c");
     
     /** @type {WebGLRenderingContext} */
-    const gl = GlUtils.createContext(canvas)
-    const cube = new Cube();
+    gl = GlUtils.createContext(canvas)
+    cube = new Cube();
+
     await cube.init(gl);
-    cube.draw();
+    draw();
 }
