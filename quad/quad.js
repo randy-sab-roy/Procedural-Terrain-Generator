@@ -1,4 +1,6 @@
 class Quad {
+    resolution = 5;
+    animationSpeed = 3;
 
     transforms = {}
     locations = {};
@@ -27,16 +29,18 @@ class Quad {
         this.computePerspectiveMatrix();
         this.updateAttributesAndUniforms();
 
-        gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(gl.TRIANGLES, (this.resolution * this.resolution)*6, gl.UNSIGNED_SHORT, 0);
     };
 
     computeModelMatrix() {
         const scale = MatUtils.scaleMatrix(10, 10, 10);
-        const rotateX = MatUtils.rotateXMatrix(1);
+        const rotateX = MatUtils.rotateXMatrix(Math.PI/2);
+        const rotateY = MatUtils.rotateYMatrix(Date.now() * this.animationSpeed * 0.0001);
         const position = MatUtils.translateMatrix(0, -5, -25);
 
         this.transforms.model = MatUtils.multiplyArrayOfMatrices([
             position,
+            rotateY,
             rotateX,
             scale
         ]);
@@ -100,21 +104,26 @@ class Quad {
     }
 
     createQuadData() {
-        const positions = [
-            -1.0, -1.0, 0.0,
-            1.0, -1.0, 0.0,
-            1.0, 1.0, 0.0,
-            -1.0, 1.0, 0.0,
-        ];
+        const positions = [];
+        const colors = [];
+        const elements = []
 
-        const colors = [
-            1.0, 0.0, 0.0, 1.0,
-            0.0, 1.0, 0.0, 1.0,
-            0.0, 0.0, 1.0, 1.0,
-            1.0, 1.0, 0.0, 1.0
-        ];
-        
-        const elements = [0, 1, 2, 0, 2, 3]
+        for (let i = 0; i <= this.resolution; i++) {
+            for (let j = 0; j <= this.resolution; j++) {
+                positions.push((2 * j - this.resolution) / this.resolution);
+                positions.push((2 * i - this.resolution) / this.resolution);
+                positions.push(0);
+                colors.push(i / this.resolution, j / this.resolution, 0, 1);
+
+                if (i != this.resolution && j != this.resolution) {
+                    const row1 = i * (this.resolution + 1);
+                    const row2 = (i + 1) * (this.resolution + 1);
+                    elements.push(row1 + j, row1 + j + 1, row2 + j + 1);
+                    elements.push(row1 + j, row2 + j + 1, row2 + j);
+                }
+            }
+
+        }
 
         return {
             positions: positions,

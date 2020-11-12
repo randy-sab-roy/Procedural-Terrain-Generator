@@ -7,7 +7,8 @@ uniform mat4 projection;
 varying vec4 fcolor;
 
 void main() {
-    vec4 pos = projection * model * vec4( position, 1.0 );
-    gl_Position = pos;
+    vec3 pos = position;
+    pos.z = pos.x * pos.y;
+    gl_Position = projection * model * vec4( pos, 1.0 );
     fcolor = color;
 }
