@@ -8,11 +8,15 @@ uniform float time;
 uniform sampler2D heightMap;
 
 varying vec4 fcolor;
+varying vec3 normal;
+varying vec3 pos;
 
 void main() {
-    vec3 pos = position;
-    pos.z = pos.z + (1.0-texture2D(heightMap, vec2(uv.x, uv.y)).x);
-    gl_Position = projection * model * vec4( pos, 1.0 );
-
+    vec3 p = position;
+    p.z = p.z + (1.0-texture2D(heightMap, vec2(uv.x, uv.y)).x);
+    gl_Position = projection * model * vec4( p, 1.0 );
+    
     fcolor = color;
+    normal = vec3(0, 0, 1);
+    pos = vec3(gl_Position);
 }

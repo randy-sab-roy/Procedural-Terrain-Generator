@@ -1,8 +1,12 @@
 class Quad {
-    RES = 100;
+    RES = 200;
     ANIMATION_SPEED = 3;
     ENABLE_WIRE = false;
     DELTA_TIME = 0.01;
+    KA = 1;
+    KD = 1;
+    LIGHT_COLOR = [1.0, 0.82, 0.40, 1.0]
+    LIGHT_DIR = [-0.7, -1.0, -0.6]
 
     /** @type {WebGLRenderingContext} */
     gl = null;
@@ -24,6 +28,10 @@ class Quad {
         this.locations.position = gl.getAttribLocation(this.program, "position");
         this.locations.color = gl.getAttribLocation(this.program, "color");
         this.locations.uv = gl.getAttribLocation(this.program, "uv");
+        this.locations.ka = gl.getUniformLocation(this.program, "Ka");
+        this.locations.kd = gl.getUniformLocation(this.program, "Kd");
+        this.locations.lightColor = gl.getUniformLocation(this.program, "lightColor");
+        this.locations.lightDir = gl.getUniformLocation(this.program, "lightDir");
         gl.enable(gl.DEPTH_TEST);
     }
 
@@ -59,7 +67,7 @@ class Quad {
         const fieldOfViewInRadians = Math.PI * 0.5;
         const aspectRatio = this.gl.canvas.width / this.gl.canvas.height;
         const nearClippingPlaneDistance = 1;
-        const farClippingPlaneDistance = 50;
+        const farClippingPlaneDistance = 100;
 
         this.transforms.projection = MatUtils.perspectiveMatrix(
             fieldOfViewInRadians,
@@ -94,6 +102,12 @@ class Quad {
         gl.enableVertexAttribArray(this.locations.color);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.colors);
         gl.vertexAttribPointer(this.locations.color, 4, gl.FLOAT, false, 0, 0);
+
+        // Light
+        gl.uniform1f(this.locations.ka, this.KA);
+        gl.uniform1f(this.locations.kd, this.KD);
+        gl.uniform4fv(this.locations.lightColor, this.LIGHT_COLOR);
+        gl.uniform3fv(this.locations.lightDir, this.LIGHT_DIR);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
     };
