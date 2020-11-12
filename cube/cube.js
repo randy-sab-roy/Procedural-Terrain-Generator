@@ -1,5 +1,4 @@
 class Cube {
-
     transforms = {}
     locations = {};
 
@@ -8,7 +7,7 @@ class Cube {
 
     async init(gl) {
         this.gl = gl;
-        this.buffers = this.createBuffersForCube(gl);
+        this.buffers = this.createBuffers(gl);
         this.program = await GlUtils.createWebGLProgramFromPath(gl, "cube/cube_vertex.glsl", "cube/cube_fragment.glsl");
         gl.useProgram(this.program);
 
@@ -22,31 +21,13 @@ class Cube {
     draw() {
         var gl = this.gl;
         var now = Date.now();
+        gl.useProgram(this.program);
 
-        // Compute our matrices
         this.computeModelMatrix(now);
-        this.computePerspectiveMatrix(0.5);
-
-        // Update the data going to the GPU
+        this.computePerspectiveMatrix();
         this.updateAttributesAndUniforms();
 
-        // Perform the actual draw
         gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0);
-    };
-
-
-    computePerspectiveMatrix() {
-        var fieldOfViewInRadians = Math.PI * 0.5;
-        var aspectRatio = this.gl.canvas.width / this.gl.canvas.height;
-        var nearClippingPlaneDistance = 1;
-        var farClippingPlaneDistance = 50;
-
-        this.transforms.projection = MatUtils.perspectiveMatrix(
-            fieldOfViewInRadians,
-            aspectRatio,
-            nearClippingPlaneDistance,
-            farClippingPlaneDistance
-        );
     };
 
     computeModelMatrix(now) {
@@ -63,18 +44,33 @@ class Cube {
         ]);
     };
 
+    computePerspectiveMatrix() {
+        var fieldOfViewInRadians = Math.PI * 0.5;
+        var aspectRatio = this.gl.canvas.width / this.gl.canvas.height;
+        var nearClippingPlaneDistance = 1;
+        var farClippingPlaneDistance = 50;
+
+        this.transforms.projection = MatUtils.perspectiveMatrix(
+            fieldOfViewInRadians,
+            aspectRatio,
+            nearClippingPlaneDistance,
+            farClippingPlaneDistance
+        );
+    };
+
     updateAttributesAndUniforms() {
         const gl = this.gl;
 
+        // MVP Matrices
         gl.uniformMatrix4fv(this.locations.model, false, new Float32Array(this.transforms.model));
         gl.uniformMatrix4fv(this.locations.projection, false, new Float32Array(this.transforms.projection));
 
-        // Set the positions attribute
+        // Positions
         gl.enableVertexAttribArray(this.locations.position);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
         gl.vertexAttribPointer(this.locations.position, 3, gl.FLOAT, false, 0, 0);
 
-        // Set the colors attribute
+        // Colors
         gl.enableVertexAttribArray(this.locations.color);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.colors);
         gl.vertexAttribPointer(this.locations.color, 4, gl.FLOAT, false, 0, 0);
@@ -83,7 +79,7 @@ class Cube {
     };
 
 
-    createBuffersForCube(gl) {
+    createBuffers(gl) {
         const cube = this.createCubeData();
         const positions = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, positions);

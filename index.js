@@ -1,12 +1,10 @@
 let gl = null;
-let cube = null;
+let objects = [];
 
 
 function draw() {
-    
     GlUtils.resetView(gl);
-    cube.draw();
-
+    objects.forEach(o => o.draw())
     requestAnimationFrame(draw);
 }
 
@@ -15,8 +13,13 @@ async function init() {
     
     /** @type {WebGLRenderingContext} */
     gl = GlUtils.createContext(canvas)
-    cube = new Cube();
+    GlUtils.resetView(gl);
 
-    await cube.init(gl);
+    objects = [new Cube(), new Quad()];
+
+    for (const obj of objects) {
+        await obj.init(gl);
+    }
+
     draw();
 }
