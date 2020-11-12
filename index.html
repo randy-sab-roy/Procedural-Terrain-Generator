@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Terrain Generator</title>
@@ -10,11 +11,26 @@
     <script src="quad/quad.js"></script>
     <script src="index.js"></script>
 </head>
+
 <body onload="init()">
     <h1>Procedural Terrain Generator</h1>
     <div class="container">
-        <div class="menu"></div>
+        <div class="menu">
+            <div>
+                <label>Wire Mode</label>
+                <input type="checkbox" id="wire">
+            </div>
+            <div>
+                <label>Ambient Light</label><br>
+                <input type="range" min="0" max="1" value="0.25" step="0.01" id="ka">
+            </div>
+            <div>
+                <label>Diffuse Light</label><br>
+                <input type="range" min="0" max="1" value="0.8" step="0.01" id="kd">
+            </div>
+        </div>
         <canvas id="c"></canvas>
     </div>
 </body>
+
 </html>

@@ -2,7 +2,8 @@ precision mediump float;
 
 uniform float Ka;
 uniform float Kd;
-uniform vec3 lightColor;
+uniform vec3 lightColorA;
+uniform vec3 lightColorD;
 uniform vec3 lightDir;
 
 varying vec4 fcolor;
@@ -18,5 +19,5 @@ void main() {
     vec3 L = normalize(lightDir);
 
     float lambertian = max(dot(N, L), 0.0);
-    gl_FragColor = vec4(Ka * lightColor + Kd * lambertian * lightColor, 1.0);
+    gl_FragColor = vec4(Ka * lightColorA + Kd * lambertian * lightColorD, 1.0);
 }

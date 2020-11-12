@@ -1,11 +1,9 @@
 class Quad {
     RES = 250;
     ANIMATION_SPEED = 3;
-    ENABLE_WIRE = false;
     DELTA_TIME = 0.01;
-    KA = 0.15;
-    KD = 0.7;
-    LIGHT_COLOR = [0.9, 0.7, 0.5]
+    LIGHT_COLOR_A = [0.55, 0.0, 0.55]
+    LIGHT_COLOR_D = [1, 0.549, 0.113]
     LIGHT_DIR = [-0.7, -1.0, -0.6]
 
     /** @type {WebGLRenderingContext} */
@@ -14,6 +12,11 @@ class Quad {
     transforms = {}
     locations = {};
     time = 0;
+
+    // Controlled by UI
+    enableWire;
+    KA;
+    KD;
 
     async init(gl) {
         this.gl = gl;
@@ -30,7 +33,8 @@ class Quad {
         this.locations.uv = gl.getAttribLocation(this.program, "uv");
         this.locations.ka = gl.getUniformLocation(this.program, "Ka");
         this.locations.kd = gl.getUniformLocation(this.program, "Kd");
-        this.locations.lightColor = gl.getUniformLocation(this.program, "lightColor");
+        this.locations.lightColorA = gl.getUniformLocation(this.program, "lightColorA");
+        this.locations.lightColorD = gl.getUniformLocation(this.program, "lightColorD");
         this.locations.lightDir = gl.getUniformLocation(this.program, "lightDir");
         this.locations.res = gl.getUniformLocation(this.program, "res");
         gl.enable(gl.DEPTH_TEST);
@@ -39,14 +43,21 @@ class Quad {
     draw() {
         /** @type {WebGLRenderingContext} */
         gl.useProgram(this.program);
+        this.getValuesFromControls();
 
         this.computeModelMatrix();
         this.computePerspectiveMatrix();
         this.updateAttributesAndUniforms();
 
-        gl.drawElements(this.ENABLE_WIRE ? gl.LINE_STRIP : gl.TRIANGLES, (this.RES * this.RES) * 6, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(this.enableWire ? gl.LINE_STRIP : gl.TRIANGLES, (this.RES * this.RES) * 6, gl.UNSIGNED_SHORT, 0);
         this.time += this.DELTA_TIME;
     };
+
+    getValuesFromControls() {
+        this.enableWire = document.getElementById("wire").checked;
+        this.KA = document.getElementById("ka").value;
+        this.KD = document.getElementById("kd").value;
+    }
 
     computeModelMatrix() {
         const scale = MatUtils.scaleMatrix(20, 20, 20);
@@ -107,7 +118,8 @@ class Quad {
         // Light
         gl.uniform1f(this.locations.ka, this.KA);
         gl.uniform1f(this.locations.kd, this.KD);
-        gl.uniform3fv(this.locations.lightColor, this.LIGHT_COLOR);
+        gl.uniform3fv(this.locations.lightColorA, this.LIGHT_COLOR_A);
+        gl.uniform3fv(this.locations.lightColorD, this.LIGHT_COLOR_D);
         gl.uniform3fv(this.locations.lightDir, this.LIGHT_DIR);
         gl.uniform1f(this.locations.res, this.RES);
 
@@ -161,7 +173,7 @@ class Quad {
                 positions.push((2 * j - this.RES) / this.RES);
                 positions.push((2 * i - this.RES) / this.RES);
                 positions.push(0);
-                colors.push(i / this.RES, (i+j)/(2*this.RES), j / this.RES, 1);
+                colors.push(i / this.RES, (i + j) / (2 * this.RES), j / this.RES, 1);
                 uv.push(i / this.RES, j / this.RES);
 
                 if (i != this.RES && j != this.RES) {

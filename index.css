@@ -10,16 +10,39 @@ html {
     height: 40vw;
 }
 
-.menu {
-    width: 23%;
-    height: 100%;
-    float: left;
-    background-color: rgb(73, 73, 73);
-}
-
 #c {
     width: 75%;
     height: 100%;
     float: right;
     background-color: white;
+}
+
+.menu {
+    width: 23%;
+    height: 100%;
+    float: left;
+    text-align: left;
+    background-color: rgb(73, 73, 73);
+    overflow: auto;
+    border-radius: 5px;
+    font-size: 20px;
+}
+
+.menu div {
+    margin: 15px;
+}
+
+input[type=text],
+select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=range] {
+    width: 100%;
 }
