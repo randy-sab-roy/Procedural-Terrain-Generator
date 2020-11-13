@@ -21,6 +21,7 @@ class Quad {
     amp;
     animationSpeed;
     cameraPos;
+    useGen;
 
     async init(gl) {
         this.gl = gl;
@@ -49,6 +50,7 @@ class Quad {
 
     draw() {
         const gl = this.gl;
+        GlUtils.resetView(gl);
         gl.useProgram(this.program);
         this.getValuesFromControls();
 
@@ -69,6 +71,7 @@ class Quad {
         this.amp = document.getElementById("amp").value;
         this.animationSpeed = document.getElementById("animSpeed").value;
         this.cameraPos = document.getElementById("camera").value;
+        this.useGen = document.getElementById("useGen").checked;
     }
 
     computeModelMatrix() {
@@ -110,7 +113,7 @@ class Quad {
         gl.uniform1f(this.locations.time, this.time);
 
         // Texture
-        gl.uniform1i(this.locations.heightMap, 0);
+        gl.uniform1i(this.locations.heightMap, this.useGen ? 1 : 0);
         gl.enableVertexAttribArray(this.locations.uv);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.uv);
         gl.vertexAttribPointer(this.locations.uv, 2, gl.FLOAT, false, 0, 0);
@@ -162,6 +165,7 @@ class Quad {
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(quad.elements), gl.STATIC_DRAW);
 
         const texture = gl.createTexture();
+        gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
         gl.generateMipmap(gl.TEXTURE_2D);
@@ -186,7 +190,7 @@ class Quad {
                 positions.push((2 * j - this.RES) / this.RES);
                 positions.push((2 * i - this.RES) / this.RES);
                 positions.push(0);
-                colors.push(i / (2*this.RES), (i + j) / (4 * this.RES), j / (2*this.RES), 1);
+                colors.push(i / (2 * this.RES), (i + j) / (4 * this.RES), j / (2 * this.RES), 1);
                 uv.push(i / this.RES, j / this.RES);
 
                 if (i != this.RES && j != this.RES) {

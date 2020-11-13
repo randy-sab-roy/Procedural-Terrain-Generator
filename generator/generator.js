@@ -18,9 +18,16 @@ class Generator {
 
     draw() {
         const gl = this.gl;
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.buffers.frame);
+        
+        gl.viewport(0, 0, 250, 250);
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        
         gl.useProgram(this.program);
         this.updateAttributesAndUniforms();
         gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 0);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     };
 
 
@@ -57,11 +64,22 @@ class Generator {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elements);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(gen.elements), gl.STATIC_DRAW)
 
+        const tex = gl.createTexture();
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 250, 250, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+        const fb = gl.createFramebuffer();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+
 
         return {
             positions: positions,
             uv: uv,
-            elements: elements
+            elements: elements,
+            frame: fb,
+            texture: tex
         }
     }
 
