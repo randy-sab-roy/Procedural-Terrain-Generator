@@ -33,11 +33,12 @@ vec3 getNormal() {
 void main() {
     vec3 p = position;
     normal = vec3(0.0, 0.0, -1.0);
+
     float b = 0.005;
     if (uv.x > b && uv.y > b && uv.x < 1.0-b && uv.y < 1.0-b)
     {
         p.z = amp * (p.z + (1.0 - texture2D(heightMap, vec2(uv.x, uv.y)).x));
-        normal = getNormal();
+        normal = vec3(model * vec4(getNormal(), 1.0));
     }
     gl_Position = projection * model * vec4( p, 1.0 );
 

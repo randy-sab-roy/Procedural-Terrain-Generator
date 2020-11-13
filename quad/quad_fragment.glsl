@@ -34,7 +34,4 @@ void main() {
     gl_FragColor = vec4(Ka * vec3(fcolor) + 
                     Kd * lambertian * lightColorD + 
                     Ks * specular * lightColorD, 1.0);
-
-
-
 }
