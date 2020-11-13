@@ -145,7 +145,7 @@ class Quad {
 
     async createBuffers() {
         const gl = this.gl;
-        const image = await GlUtils.loadImageAsync("sample/line.png");
+        const image = await GlUtils.loadImageAsync("sample/terrain.png");
         const quad = this.createQuadData();
 
         const positions = gl.createBuffer();

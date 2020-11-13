@@ -34,7 +34,7 @@ void main() {
     vec3 p = position;
     normal = vec3(0.0, 0.0, -1.0);
 
-    float b = -0.01;
+    float b = 0.01;
     if (uv.x > b && uv.y > b && uv.x < 1.0-b && uv.y < 1.0-b)
     {
         p.z = amp * (p.z + (1.0 - texture2D(heightMap, vec2(uv.x, uv.y)).x));
