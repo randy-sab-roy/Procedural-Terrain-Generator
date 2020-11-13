@@ -24,17 +24,17 @@ vec3 getNormal() {
     float p7 = texture2D(heightMap, vec2(uv.x, uv.y + d)).x;
     float p8 = texture2D(heightMap, vec2(uv.x + d, uv.y + d)).x;
 
-    float gx = (p0-p2) + (2.0*p3-2.0*p5) + (p7-p8);
-    float gy = p0+2.0*p1+p2-p6-2.0*p7-p8;
+    float gx = p0 - p2 + 2.0*p3 - 2.0*p5 + p7-p8;
+    float gy = p0 + 2.0*p1 +p2 -p6 - 2.0*p7 - p8;
 
-    return normalize(vec3(amp*gx, amp*gy, -0.01));
+    return normalize(vec3(amp*gx, amp*gy, -0.0008));
 }
 
 void main() {
     vec3 p = position;
     normal = vec3(0.0, 0.0, -1.0);
 
-    float b = 0.005;
+    float b = -0.01;
     if (uv.x > b && uv.y > b && uv.x < 1.0-b && uv.y < 1.0-b)
     {
         p.z = amp * (p.z + (1.0 - texture2D(heightMap, vec2(uv.x, uv.y)).x));

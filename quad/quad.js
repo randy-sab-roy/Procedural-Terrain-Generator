@@ -145,7 +145,7 @@ class Quad {
 
     async createBuffers() {
         const gl = this.gl;
-        const image = await GlUtils.loadImageAsync("sample/terrain.png");
+        const image = await GlUtils.loadImageAsync("sample/line.png");
         const quad = this.createQuadData();
 
         const positions = gl.createBuffer();
@@ -192,13 +192,17 @@ class Quad {
                 positions.push(0);
                 colors.push(i / (2 * this.RES), (i + j) / (4 * this.RES), j / (2 * this.RES), 1);
                 uv.push(i / this.RES, j / this.RES);
+            }
+        }
 
-                if (i != this.RES && j != this.RES) {
-                    const row1 = i * (this.RES + 1);
-                    const row2 = (i + 1) * (this.RES + 1);
-                    elements.push(row1 + j, row1 + j + 1, row2 + j + 1);
-                    elements.push(row1 + j, row2 + j + 1, row2 + j);
-                }
+        for (let i = 0; i < this.RES; i++) {
+            for (let j = 0; j < this.RES; j++) {
+                const p0 = (i * (this.RES+1)) + j;
+                const p1 = (i * (this.RES+1)) + j + 1;
+                const p2 = ((i+1) * (this.RES+1)) + j;
+                const p3 = ((i+1) * (this.RES+1)) + j + 1;
+
+                elements.push(p0, p1, p2, p2, p1, p3);
             }
         }
 
