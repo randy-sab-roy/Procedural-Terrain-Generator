@@ -27,10 +27,10 @@ vec3 getNormal() {
     float gx = p0 - p2 + 2.0*p3 - 2.0*p5 + p7-p8;
     float gy = p0 + 2.0*p1 +p2 -p6 - 2.0*p7 - p8;
 
-    vec3 va = normalize(vec3(1.0, 0.0, res * amp * gx));
-    vec3 vb = normalize(vec3(0.0, 1.0, res * amp * gy));
+    vec3 va = normalize(vec3(1.0 * d, 0.0, amp * gx));
+    vec3 vb = normalize(vec3(0.0, 1.0 * d, amp * gy));
 
-    return normalize(cross(vb, va));
+    return cross(vb, va);
 }
 
 void main() {
@@ -41,9 +41,11 @@ void main() {
     if (uv.x > b && uv.y > b && uv.x < 1.0-b && uv.y < 1.0-b)
     {
         p.z = amp * (p.z + (1.0 - texture2D(heightMap, vec2(uv.x, uv.y)).x));
-        normal = vec3(model * vec4(getNormal(), 1.0));
+        normal = getNormal();
     }
+    
     gl_Position = projection * model * vec4( p, 1.0 );
+    normal = vec3(model * vec4(normal, 1.0));
 
     fcolor = color;
     pos = vec3(gl_Position);
