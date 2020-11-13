@@ -27,7 +27,10 @@ vec3 getNormal() {
     float gx = p0 - p2 + 2.0*p3 - 2.0*p5 + p7-p8;
     float gy = p0 + 2.0*p1 +p2 -p6 - 2.0*p7 - p8;
 
-    return normalize(vec3(amp*gx, amp*gy, -0.0008));
+    vec3 va = normalize(vec3(1.0, 0.0, res * amp * gx));
+    vec3 vb = normalize(vec3(0.0, 1.0, res * amp * gy));
+
+    return normalize(cross(vb, va));
 }
 
 void main() {
