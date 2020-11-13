@@ -33,6 +33,6 @@ vec4 getLightColor() {
 void main() {
     // gl_FragColor = vec4(0.25, 0.53, 0.96, 1.0);
     // gl_FragColor = fcolor;
-    // gl_FragColor = vec4(normalize(abs(normal)), 1.0);
-    gl_FragColor = getLightColor();    
+    // gl_FragColor = vec4(normalize(abs(normal)), 1.0);    
+    gl_FragColor = getLightColor();
 }

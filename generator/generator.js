@@ -4,6 +4,7 @@ class Generator {
     gl = null;
     program = null;
     locations = {};
+    res = 255;
 
     async init(gl) {
         this.gl = gl;
@@ -21,13 +22,13 @@ class Generator {
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.buffers.frame);
 
         gl.useProgram(this.program);
-        gl.viewport(0, 0, 250, 250);
+        gl.viewport(0, 0, this.res, this.res);
         gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         this.updateAttributesAndUniforms();
 
-        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     };
 
@@ -68,7 +69,7 @@ class Generator {
         const tex = gl.createTexture();
         gl.activeTexture(gl.TEXTURE1);
         gl.bindTexture(gl.TEXTURE_2D, tex);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 250, 250, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.res, this.res, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
