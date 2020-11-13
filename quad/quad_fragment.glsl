@@ -13,11 +13,7 @@ varying vec4 fcolor;
 varying vec3 normal;
 varying vec3 pos;
 
-void main() {
-    // gl_FragColor = vec4(0.25, 0.53, 0.96, 1.0);
-    // gl_FragColor = fcolor;
-    // gl_FragColor = vec4((normal+1.0)/2.0, 1.0);
-
+vec4 getLightColor() {
     vec3 N = normalize(normal);
     vec3 L = normalize(lightDir);
 
@@ -25,14 +21,18 @@ void main() {
 
     float specular = 0.0;
     if(lambertian > 0.0) {
-        vec3 R = reflect(-L, N);      // Reflected light vector
-        vec3 V = normalize(-pos); // Vector to viewer
-        // Compute the specular term
+        vec3 R = reflect(-L, N);
+        vec3 V = normalize(-pos);
         float specAngle = max(dot(R, V), 0.0);
         specular = pow(specAngle, Sv);
     }
 
-    gl_FragColor = vec4(Ka * vec3(fcolor) + 
-                    Kd * lambertian * lightColorD + 
-                    Ks * specular * lightColorD, 1.0);
+    return vec4(Ka * vec3(fcolor) + Kd * lambertian * lightColorD + Ks * specular * lightColorD, 1.0);
+}
+
+void main() {
+    // gl_FragColor = vec4(0.25, 0.53, 0.96, 1.0);
+    // gl_FragColor = fcolor;
+    // gl_FragColor = vec4(normalize(abs(normal)), 1.0);
+    gl_FragColor = getLightColor();    
 }

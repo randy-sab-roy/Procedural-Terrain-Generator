@@ -2,7 +2,7 @@ class Quad {
     RES = 250;
     LIGHT_COLOR_A = [1, 0.73, 0.44]
     LIGHT_COLOR_D = [1, 0.9, 0.7]
-    LIGHT_DIR = [-1, -1, -1]
+    LIGHT_DIR = [1, -1.5, -1]
 
     /** @type {WebGLRenderingContext} */
     gl = null;
@@ -10,7 +10,7 @@ class Quad {
     transforms = {}
     locations = {};
     time = 0;
-    rotation = MatUtils.rotateYMatrix(0, 0, 0);
+    rotation = 0;
 
     // Controlled by UI
     enableWire;
@@ -30,6 +30,7 @@ class Quad {
         gl.useProgram(this.program);
 
         this.locations.model = gl.getUniformLocation(this.program, "model");
+        this.locations.normalMat = gl.getUniformLocation(this.program, "normalMat");
         this.locations.projection = gl.getUniformLocation(this.program, "projection");
         this.locations.time = gl.getUniformLocation(this.program, "time");
         this.locations.heightMap = gl.getUniformLocation(this.program, "heightMap");
@@ -75,17 +76,21 @@ class Quad {
     }
 
     computeModelMatrix() {
-        const scale = MatUtils.scaleMatrix(5, 5, 5);
-        this.rotation = MatUtils.multiplyArrayOfMatrices([this.rotation, MatUtils.rotateZMatrix(this.animationSpeed)]);
-        const rotateX = MatUtils.rotateXMatrix(Math.PI / 3);
-        const position = MatUtils.translateMatrix(0, 0, this.cameraPos);
+        const model = mat4.create();
+        this.rotation += this.animationSpeed * 1;
+        
+        mat4.translate(model, model, [0, 0, this.cameraPos]);
+        mat4.scale(model, model, [5, 5, 5]);
+        mat4.rotate(model, model, Math.PI / 3, [-1, 0, 0]);
+        mat4.rotate(model, model, this.rotation, [0, 0, 1]);
 
-        this.transforms.model = MatUtils.multiplyArrayOfMatrices([
-            position,
-            rotateX,
-            this.rotation,
-            scale
-        ]);
+        this.transforms.model = model;
+
+        const normalMat = mat4.create();
+        mat4.invert(normalMat, model);
+        mat4.transpose(normalMat, normalMat);
+
+        this.transforms.normalMat = normalMat;
     };
 
     computePerspectiveMatrix() {
@@ -94,12 +99,9 @@ class Quad {
         const nearClippingPlaneDistance = 1;
         const farClippingPlaneDistance = 100;
 
-        this.transforms.projection = MatUtils.perspectiveMatrix(
-            fieldOfViewInRadians,
-            aspectRatio,
-            nearClippingPlaneDistance,
-            farClippingPlaneDistance
-        );
+        const projection = mat4.create();
+        mat4.perspective(projection, fieldOfViewInRadians, aspectRatio, nearClippingPlaneDistance, farClippingPlaneDistance);
+        this.transforms.projection = projection;
     };
 
     updateAttributesAndUniforms() {
@@ -107,6 +109,7 @@ class Quad {
 
         // MVP Matrices
         gl.uniformMatrix4fv(this.locations.model, false, new Float32Array(this.transforms.model));
+        gl.uniformMatrix4fv(this.locations.normalMat, false, new Float32Array(this.transforms.normalMat));
         gl.uniformMatrix4fv(this.locations.projection, false, new Float32Array(this.transforms.projection));
 
         // Time

@@ -4,6 +4,7 @@ attribute vec2 uv;
 
 uniform mat4 model;
 uniform mat4 projection;
+uniform mat4 normalMat;
 uniform float time;
 uniform float res;
 uniform float amp;
@@ -24,28 +25,27 @@ vec3 getNormal() {
     float p7 = texture2D(heightMap, vec2(uv.x, uv.y + d)).x;
     float p8 = texture2D(heightMap, vec2(uv.x + d, uv.y + d)).x;
 
-    float gx = p0 - p2 + 2.0*p3 - 2.0*p5 + p7-p8;
-    float gy = p0 + 2.0*p1 +p2 -p6 - 2.0*p7 - p8;
+    float gx = p0 + 2.0*p1 +p2 -p6 - 2.0*p7 - p8;
+    float gy = p0 - p2 + 2.0*p3 - 2.0*p5 + p7-p8;
 
-    vec3 va = normalize(vec3(1.0 * d, 0.0, amp * gx));
-    vec3 vb = normalize(vec3(0.0, 1.0 * d, amp * gy));
+    vec3 va = normalize(vec3(8.0*d, 0.0, amp * gx));
+    vec3 vb = normalize(vec3(0.0, 8.0*d, amp * gy));
 
-    return cross(vb, va);
+    return normalize(cross(va, vb));
 }
 
 void main() {
     vec3 p = position;
-    normal = vec3(0.0, 0.0, -1.0);
+    normal = vec3(0.0, 0.0, 1.0);
 
-    float b = 0.01;
-    if (uv.x > b && uv.y > b && uv.x < 1.0-b && uv.y < 1.0-b)
+    if (uv.x != 0.0 && uv.y != 0.0 && uv.x != 1.0 && uv.y != 1.0)
     {
-        p.z = amp * (p.z + (1.0 - texture2D(heightMap, vec2(uv.x, uv.y)).x));
+        p.z = p.z + amp * (texture2D(heightMap, vec2(uv.x, uv.y)).x);
         normal = getNormal();
     }
     
     gl_Position = projection * model * vec4( p, 1.0 );
-    normal = vec3(model * vec4(normal, 1.0));
+    normal = vec3(normalMat * vec4(-1.0 * normal, 1.0));
 
     fcolor = color;
     pos = vec3(gl_Position);
