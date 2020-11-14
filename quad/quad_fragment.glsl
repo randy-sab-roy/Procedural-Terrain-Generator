@@ -43,10 +43,10 @@ void main() {
     }
     else if (mode == 2)
     {
-        gl_FragColor = fcolor;
+        gl_FragColor = Ka * fcolor;
     }
     else if(mode == 3)
     {
-        gl_FragColor = vec4(0.25, 0.53, 0.96, 1.0);
+        gl_FragColor = Ka * vec4(0.25, 0.53, 0.96, 1.0);
     }
 }

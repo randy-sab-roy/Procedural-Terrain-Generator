@@ -35,16 +35,40 @@ vec3 getNormal() {
     return normalize(cross(va, vb));
 }
 
+vec3 getBorderNormal(float delta) {
+    vec3 n = vec3(0.0);
+    if (uv.x < delta) {
+        n.y = 1.0;
+    } else if (uv.x > 1.0 - delta) {
+        n.y = -1.0;
+    }
+
+    if (uv.y < delta) {
+        n.x = 1.0;
+    } else if (uv.y > 1.0 - delta) {
+        n.x = -1.0;
+    }
+
+    return n;
+}
+
 void main() {
     vec3 p = position;
-    raw_normal = vec3(0.0, 0.0, 1.0);
+
+    // Use amplitude as normal to have a uniform quad when flat
+    raw_normal = vec3(0.0, 0.0, -amp + 0.001);
 
     if (uv.x != 0.0 && uv.y != 0.0 && uv.x != 1.0 && uv.y != 1.0)
     {
         p.z = p.z + amp * (texture2D(heightMap, vec2(uv.x, uv.y)).x);
-        raw_normal = getNormal();
+        
+        float delta = 1.2/res;
+        if(uv.x > (0.0 + delta) && uv.y > (0.0 + delta) && uv.x < (1.0 - delta) && uv.y < (1.0 - delta))
+        {
+            raw_normal = getNormal();
+        }
     }
-    
+
     gl_Position = projection * model * vec4( p, 1.0 );
     normal = vec3(normalMat * vec4(-1.0 * raw_normal, 1.0));
 

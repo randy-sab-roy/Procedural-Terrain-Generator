@@ -2,7 +2,7 @@ class Quad {
     RES = 255;
     LIGHT_COLOR_A = [1, 0.73, 0.44]
     LIGHT_COLOR_D = [1, 0.9, 0.7]
-    LIGHT_DIR = [1, -1, -1]
+    LIGHT_DIR = [0, -1, 1]
 
     /** @type {WebGLRenderingContext} */
     gl = null;
