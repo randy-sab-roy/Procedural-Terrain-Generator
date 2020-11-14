@@ -54,18 +54,16 @@ vec3 getBorderNormal(float delta) {
 
 void main() {
     vec3 p = position;
-    raw_normal = vec3(0.0, 0.0, 1.0);
+
+    // Use amplitude as normal to have a uniform quad when flat
+    raw_normal = vec3(0.0, 0.0, -amp + 0.001);
 
     if (uv.x != 0.0 && uv.y != 0.0 && uv.x != 1.0 && uv.y != 1.0)
     {
         p.z = p.z + amp * (texture2D(heightMap, vec2(uv.x, uv.y)).x);
         
         float delta = 1.2/res;
-        if(uv.x <= (0.0 + delta) || uv.y <= (0.0 + delta) || uv.x >= (1.0 - delta) || uv.y >= (1.0 - delta))
-        {
-            raw_normal = getBorderNormal(delta);
-        }
-        else
+        if(uv.x > (0.0 + delta) && uv.y > (0.0 + delta) && uv.x < (1.0 - delta) && uv.y < (1.0 - delta))
         {
             raw_normal = getNormal();
         }
