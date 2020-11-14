@@ -200,7 +200,7 @@ class Quad {
                 positions.push((2 * j - this.RES) / this.RES);
                 positions.push((2 * i - this.RES) / this.RES);
                 positions.push(0);
-                colors.push(i / (2 * this.RES), (i + j) / (4 * this.RES), j / (2 * this.RES), 1);
+                colors.push(i / this.RES, (i + j) / (2 * this.RES), j / this.RES, 1);
                 uv.push(i / this.RES, j / this.RES);
             }
         }
