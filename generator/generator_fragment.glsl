@@ -1,10 +1,16 @@
 precision mediump float;
 
 uniform float terrainOffset;
-
 varying vec2 point;
 
 const float PI = 3.1415926535;
+
+const float H = 0.7;
+const float lacunarity = 4.0;
+const int octaves = 5;
+const float offset = 0.9;
+const float gain = 1.0;
+const float density = 7.5;
 
 // https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 vec2 fade(vec2 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
@@ -43,12 +49,67 @@ float perlin(vec2 P){
     return 2.3 *  n_xy;
 }
 
+float fbm(vec2 x) {
+    float v = 0.0;
+    float a = 0.1;
+    vec2 shift = vec2(100);
+    mat2 rot = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.50));
+    for (int i = 0; i < 8; ++i) {
+        v += a * perlin(x);
+        x =  x * 2.0 + shift;
+        a *= 0.5;
+    }
+    return v;
+}
+
+// with the help of https://www.classes.cs.uchicago.edu/archive/2015/fall/23700-1/final-project/MusgraveTerrain00.pdf
+float hyrbidMultifractal(vec2 point, float H, float lacunarity, int octaves, float offset, float gain){
+    vec2 p =  7.5*point;
+    float frequency, result, signal, weight;
+    float exponent_array[100];
+    frequency = 1.0;
+    //filling the exponent array
+    for(int i=0; i<5; ++i){
+        exponent_array[i] = pow(frequency, -H);
+        frequency *= lacunarity;
+    }
+
+    signal = offset - abs(perlin(p));
+    signal *= signal;
+    result = signal;
+    weight = 1.0;
+
+    for(int i=1; i<5; i++ ) {
+        p = p * lacunarity;
+        weight = signal * gain;
+        clamp(weight, 0.0, 1.0);
+        signal = offset - abs(perlin(p));
+        signal *= signal;
+        signal *= weight;
+        result += signal * exponent_array[i];
+    }
+    return result;
+
+}
+
+//Mix of 3 hybrid multifractal and a FBM
+float getTerrainHeight(vec2 pos){
+    vec2 p = pos;
+    float b2 = fbm(p*10.0)*0.2;
+    float h1 = hyrbidMultifractal(p/8.0, H, lacunarity, octaves, offset, gain);
+    float h2 = hyrbidMultifractal(p/3.0, H, lacunarity, octaves, offset, gain/2.0)*2.0;
+    float h3 = hyrbidMultifractal(p*2.0, H, lacunarity, octaves, offset, gain)*0.3;
+    return 1.0 - (b2+h1+h2+h3-0.8);
+}
+
 float computeHeight() {
-    return perlin((point + vec2(terrainOffset, terrainOffset)) * 10.0);
+    // return perlin((point + vec2(terrainOffset, terrainOffset)) * 10.0);
+    return getTerrainHeight(point + vec2(terrainOffset, terrainOffset));
 }
 
 void main() {
     // float value = (sin(fuv.x * 30.0) + 1.0) / 2.0;
+    
     float value = computeHeight();
 
     gl_FragColor = vec4(vec3(value), 1.0);
