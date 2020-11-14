@@ -17,39 +17,50 @@
     <div class="container">
         <div class="menu">
             <div>
-                <label>Use Generator</label>
+                <label class="title">Use Generator</label>
                 <input type="checkbox" id="useGen">
             </div>
             <div>
-                <label>Wire Mode</label>
+                <label class="title">Wire Mode</label>
                 <input type="checkbox" id="wire">
             </div>
             <div>
-                <label>Ambient Light</label><br>
+                <label class="title">Color Mode</label><br>
+                <label>Phong lighting</label>
+                <input type="radio" name="mode" checked value="0"><br>
+                <label>Normals</label>
+                <input type="radio" name="mode" value="1"><br>
+                <label>Gradient</label>
+                <input type="radio" name="mode" value="2"><br>
+                <label>Fixed</label>
+                <input type="radio" name="mode" value="3">
+            </div>
+            <div>
+                <label class="title">Ambient Light</label><br>
                 <input type="range" min="0" max="1" value="0.45" step="0.01" id="ka">
             </div>
             <div>
-                <label>Diffuse Light</label><br>
+                <label class="title">Diffuse Light</label><br>
                 <input type="range" min="0" max="1" value="0.8" step="0.01" id="kd">
             </div>
             <div>
-                <label>Specular Light</label><br>
+                <label class="title">Specular Light</label><br>
                 <input type="range" min="0" max="1" value="0.8" step="0.01" id="ks">
             </div>
             <div>
-                <label>Shininess</label><br>
+                <label class="title">Shininess</label><br>
                 <input type="range" min="1" max="128" value="80" step="1" id="sv">
             </div>
             <div>
-                <label>Amplitude</label><br>
+                <label class="title">Amplitude</label><br>
                 <input type="range" min="0" max="1" value="0.5" step="0.001" id="amp">
             </div>
             <div>
-                <label>Rotation Speed</label><br>
+                <label class="title">Rotation Speed</label><br>
                 <input type="range" min="0" max="0.01" value="0.003" step="0.0001" id="animSpeed">
             </div>
             <div>
-                <label>Camera</label><br>
+                <label class="title">Camera</label><br>
                 <input type="range" min="-20" max="-6" value="-12" step="0.001" id="camera">
             </div>
         </div>

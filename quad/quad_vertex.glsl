@@ -12,6 +12,7 @@ uniform sampler2D heightMap;
 
 varying vec4 fcolor;
 varying vec3 normal;
+varying vec3 raw_normal;
 varying vec3 pos;
 
 vec3 getNormal() {
@@ -36,16 +37,16 @@ vec3 getNormal() {
 
 void main() {
     vec3 p = position;
-    normal = vec3(0.0, 0.0, 1.0);
+    raw_normal = vec3(0.0, 0.0, 1.0);
 
     if (uv.x != 0.0 && uv.y != 0.0 && uv.x != 1.0 && uv.y != 1.0)
     {
         p.z = p.z + amp * (texture2D(heightMap, vec2(uv.x, uv.y)).x);
-        normal = getNormal();
+        raw_normal = getNormal();
     }
     
     gl_Position = projection * model * vec4( p, 1.0 );
-    normal = vec3(normalMat * vec4(-1.0 * normal, 1.0));
+    normal = vec3(normalMat * vec4(-1.0 * raw_normal, 1.0));
 
     fcolor = color;
     pos = vec3(gl_Position);

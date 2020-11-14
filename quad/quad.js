@@ -22,30 +22,14 @@ class Quad {
     animationSpeed;
     cameraPos;
     useGen;
+    mode;
 
     async init(gl) {
         this.gl = gl;
         this.buffers = await this.createBuffers();
         this.program = await GlUtils.createWebGLProgramFromPath(gl, "quad/quad_vertex.glsl", "quad/quad_fragment.glsl");
         gl.useProgram(this.program);
-
-        this.locations.model = gl.getUniformLocation(this.program, "model");
-        this.locations.normalMat = gl.getUniformLocation(this.program, "normalMat");
-        this.locations.projection = gl.getUniformLocation(this.program, "projection");
-        this.locations.time = gl.getUniformLocation(this.program, "time");
-        this.locations.heightMap = gl.getUniformLocation(this.program, "heightMap");
-        this.locations.position = gl.getAttribLocation(this.program, "position");
-        this.locations.color = gl.getAttribLocation(this.program, "color");
-        this.locations.uv = gl.getAttribLocation(this.program, "uv");
-        this.locations.ka = gl.getUniformLocation(this.program, "Ka");
-        this.locations.kd = gl.getUniformLocation(this.program, "Kd");
-        this.locations.ks = gl.getUniformLocation(this.program, "Ks");
-        this.locations.sv = gl.getUniformLocation(this.program, "Sv");
-        this.locations.amp = gl.getUniformLocation(this.program, "amp");
-        this.locations.lightColorA = gl.getUniformLocation(this.program, "lightColorA");
-        this.locations.lightColorD = gl.getUniformLocation(this.program, "lightColorD");
-        this.locations.lightDir = gl.getUniformLocation(this.program, "lightDir");
-        this.locations.res = gl.getUniformLocation(this.program, "res");
+        this.bindLocations();
         gl.enable(gl.DEPTH_TEST);
     }
 
@@ -73,12 +57,13 @@ class Quad {
         this.animationSpeed = document.getElementById("animSpeed").value;
         this.cameraPos = document.getElementById("camera").value;
         this.useGen = document.getElementById("useGen").checked;
+        this.mode = document.querySelector('input[name="mode"]:checked').value;
     }
 
     computeModelMatrix() {
         const model = mat4.create();
         this.rotation += this.animationSpeed * 1;
-        
+
         mat4.translate(model, model, [0, 0, this.cameraPos]);
         mat4.scale(model, model, [5, 5, 5]);
         mat4.rotate(model, model, Math.PI / 3, [-1, 0, 0]);
@@ -141,6 +126,7 @@ class Quad {
         gl.uniform3fv(this.locations.lightColorD, this.LIGHT_COLOR_D);
         gl.uniform3fv(this.locations.lightDir, this.LIGHT_DIR);
         gl.uniform1f(this.locations.res, this.RES);
+        gl.uniform1i(this.locations.mode, this.mode);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
     };
@@ -182,6 +168,27 @@ class Quad {
         }
     }
 
+    bindLocations() {
+        this.locations.model = gl.getUniformLocation(this.program, "model");
+        this.locations.normalMat = gl.getUniformLocation(this.program, "normalMat");
+        this.locations.projection = gl.getUniformLocation(this.program, "projection");
+        this.locations.time = gl.getUniformLocation(this.program, "time");
+        this.locations.heightMap = gl.getUniformLocation(this.program, "heightMap");
+        this.locations.position = gl.getAttribLocation(this.program, "position");
+        this.locations.color = gl.getAttribLocation(this.program, "color");
+        this.locations.uv = gl.getAttribLocation(this.program, "uv");
+        this.locations.ka = gl.getUniformLocation(this.program, "Ka");
+        this.locations.kd = gl.getUniformLocation(this.program, "Kd");
+        this.locations.ks = gl.getUniformLocation(this.program, "Ks");
+        this.locations.sv = gl.getUniformLocation(this.program, "Sv");
+        this.locations.amp = gl.getUniformLocation(this.program, "amp");
+        this.locations.lightColorA = gl.getUniformLocation(this.program, "lightColorA");
+        this.locations.lightColorD = gl.getUniformLocation(this.program, "lightColorD");
+        this.locations.lightDir = gl.getUniformLocation(this.program, "lightDir");
+        this.locations.res = gl.getUniformLocation(this.program, "res");
+        this.locations.mode = gl.getUniformLocation(this.program, "mode");
+    }
+
     createQuadData() {
         const positions = [];
         const colors = [];
@@ -200,10 +207,10 @@ class Quad {
 
         for (let i = 0; i < this.RES; i++) {
             for (let j = 0; j < this.RES; j++) {
-                const p0 = (i * (this.RES+1)) + j;
-                const p1 = (i * (this.RES+1)) + j + 1;
-                const p2 = ((i+1) * (this.RES+1)) + j;
-                const p3 = ((i+1) * (this.RES+1)) + j + 1;
+                const p0 = (i * (this.RES + 1)) + j;
+                const p1 = (i * (this.RES + 1)) + j + 1;
+                const p2 = ((i + 1) * (this.RES + 1)) + j;
+                const p3 = ((i + 1) * (this.RES + 1)) + j + 1;
 
                 elements.push(p0, p1, p2, p2, p1, p3);
             }

@@ -27,11 +27,16 @@ html {
     background-color: rgb(73, 73, 73);
     overflow: auto;
     border-radius: 5px;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .menu div {
     margin: 20px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
 }
 
 input[type=text],
