@@ -1,6 +1,8 @@
 precision mediump float;
 
 uniform float terrainOffset;
+uniform float terrainSize;
+
 varying vec2 point;
 
 const float PI = 3.1415926535;
@@ -104,7 +106,7 @@ float getTerrainHeight(vec2 pos){
 
 float computeHeight() {
     // return perlin((point + vec2(terrainOffset, terrainOffset)) * 10.0);
-    return getTerrainHeight(point + vec2(terrainOffset, terrainOffset));
+    return getTerrainHeight((point + vec2(terrainOffset, terrainOffset)) * terrainSize);
 }
 
 void main() {
