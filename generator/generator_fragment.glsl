@@ -1,7 +1,7 @@
 precision mediump float;
 
 uniform float terrainOffset;
-uniform float terrainSize;
+uniform float terrainScale;
 
 varying vec2 point;
 
@@ -52,19 +52,19 @@ float perlin(vec2 P){
 }
 
 float fbm(vec2 x) {
-    float v = 0.0;
+    float value = 0.0;
     float a = 0.1;
     vec2 shift = vec2(100);
     mat2 rot = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.50));
     for (int i = 0; i < 8; ++i) {
-        v += a * perlin(x);
+        value += a * perlin(x);
         x =  x * 2.0 + shift;
         a *= 0.5;
     }
-    return v;
+    return value;
 }
 
-// with the help of https://www.classes.cs.uchicago.edu/archive/2015/fall/23700-1/final-project/MusgraveTerrain00.pdf
+// https://www.classes.cs.uchicago.edu/archive/2015/fall/23700-1/final-project/MusgraveTerrain00.pdf
 float hyrbidMultifractal(vec2 point, float H, float lacunarity, int octaves, float offset, float gain){
     vec2 p =  7.5*point;
     float frequency, result, signal, weight;
@@ -94,8 +94,7 @@ float hyrbidMultifractal(vec2 point, float H, float lacunarity, int octaves, flo
 
 }
 
-//Mix of 3 hybrid multifractal and a FBM
-float getTerrainHeight(vec2 pos){
+float computeHeight(vec2 pos){
     vec2 p = pos;
     float b2 = fbm(p*10.0)*0.2;
     float h1 = hyrbidMultifractal(p/8.0, H, lacunarity, octaves, offset, gain);
@@ -104,15 +103,10 @@ float getTerrainHeight(vec2 pos){
     return 1.0 - (b2+h1+h2+h3-0.8);
 }
 
-float computeHeight() {
-    // return perlin((point + vec2(terrainOffset, terrainOffset)) * 10.0);
-    return getTerrainHeight((point + vec2(terrainOffset, terrainOffset)) * terrainSize);
-}
-
 void main() {
-    // float value = (sin(fuv.x * 30.0) + 1.0) / 2.0;
-    
-    float value = computeHeight();
+    // Allow to offset and scale the terrain
+    vec2 fractalPoint = (point + vec2(terrainOffset, terrainOffset)) * terrainScale;
+    float value = computeHeight(fractalPoint);
 
     gl_FragColor = vec4(vec3(value), 1.0);
 }
