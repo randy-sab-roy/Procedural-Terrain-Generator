@@ -17,6 +17,7 @@ class Generator {
         this.locations.uv = gl.getAttribLocation(this.program, "uv");
         this.locations.terrainOffset = gl.getUniformLocation(this.program, "terrainOffset");
         this.locations.terrainScale = gl.getUniformLocation(this.program, "terrainScale");
+        this.locations.noise = gl.getUniformLocation(this.program, "noise");
         gl.enable(gl.DEPTH_TEST);
     }
 
@@ -57,6 +58,7 @@ class Generator {
 
         gl.uniform1f(this.locations.terrainOffset, document.getElementById("terrainOffset").value);
         gl.uniform1f(this.locations.terrainScale, document.getElementById("terrainScale").value);
+        gl.uniform1i(this.locations.noise, document.querySelector('input[name="noise"]:checked').value);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
     };
