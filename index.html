@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Terrain Generator</title>
     <link rel="stylesheet" href="index.css">
-    <link rel="icon" type="image/png" href="/favicon.png"/>
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <script src="utils/gl-matrix-min.js"></script>
     <script src="utils/glUtils.js"></script>
     <script src="generator/generator.js"></script>
@@ -20,55 +20,70 @@
     </div>
     <div id="menu">
         <div>
-            <label class="title">Use Generator</label>
-            <input type="checkbox" checked id="useGen">
+            <h2>Terrain</h2>
+            <div>
+                <label class="title">Use Generator</label>
+                <input type="checkbox" checked id="useGen">
+            </div>
+            <div>
+                <label class="title">Show Generator View</label>
+                <input type="checkbox" checked id="showGen">
+            </div>
+            <div>
+                <label class="title">Wire Mode</label>
+                <input type="checkbox" id="wire">
+            </div>
+            <div>
+                <label class="title">Amplitude</label><br>
+                <input type="range" min="0" max="1" value="0.5" step="0.001" id="amp">
+            </div>
+            <div>
+                <label class="title">Offset</label><br>
+                <input type="range" min="0" max="1" value="0" step="0.0001" id="terrainOffset">
+            </div>
         </div>
         <div>
-            <label class="title">Show Generator View</label>
-            <input type="checkbox" checked id="showGen">
+            <h2>Light</h2>
+            <div>
+                <label class="title">Color Mode</label><br>
+                <div>
+                    <label>Phong lighting</label>
+                    <input type="radio" name="mode" checked value="0"><br>
+                    <label>Normals</label>
+                    <input type="radio" name="mode" value="1"><br>
+                    <label>Gradient</label>
+                    <input type="radio" name="mode" value="2"><br>
+                    <label>Fixed</label>
+                    <input type="radio" name="mode" value="3">
+                </div>
+            </div>
+            <div>
+                <label class="title">Ambient Light</label><br>
+                <input type="range" min="0" max="1" value="0.45" step="0.01" id="ka">
+            </div>
+            <div>
+                <label class="title">Diffuse Light</label><br>
+                <input type="range" min="0" max="1" value="0.8" step="0.01" id="kd">
+            </div>
+            <div>
+                <label class="title">Specular Light</label><br>
+                <input type="range" min="0" max="1" value="0.8" step="0.01" id="ks">
+            </div>
+            <div>
+                <label class="title">Shininess</label><br>
+                <input type="range" min="1" max="128" value="80" step="1" id="sv">
+            </div>
         </div>
         <div>
-            <label class="title">Wire Mode</label>
-            <input type="checkbox" id="wire">
-        </div>
-        <div>
-            <label class="title">Color Mode</label><br>
-            <label>Phong lighting</label>
-            <input type="radio" name="mode" checked value="0"><br>
-            <label>Normals</label>
-            <input type="radio" name="mode" value="1"><br>
-            <label>Gradient</label>
-            <input type="radio" name="mode" value="2"><br>
-            <label>Fixed</label>
-            <input type="radio" name="mode" value="3">
-        </div>
-        <div>
-            <label class="title">Ambient Light</label><br>
-            <input type="range" min="0" max="1" value="0.45" step="0.01" id="ka">
-        </div>
-        <div>
-            <label class="title">Diffuse Light</label><br>
-            <input type="range" min="0" max="1" value="0.8" step="0.01" id="kd">
-        </div>
-        <div>
-            <label class="title">Specular Light</label><br>
-            <input type="range" min="0" max="1" value="0.8" step="0.01" id="ks">
-        </div>
-        <div>
-            <label class="title">Shininess</label><br>
-            <input type="range" min="1" max="128" value="80" step="1" id="sv">
-        </div>
-        <div>
-            <label class="title">Amplitude</label><br>
-            <input type="range" min="0" max="1" value="0.5" step="0.001" id="amp">
-        </div>
-        <div>
-            <label class="title">Rotation Speed</label><br>
-            <input type="range" min="0" max="0.01" value="0.003" step="0.0001" id="animSpeed">
-        </div>
-        <div>
-            <label class="title">Zoom</label><br>
-            <input type="range" min="-20" max="-6" value="-12" step="0.001" id="camera">
+            <h2>Camera</h2>
+            <div>
+                <label class="title">Rotation Speed</label><br>
+                <input type="range" min="0" max="0.01" value="0.003" step="0.0001" id="animSpeed">
+            </div>
+            <div>
+                <label class="title">Zoom</label><br>
+                <input type="range" min="-20" max="-6" value="-12" step="0.001" id="camera">
+            </div>
         </div>
     </div>
 </body>

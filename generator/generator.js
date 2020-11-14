@@ -15,6 +15,7 @@ class Generator {
 
         this.locations.position = gl.getAttribLocation(this.program, "position");
         this.locations.uv = gl.getAttribLocation(this.program, "uv");
+        this.locations.terrainOffset = gl.getUniformLocation(this.program, "terrainOffset");
         gl.enable(gl.DEPTH_TEST);
     }
 
@@ -52,6 +53,8 @@ class Generator {
         gl.enableVertexAttribArray(this.locations.uv);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.uv);
         gl.vertexAttribPointer(this.locations.uv, 2, gl.FLOAT, false, 0, 0);
+
+        gl.uniform1f(this.locations.terrainOffset, document.getElementById("terrainOffset").value);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
     };
