@@ -2,6 +2,7 @@ class Generator {
 
     /** @type {WebGLRenderingContext} */
     gl = null;
+
     program = null;
     locations = {};
     res = 255;
@@ -19,17 +20,23 @@ class Generator {
 
     draw() {
         const gl = this.gl;
-        gl.bindFramebuffer(gl.FRAMEBUFFER, this.buffers.frame);
-
         gl.useProgram(this.program);
+        
         gl.viewport(0, 0, this.res, this.res);
         gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
         this.updateAttributesAndUniforms();
-
+        
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.buffers.frame);
         gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+        if(document.getElementById("showGen").checked) {
+            gl.viewport(gl.canvas.width - 265, 10, 255, 255);
+            gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+        }
     };
 
 
@@ -90,10 +97,10 @@ class Generator {
 
     createGeneratorData() {
         const positions = [
-            -1, -1, 0,
-            1, -1, 0,
-            -1, 1, 0,
-            1, 1, 0
+            -1, -1, -1,
+            1, -1, -1,
+            -1, 1, -1,
+            1, 1, -1
         ];
 
         const uv = [

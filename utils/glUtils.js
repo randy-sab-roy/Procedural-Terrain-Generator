@@ -59,7 +59,7 @@ class GlUtils {
         return gl;
     }
 
-    static resetView(gl) {
+    static resizeCanvas(gl) {
         const canvas = gl.canvas;
         const displayWidth = canvas.clientWidth;
         const displayHeight = canvas.clientHeight;
@@ -68,9 +68,6 @@ class GlUtils {
             canvas.width = displayWidth;
             canvas.height = displayHeight;
         }
-
-        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     }
 
     static async loadImageAsync(src) {

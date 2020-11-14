@@ -1,22 +1,27 @@
 let gl = null;
-let objects = [];
+
+let generator = null;
+let quad = null;
 
 
 function draw() {
-    objects.forEach(o => o.draw())
+    GlUtils.resizeCanvas(gl);
+    
+    generator.draw();
+    quad.draw();
+
     requestAnimationFrame(draw);
 }
 
 async function init() {
-    canvas = document.getElementById("drawCanvas");
+    const mainCanvas = document.getElementById("drawCanvas");
+    gl = GlUtils.createContext(mainCanvas);
 
-    /** @type {WebGLRenderingContext} */
-    gl = GlUtils.createContext(canvas)
-    objects = [new Generator(), new Quad()];
+    generator = new Generator();
+    quad = new Quad();
 
-    for (const obj of objects) {
-        await obj.init(gl);
-    }
+    await generator.init(gl);
+    await quad.init(gl);
 
     draw();
 }

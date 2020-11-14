@@ -35,7 +35,6 @@ class Quad {
 
     draw() {
         const gl = this.gl;
-        GlUtils.resetView(gl);
         gl.useProgram(this.program);
         this.getValuesFromControls();
 
@@ -43,6 +42,7 @@ class Quad {
         this.computePerspectiveMatrix();
         this.updateAttributesAndUniforms();
 
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         gl.drawElements(this.enableWire ? gl.LINE_STRIP : gl.TRIANGLES, (this.RES * this.RES) * 6, gl.UNSIGNED_SHORT, 0);
         this.time += this.animationSpeed;
     };
