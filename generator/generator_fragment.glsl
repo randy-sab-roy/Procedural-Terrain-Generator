@@ -105,7 +105,6 @@ float computeHeight(vec2 pos){
 
 void main() {
     // Allow to offset and scale the terrain
-    // vec2 fractalPoint = (point + vec2(terrainOffset, terrainOffset)) * terrainScale;
     vec2 fractalPoint = ((point - vec2(0.5)) * terrainScale) + vec2(terrainOffset);
     float value = computeHeight(fractalPoint);
 
