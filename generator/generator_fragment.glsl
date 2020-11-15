@@ -12,7 +12,7 @@ bool first = true;
 bool usePerlin;
 
 const float lacunarity = 2.0;
-const int octaves = 10;
+const int octaves = 16;
 const float offset = 0.0;
 const float gain = 1.0;
 
