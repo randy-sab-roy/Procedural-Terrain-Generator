@@ -9,10 +9,10 @@ varying vec2 point;
 const float PI = 3.1415926535;
 bool first = true;
 bool usePerlin;
-const float H = 0.25;
+const float H = 1.0;
 const float lacunarity = 2.0;
 const int octaves = 7;
-const float offset = 0.7;
+const float offset = 0.0;
 const float gain = 1.0;
 
 
@@ -37,7 +37,9 @@ vec2 rand2dTo2d(vec2 value){
     );
 }
 
-
+//	Classic Perlin 2D Noise 
+//	by Stefan Gustavson
+//  https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 float perlin(vec2 P){
     vec4 Pi = floor(vec4(P,P)) + vec4(0.0, 0.0, 1.0, 1.0);
     vec4 Pf = fract(vec4(P,P)) - vec4(0.0, 0.0, 1.0, 1.0);
@@ -68,7 +70,7 @@ float perlin(vec2 P){
     vec2 fade_xy = fade(Pf.xy);
     vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);
     float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
-    return 2.3 *  n_xy;
+    return 2.3 *  n_xy+.3;
 }
 
 vec3 dist(vec3 x, vec3 y,  bool manhattanDistance) {
@@ -114,30 +116,26 @@ float voronoiNoise(vec2 P) {
   	d1.yz = min(d1.yz, d2.yz); // F2 is now not in d2.yz
   	d1.y = min(d1.y, d1.z); // nor in  d1.z
   	d1.y = min(d1.y, d2.x); // F2 is in d1.y, we're done.
-    return d1.x*7.0;
+    return (d1.x-0.5)*1.8+0.5;
 }
 
-float fbm(vec2 x) {
-    float value = 0.0;
-    float a = 0.1;
-    vec2 shift = vec2(100);
-    mat2 rot = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.50));
-    for (int i = 0; i < 8; ++i) {
-        if(usePerlin)
-        {
-            value += a * perlin(x);
-        }else
-        {
-            value += a * voronoiNoise(x);
-        }
-        x =  x * 2.0 + shift;
-        a *= 0.5;
+float fbm(vec2 x)
+{    
+    float G = exp2(-H);
+    float f = 1.0;
+    float a = 0.2;
+    float t = 0.0;
+    for( int i=0; i<octaves; i++ )
+    {
+        t += usePerlin ? a*perlin(f*x) : a*voronoiNoise(f*x);
+        f *= 2.0;
+        a *= G;
     }
-    return value;
+    return t;
 }
 
 // https://www.classes.cs.uchicago.edu/archive/2015/fall/23700-1/final-project/MusgraveTerrain00.pdf
-float hyrbidMultifractal(vec2 point, float H, float lacunarity, float offset, float gain){
+float hyrbidMultifractal(vec2 point, float H, float lacunarity, float offset){
     float frequency, result, signal, weight, remainder;
     float exponent_array[10];
     vec2 p = point;
@@ -177,32 +175,32 @@ float hyrbidMultifractal(vec2 point, float H, float lacunarity, float offset, fl
         weight*=signal;
         p *= lacunarity;
     }
-    return result;
+    return (result-0.5)*0.5+0.5;
 
 }
 
 float computeHeight(vec2 pos){
     vec2 p = pos;
-    float b2 = fbm(p*2.0);
-    float h1 = hyrbidMultifractal(p/8.0, H, lacunarity, offset, gain);
-    float h2 = hyrbidMultifractal(p*3.0, H, lacunarity, offset, gain*0.3)*0.5;
-    float h3 = hyrbidMultifractal(p*2.0, H, lacunarity, offset, gain)*0.3;
+    float b2 = fbm(p/4.0);
+    float h1 = hyrbidMultifractal(p/8.0, H, lacunarity, offset);
+    float h2 = hyrbidMultifractal(p*2.0, H, lacunarity, offset);
+    float h3 = (hyrbidMultifractal(p*6.0, H, lacunarity, offset) - 0.5) *2.0 +0.5;
+    float h4 = hyrbidMultifractal(p*12.0, H, lacunarity, offset);
     b2 = min(b2, 1.0);
     h1 = min(h1, 1.0);
     h2 = min(h2, 1.0);
     h3 = min(h3, 1.0);
-
     if(usePerlin)
     {
 
-        // return (b2+h1+h2+h3-0.8)/4.0;  
-        return (((b2+h1+h2+h3-0.5)/4.0) - 0.5) * 1.5 + 0.5;
+        // return (b2+h1+h2+h3-0.8)/4.0; 
+        // return (b2+h1)/2.0;
+        return (((b2+h1+0.4*h2+0.4*h3+0.2*h4)/2.5)-0.4)*2.0+0.5;
 
     }
     else
     {
-        return (((b2+h1+h2+h3-1.5)/4.0) - 0.5) * 6.0 + 0.5;
-
+        return (((b2+h1+0.4*h2+0.4*h3+0.2*h4)/2.5)-0.4)*1.5+0.5;
     }
         
 
