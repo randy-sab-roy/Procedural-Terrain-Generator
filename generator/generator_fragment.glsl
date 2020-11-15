@@ -11,7 +11,7 @@ bool first = true;
 bool usePerlin;
 const float H = 1.0;
 const float lacunarity = 2.0;
-const int octaves = 16;
+const int octaves = 10;
 const float offset = 0.0;
 const float gain = 1.0;
 
@@ -143,7 +143,7 @@ float fbm(vec2 x)
 // https://www.classes.cs.uchicago.edu/archive/2015/fall/23700-1/final-project/MusgraveTerrain00.pdf
 float hyrbidMultifractal(vec2 point, float H, float lacunarity, float offset){
     float frequency, result, signal, weight, remainder;
-    float exponent_array[10];
+    float exponent_array[100];
     vec2 p = point;
     frequency = 1.0;
     //filling the exponent array
@@ -188,14 +188,14 @@ float hyrbidMultifractal(vec2 point, float H, float lacunarity, float offset){
 float computeHeight(vec2 pos){
     vec2 p = pos;
     float b2 = fbm(p);
-    float h1 = hyrbidMultifractal(p/8.0, H, lacunarity, offset);
-    float h2 = hyrbidMultifractal(p*2.0, H, lacunarity, offset);
-    float h3 = (hyrbidMultifractal(p*6.0, H, lacunarity, offset) - 0.5) *2.0 +0.5;
-    float h4 = hyrbidMultifractal(p*12.0, H, lacunarity, offset);
+    // float h1 = hyrbidMultifractal(p/8.0, H, lacunarity, offset);
+    // float h2 = hyrbidMultifractal(p*2.0, H, lacunarity, offset);
+    // float h3 = (hyrbidMultifractal(p*6.0, H, lacunarity, offset) - 0.5) *2.0 +0.5;
+    // float h4 = hyrbidMultifractal(p*12.0, H, lacunarity, offset);
     b2 = min(b2, 1.0);
-    h1 = min(h1, 1.0);
-    h2 = min(h2, 1.0);
-    h3 = min(h3, 1.0);
+    // h1 = min(h1, 1.0);
+    // h2 = min(h2, 1.0);
+    // h3 = min(h3, 1.0);
     if(usePerlin)
     {
         return b2;
