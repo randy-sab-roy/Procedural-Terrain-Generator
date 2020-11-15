@@ -36,7 +36,7 @@ class Generator {
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
         if(document.getElementById("showGen").checked) {
-            gl.viewport(gl.canvas.width - this.res - 10, 0, this.res, this.res);
+            gl.viewport(gl.canvas.width - this.res - 10, 10, this.res, this.res);
             gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         }
