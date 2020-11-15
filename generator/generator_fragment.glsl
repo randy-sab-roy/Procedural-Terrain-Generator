@@ -3,13 +3,14 @@ precision mediump float;
 uniform float terrainOffset;
 uniform float terrainScale;
 uniform int noise;
+uniform float H;
 
 varying vec2 point;
 
 const float PI = 3.1415926535;
 bool first = true;
 bool usePerlin;
-const float H = 1.0;
+
 const float lacunarity = 2.0;
 const int octaves = 10;
 const float offset = 0.0;
