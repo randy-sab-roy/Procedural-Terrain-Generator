@@ -47,7 +47,6 @@ class Generator {
     
     checkCaptureStatus() {
         if (this.capture == true) {
-            console.log("check")
             this.capture = false;
             const res = 255;
             const pixels = new Uint8Array(this.res * this.res * 4);
