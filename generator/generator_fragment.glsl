@@ -123,7 +123,7 @@ float fbm(vec2 x)
 {    
     float G = exp2(-H);
     float f = 1.0;
-    float a = 0.2;
+    float a = 0.5;
     float t = 0.0;
     for( int i=0; i<octaves; i++ )
     {
@@ -181,7 +181,7 @@ float hyrbidMultifractal(vec2 point, float H, float lacunarity, float offset){
 
 float computeHeight(vec2 pos){
     vec2 p = pos;
-    float b2 = fbm(p/4.0);
+    float b2 = fbm(p);
     float h1 = hyrbidMultifractal(p/8.0, H, lacunarity, offset);
     float h2 = hyrbidMultifractal(p*2.0, H, lacunarity, offset);
     float h3 = (hyrbidMultifractal(p*6.0, H, lacunarity, offset) - 0.5) *2.0 +0.5;
@@ -192,15 +192,16 @@ float computeHeight(vec2 pos){
     h3 = min(h3, 1.0);
     if(usePerlin)
     {
-
+        return b2;
         // return (b2+h1+h2+h3-0.8)/4.0; 
         // return (b2+h1)/2.0;
-        return (((b2+h1+0.4*h2+0.4*h3+0.2*h4)/2.5)-0.4)*2.0+0.5;
+        // return (((b2+h1+0.4*h2+0.4*h3+0.2*h4)/2.5)-0.4)*2.0+0.5;
 
     }
     else
     {
-        return (((b2+h1+0.4*h2+0.4*h3+0.2*h4)/2.5)-0.4)*1.5+0.5;
+        // return (((b2+h1+0.4*h2+0.4*h3+0.2*h4)/2.5)-0.4)*1.5+0.5;
+        return b2;
     }
         
 
