@@ -6,6 +6,7 @@ class Generator {
     program = null;
     locations = {};
     res = 255;
+    capture = false;
 
     async init(gl) {
         this.gl = gl;
@@ -33,6 +34,8 @@ class Generator {
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.buffers.frame);
         gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
 
+        this.checkCaptureStatus();
+
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
         if(document.getElementById("showGen").checked) {
@@ -41,6 +44,32 @@ class Generator {
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         }
     };
+    
+    checkCaptureStatus() {
+        if (this.capture == true) {
+            console.log("check")
+            this.capture = false;
+            const res = 255;
+            const pixels = new Uint8Array(this.res * this.res * 4);
+            gl.readPixels(0, 0, this.res, this.res, gl.RGBA, gl.UNSIGNED_BYTE, pixels)
+    
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = res;
+            canvas.height = res;
+            const data = context.createImageData(res, res);
+            data.data.set(pixels);
+            context.putImageData(data, 0, 0);
+            const imgUrl = canvas.toDataURL();
+    
+            const link = document.createElement("a");
+            link.setAttribute("download", "height_map.png");
+            link.setAttribute("href", imgUrl);
+            link.click();
+            link.remove();
+            canvas.remove();
+        }
+    }
 
 
     updateAttributesAndUniforms() {
