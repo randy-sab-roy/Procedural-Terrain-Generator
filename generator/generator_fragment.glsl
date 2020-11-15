@@ -11,7 +11,7 @@ bool first = true;
 bool usePerlin;
 const float H = 1.0;
 const float lacunarity = 2.0;
-const int octaves = 7;
+const int octaves = 16;
 const float offset = 0.0;
 const float gain = 1.0;
 
@@ -119,15 +119,21 @@ float voronoiNoise(vec2 P) {
     return (d1.x-0.5)*1.8+0.5;
 }
 
+float ridgenoise(vec2 x) {
+  return 2.0 * (0.5 - abs(0.5 -  (usePerlin ? perlin(x) : voronoiNoise(x))));
+}
+
 float fbm(vec2 x)
 {    
     float G = exp2(-H);
     float f = 1.0;
     float a = 0.5;
     float t = 0.0;
+    float cumulative = 0.0;
     for( int i=0; i<octaves; i++ )
     {
-        t += usePerlin ? a*perlin(f*x) : a*voronoiNoise(f*x);
+        // t += usePerlin ? a*perlin(f*x) : a*voronoiNoise(f*x);
+        t += a*ridgenoise(f*x);
         f *= 2.0;
         a *= G;
     }
