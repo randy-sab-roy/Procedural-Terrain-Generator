@@ -7,6 +7,7 @@ class Generator {
     locations = {};
     res = 255;
     capture = false;
+    offset = 0;
 
     async init(gl) {
         this.gl = gl;
@@ -84,7 +85,8 @@ class Generator {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.uv);
         gl.vertexAttribPointer(this.locations.uv, 2, gl.FLOAT, false, 0, 0);
 
-        gl.uniform1f(this.locations.terrainOffset, document.getElementById("terrainOffset").value);
+        this.offset += document.getElementById("terrainOffset").value * 1;
+        gl.uniform1f(this.locations.terrainOffset, this.offset);
         gl.uniform1f(this.locations.terrainScale, document.getElementById("terrainScale").value);
         gl.uniform1i(this.locations.noise, document.querySelector('input[name="noise"]:checked').value);
 
