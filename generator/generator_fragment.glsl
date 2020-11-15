@@ -13,7 +13,7 @@ bool first = true;
 bool usePerlin;
 
 const float lacunarity = 2.0;
-const int MAX_ITERATIONS = 16;
+const int MAX_ITERATIONS = 12;
 const float offset = 0.0;
 const float gain = 1.0;
 
