@@ -55,9 +55,6 @@
                     <label class="title">Water Level</label><br>
                     <input type="range" min="0" max="1" value="0" step="0.0001" id="waterLevel">
                 </div>
-                <div style="text-align: center; margin-top: 30px;">
-                    <button onclick="downloadHeightMap()">Download Height Map</button>
-                </div>
             </div>
 
             <div>
@@ -105,6 +102,15 @@
                 <div>
                     <label class="title">Zoom</label><br>
                     <input type="range" min="-20" max="-6" value="-12" step="0.001" id="camera">
+                </div>
+            </div>
+            <div>
+                <h2>Recording</h2>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="downloadHeightMap()">Download Height Map</button>
+                </div>
+                <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+                    <button onclick="record()">Record 5 seconds</button>
                 </div>
             </div>
         </div>
