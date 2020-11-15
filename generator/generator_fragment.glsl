@@ -141,7 +141,7 @@ float fbm(vec2 x)
 }
 
 // https://www.classes.cs.uchicago.edu/archive/2015/fall/23700-1/final-project/MusgraveTerrain00.pdf
-float hyrbidMultifractal(vec2 point, float H, float lacunarity, float offset){
+float hyrbidMultifractal(vec2 point){
     float frequency, result, signal, weight, remainder;
     float exponent_array[100];
     vec2 p = point;
@@ -187,27 +187,24 @@ float hyrbidMultifractal(vec2 point, float H, float lacunarity, float offset){
 
 float computeHeight(vec2 pos){
     vec2 p = pos;
-    float b2 = fbm(p);
-    // float h1 = hyrbidMultifractal(p/8.0, H, lacunarity, offset);
-    // float h2 = hyrbidMultifractal(p*2.0, H, lacunarity, offset);
-    // float h3 = (hyrbidMultifractal(p*6.0, H, lacunarity, offset) - 0.5) *2.0 +0.5;
-    // float h4 = hyrbidMultifractal(p*12.0, H, lacunarity, offset);
-    b2 = min(b2, 1.0);
+    float b2 = fbm(p)*0.2;
+    float h1 = hyrbidMultifractal(p/2.5)+0.2;
+    float h2 = (hyrbidMultifractal(p)*2.0 - 1.0)*0.5+0.5;
+    float h3 = hyrbidMultifractal(p*20.0)*0.05;
+    // b2 = min(b2, 1.0);
     // h1 = min(h1, 1.0);
     // h2 = min(h2, 1.0);
     // h3 = min(h3, 1.0);
     if(usePerlin)
     {
-        return b2;
-        // return (b2+h1+h2+h3-0.8)/4.0; 
-        // return (b2+h1)/2.0;
-        // return (((b2+h1+0.4*h2+0.4*h3+0.2*h4)/2.5)-0.4)*2.0+0.5;
-
+        float pre = b2+h1+h2;
+        return ((pre * h3 + pre-1.0)-0.5)*0.6+0.5;
+        return ((b2+h1+h2+h3-1.0)-0.5)*0.6+0.5;
     }
     else
     {
-        // return (((b2+h1+0.4*h2+0.4*h3+0.2*h4)/2.5)-0.4)*1.5+0.5;
-        return b2;
+        float pre = b2+h1+h2;
+        return ((pre * h3 + pre-1.0)-0.5)*0.6+0.5;
     }
         
 
