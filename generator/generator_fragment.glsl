@@ -187,10 +187,10 @@ float hyrbidMultifractal(vec2 point){
 
 float computeHeight(vec2 pos){
     vec2 p = pos;
-    float b2 = fbm(p)*0.2;
+    float b2 = fbm(p)*0.5;
     float h1 = hyrbidMultifractal(p/2.5)+0.2;
     float h2 = (hyrbidMultifractal(p)*2.0 - 1.0)*0.5+0.5;
-    float h3 = hyrbidMultifractal(p*20.0)*0.05;
+    float h3 = hyrbidMultifractal(p*20.0)*0.02;
     // b2 = min(b2, 1.0);
     // h1 = min(h1, 1.0);
     // h2 = min(h2, 1.0);
