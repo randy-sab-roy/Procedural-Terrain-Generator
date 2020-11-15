@@ -9,11 +9,13 @@ uniform int mode;
 uniform vec3 lightColorA;
 uniform vec3 lightColorD;
 uniform vec3 lightDir;
+uniform float waterLevel;
 
 varying vec4 fcolor;
 varying vec3 normal;
 varying vec3 raw_normal;
 varying vec3 pos;
+varying float height;
 
 vec4 getLightColor() {
     vec3 N = normalize(normal);
@@ -29,7 +31,14 @@ vec4 getLightColor() {
         specular = pow(specAngle, Sv);
     }
 
-    return vec4(Ka * lightColorA + Kd * lambertian * lightColorD + Ks * specular * lightColorD, 1.0);
+    vec3 colD = lightColorD;
+    vec3 colA = lightColorA;
+    if (height <= waterLevel + 0.001) {
+        colD = vec3(0.0, 0.0, 0.8);
+        colA = vec3(0.0, 0.0, 0.7);
+    }
+
+    return vec4(Ka * colA + Kd * lambertian * colD + Ks * specular * colD, 1.0);
 }
 
 void main() {

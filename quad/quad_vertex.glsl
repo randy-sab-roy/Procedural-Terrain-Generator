@@ -1,3 +1,5 @@
+precision mediump float;
+
 attribute vec3 position;
 attribute vec4 color;
 attribute vec2 uv;
@@ -8,14 +10,19 @@ uniform mat4 normalMat;
 uniform float time;
 uniform float res;
 uniform float amp;
+uniform float waterLevel;
 uniform sampler2D heightMap;
 
 varying vec4 fcolor;
 varying vec3 normal;
 varying vec3 raw_normal;
 varying vec3 pos;
+varying float height;
 
 vec3 getNormal() {
+    if(texture2D(heightMap, uv).x <= waterLevel) {
+        return vec3(0.0, 0.0, 1.0);
+    }
     float d = 1.0/res;
     float p0 = texture2D(heightMap, vec2(uv.x - d, uv.y - d)).x;
     float p1 = texture2D(heightMap, vec2(uv.x, uv.y - d)).x;
@@ -35,23 +42,6 @@ vec3 getNormal() {
     return normalize(cross(va, vb));
 }
 
-vec3 getBorderNormal(float delta) {
-    vec3 n = vec3(0.0);
-    if (uv.x < delta) {
-        n.y = 1.0;
-    } else if (uv.x > 1.0 - delta) {
-        n.y = -1.0;
-    }
-
-    if (uv.y < delta) {
-        n.x = 1.0;
-    } else if (uv.y > 1.0 - delta) {
-        n.x = -1.0;
-    }
-
-    return n;
-}
-
 void main() {
     vec3 p = position;
 
@@ -60,7 +50,8 @@ void main() {
 
     if (uv.x != 0.0 && uv.y != 0.0 && uv.x != 1.0 && uv.y != 1.0)
     {
-        p.z = p.z + amp * (texture2D(heightMap, vec2(uv.x, uv.y)).x);
+        height = max(texture2D(heightMap, vec2(uv.x, uv.y)).x, waterLevel);
+        p.z = p.z + amp * height;
         
         float delta = 1.2/res;
         if(uv.x > (0.0 + delta) && uv.y > (0.0 + delta) && uv.x < (1.0 - delta) && uv.y < (1.0 - delta))

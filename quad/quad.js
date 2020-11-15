@@ -23,6 +23,7 @@ class Quad {
     cameraPos;
     useGen;
     mode;
+    waterLevel;
 
     async init(gl) {
         this.gl = gl;
@@ -58,6 +59,7 @@ class Quad {
         this.cameraPos = document.getElementById("camera").value;
         this.useGen = document.getElementById("useGen").checked;
         this.mode = document.querySelector('input[name="mode"]:checked').value;
+        this.waterLevel = document.getElementById("waterLevel").value;
     }
 
     computeModelMatrix() {
@@ -111,6 +113,7 @@ class Quad {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
         gl.vertexAttribPointer(this.locations.position, 3, gl.FLOAT, false, 0, 0);
         gl.uniform1f(this.locations.amp, this.amp)
+        gl.uniform1f(this.locations.waterLevel, this.waterLevel)
 
         // Colors
         gl.enableVertexAttribArray(this.locations.color);
@@ -187,6 +190,7 @@ class Quad {
         this.locations.lightDir = gl.getUniformLocation(this.program, "lightDir");
         this.locations.res = gl.getUniformLocation(this.program, "res");
         this.locations.mode = gl.getUniformLocation(this.program, "mode");
+        this.locations.waterLevel = gl.getUniformLocation(this.program, "waterLevel");
     }
 
     createQuadData() {
