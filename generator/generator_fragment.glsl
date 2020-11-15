@@ -4,6 +4,7 @@ uniform float terrainOffset;
 uniform float terrainScale;
 uniform int noise;
 uniform float H;
+uniform int nOctaves;
 
 varying vec2 point;
 
@@ -12,7 +13,7 @@ bool first = true;
 bool usePerlin;
 
 const float lacunarity = 2.0;
-const int octaves = 16;
+const int MAX_ITERATIONS = 16;
 const float offset = 0.0;
 const float gain = 1.0;
 
@@ -131,8 +132,9 @@ float fbm(vec2 x)
     float a = 0.5;
     float t = 0.0;
     float cumulative = 0.0;
-    for( int i=0; i<octaves; i++ )
+    for( int i=0; i<MAX_ITERATIONS; i++ )
     {
+        if (i == nOctaves) break;
         // t += usePerlin ? a*perlin(f*x) : a*voronoiNoise(f*x);
         t += a*ridgenoise(f*x);
         f *= 2.0;
@@ -149,7 +151,8 @@ float hyrbidMultifractal(vec2 point){
     frequency = 1.0;
     //filling the exponent array
 
-    for(int i=0; i<octaves; ++i){
+    for(int i=0; i<MAX_ITERATIONS; ++i){
+        if (i == nOctaves) break;
         exponent_array[i] = pow(frequency, -H);
         frequency *= lacunarity;
     }
@@ -168,7 +171,8 @@ float hyrbidMultifractal(vec2 point){
     p *= lacunarity;
 
 
-    for(int i=1; i<octaves; i++ ) {
+    for(int i=1; i<MAX_ITERATIONS; i++ ) {
+        if (i == nOctaves) break;
         if(weight > 1.0) weight = 1.0;
         if(usePerlin)
         {
