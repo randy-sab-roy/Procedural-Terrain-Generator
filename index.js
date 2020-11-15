@@ -36,7 +36,7 @@ function record() {
     const time = 5000.0;
     var recordedChunks = [];
 
-    var stream = gl.canvas.captureStream(60);
+    var stream = gl.canvas.captureStream(30);
     mediaRecorder = new MediaRecorder(stream, {
         mimeType: "video/webm; codecs=vp9"
     });
