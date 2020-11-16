@@ -64,7 +64,7 @@ class Quad {
 
         mat4.translate(model, model, [0, 0, this.cameraPos]);
         mat4.scale(model, model, [5, 5, 5]);
-        mat4.rotate(model, model, Math.PI / 3, [-1, 0, 0]);
+        mat4.rotate(model, model, Math.PI / 2.8, [-1, 0, 0]);
         mat4.rotate(model, model, this.rotation, [0, 0, 1]);
 
         this.transforms.model = model;
@@ -79,7 +79,7 @@ class Quad {
     computePerspectiveMatrix() {
         const fieldOfViewInRadians = Math.PI * 0.35;
         const aspectRatio = this.gl.canvas.width / this.gl.canvas.height;
-        const nearClippingPlaneDistance = 1;
+        const nearClippingPlaneDistance = 0.01;
         const farClippingPlaneDistance = 100;
 
         const projection = mat4.create();
