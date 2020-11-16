@@ -137,7 +137,7 @@ float voronoiNoise(vec2 P) {
   	d1.yz = min(d1.yz, d2.yz); // F2 is now not in d2.yz
   	d1.y = min(d1.y, d1.z); // nor in  d1.z
   	d1.y = min(d1.y, d2.x); // F2 is in d1.y, we're done.
-    return (d1.x-0.5)*1.8+0.5;
+    return (d1.x-0.5)*1.8+0.8;
 }
 
 float ridgenoise(vec2 x) {
@@ -154,8 +154,8 @@ float fbm(vec2 x)
     for( int i=0; i<MAX_ITERATIONS; i++ )
     {
         if (i == nOctaves) break;
-        // t += usePerlin ? a*perlin(f*x) : a*voronoiNoise(f*x);
-        t += a*ridgenoise(f*x);
+        t += usePerlin ? a*perlin(f*x) : a*voronoiNoise(f*x);
+        // t += a*ridgenoise(f*x);
         f *= 2.0;
         a *= G;
     }
