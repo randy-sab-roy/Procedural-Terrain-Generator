@@ -34,7 +34,7 @@ vec4 getLightColor() {
     vec3 L = normalize(lightDir);
 
     float lambertian = max(dot(N, L), 0.0);
-
+    float materialSv = Sv;
 
 
     vec3 material_color = vec3(0,0,0);
@@ -44,6 +44,7 @@ vec4 getLightColor() {
     else if (raw_normal.z<0.6)
     {
         material_color = rockColor;
+        materialSv*=50.0;
     }
     else if (height >= snowLevel)
     {
@@ -52,13 +53,14 @@ vec4 getLightColor() {
     else
     {
         material_color = grasscolor;
+        materialSv*=50.0;
     }
     float specular = 0.0;
     if(lambertian > 0.0) {
         vec3 R = reflect(-L, N);
         vec3 V = normalize(-pos);
         float specAngle = max(dot(R, V), 0.0);
-        specular = pow(specAngle, Sv);
+        specular = pow(specAngle, materialSv);
     }
 
 
