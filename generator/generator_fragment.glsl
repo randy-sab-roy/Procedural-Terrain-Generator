@@ -35,6 +35,7 @@ const float lacunarity = 2.0;
 const int MAX_ITERATIONS = 12;
 const float offset = 0.0;
 const float gain = 1.0;
+const float waterLevel = 0.1;
 
 
 // https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
@@ -91,7 +92,7 @@ float perlin(vec2 P){
     vec2 fade_xy = fade(Pf.xy);
     vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);
     float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
-    return 2.3 *  n_xy+.3;
+    return 2.3 *  n_xy;
 }
 
 vec3 dist(vec3 x, vec3 y,  bool manhattanDistance) {
@@ -137,7 +138,7 @@ float voronoiNoise(vec2 P) {
   	d1.yz = min(d1.yz, d2.yz); // F2 is now not in d2.yz
   	d1.y = min(d1.y, d1.z); // nor in  d1.z
   	d1.y = min(d1.y, d2.x); // F2 is in d1.y, we're done.
-    return (d1.x-0.5)*1.8+0.8;
+    return (d1.x-0.5)*1.8+0.5;
 }
 
 float ridgenoise(vec2 x) {
@@ -148,14 +149,17 @@ float fbm(vec2 x)
 {    
     float G = exp2(-H);
     float f = 1.0;
-    float a = 0.5;
+    float a = 0.1;
     float t = 0.0;
     float cumulative = 0.0;
+    vec2 shift = vec2(100.0);
+    vec2 pos = x;
     for( int i=0; i<MAX_ITERATIONS; i++ )
     {
         if (i == nOctaves) break;
-        t += usePerlin ? a*perlin(f*x) : a*voronoiNoise(f*x);
+        t += usePerlin ? a*perlin(f*pos) : a*voronoiNoise(f*pos);
         // t += a*ridgenoise(f*x);
+        pos += shift;
         f *= lacunarity;
         a *= G;
     }
@@ -240,6 +244,9 @@ void main() {
     usePerlin = noise == 0;
     vec2 fractalPoint = ((point - vec2(0.5)) * terrainScale) + vec2(terrainOffset);
     float value = computeHeight(fractalPoint);
-
+    if (value == 0.0) 
+    {
+        value += 0.5;//voronoiNoise(fractalPoint);
+    }
     gl_FragColor = vec4(vec3(value), 1.0);
 }
