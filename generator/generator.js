@@ -9,6 +9,28 @@ class Generator {
     capture = false;
     offset = 0;
 
+    // Initial values
+    fbmFreq = 1.0;
+    fbmAmp = 0.5;
+    fbmContrast = 1.0;
+    fbmBrightness = 0.0;
+
+    h1Freq = 0.4;
+    h1Amp = 0.5;
+    h1Contrast = 1.0;
+    h1brightness = 0.2;
+
+    h2Freq = 1.0;
+    h2Amp = 2.0;
+    h2Contrast = 0.5;
+    h2brightness = -0.25;
+
+    h3Freq = 20.0;
+    h3Amp = 0.02;
+    h3Contrast = 1.0;
+    h3brightness = 0.0;
+    //
+
     async init(gl) {
         this.gl = gl;
         this.buffers = await this.createBuffers();
@@ -24,6 +46,11 @@ class Generator {
         this.locations.globalContrast = gl.getUniformLocation(this.program, "globalContrast");
         this.locations.globalBrightness = gl.getUniformLocation(this.program, "globalBrightness");
         this.locations.nOctaves = gl.getUniformLocation(this.program, "nOctaves");
+
+        // 16 sliders
+
+        //
+
         gl.enable(gl.DEPTH_TEST);
     }
 
@@ -97,6 +124,11 @@ class Generator {
         gl.uniform1f(this.locations.globalBrightness, document.getElementById("gBrightness").value);
         gl.uniform1i(this.locations.nOctaves, document.getElementById("octaves").value);
         gl.uniform1i(this.locations.noise, document.querySelector('input[name="noise"]:checked').value);
+
+        gl.uniform1f(this.locations.fContrast, document.getElementById("fContrast").value);
+        gl.uniform1f(this.locations.fBrightness, document.getElementById("fBrightness").value);
+        gl.uniform1f(this.locations.fAmp, document.getElementById("fAmp").value);
+        gl.uniform1f(this.locations.fScale, document.getElementById("fScale").value);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
     };

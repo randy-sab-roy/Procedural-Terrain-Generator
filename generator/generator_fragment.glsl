@@ -8,6 +8,26 @@ uniform int nOctaves;
 uniform float globalContrast;
 uniform float globalBrightness;
 
+uniform float fAmp;
+uniform float fContrast;
+uniform float fBrightness;
+uniform float fScale;
+
+uniform float h1Amp;
+uniform float h1Contrast;
+uniform float h1Brightness;
+uniform float h1Scale;
+
+uniform float h2Amp;
+uniform float h2Contrast;
+uniform float h2Brightness;
+uniform float h2Scale;
+
+uniform float h3Amp;
+uniform float h3Contrast;
+uniform float h3Brightness;
+uniform float h3Scale;
+
 varying vec2 point;
 
 const float PI = 3.1415926535;

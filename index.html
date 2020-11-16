@@ -72,7 +72,86 @@
                     <input type="range" min="0.1" max="5" value="1" step="0.0001" id="terrainScale">
                 </div>
             </div>
+            <label>Choose a fractal:</label>
 
+            <div class="tab">
+                <button class="tablinks" onclick="openCity(event, 'fbm')">Fbm</button>
+                <button class="tablinks" onclick="openCity(event, 'h1')">H1</button>
+                <button class="tablinks" onclick="openCity(event, 'h2')">H2</button>
+                <button class="tablinks" onclick="openCity(event, 'h3')">H3</button>
+              </div>
+            <div id="fbm" class="tabcontent">
+                <div>
+                    <label class="title">Amplitude</label><br>
+                    <input type="range" min="0" max="2.0" value="1.0" step="0.001" id="fAmp">
+                </div>
+                <div>
+                    <label class="title">Contrast</label><br>
+                    <input type="range" min="0.0" max="2.0" value="1.0" step="0.001" id="fContrast">
+                </div>
+                <div>
+                    <label class="title">Brightness</label><br>
+                    <input type="range" min="-3.0" max="3.0" value="0.0" step="0.001" id="fBrightness">
+                </div>
+                <div>
+                    <label class="title">Scale</label><br>
+                    <input type="range" min="-30.0" max="30.0" value="1.0" step="0.0001" id="fScale">
+                </div>
+            </div>
+            <div id="h1" class="tabcontent">
+                <div>
+                    <label class="title">Amplitude</label><br>
+                    <input type="range" min="0" max="2.0" value="1.0" step="0.001" id="h1Amp">
+                </div>
+                <div>
+                    <label class="title">Contrast</label><br>
+                    <input type="range" min="0.0" max="2.0" value="1.0" step="0.001" id="h1Contrast">
+                </div>
+                <div>
+                    <label class="title">Brightness</label><br>
+                    <input type="range" min="-3.0" max="3.0" value="0.0" step="0.001" id="h1Brightness">
+                </div>
+                <div>
+                    <label class="title">Scale</label><br>
+                    <input type="range" min="-30.0" max="30.0" value="1.0" step="0.0001" id="h1Scale">
+                </div>
+            </div>
+            <div id="h2" class="tabcontent">
+                <div>
+                    <label class="title">Amplitude</label><br>
+                    <input type="range" min="0" max="2.0" value="1.0" step="0.001" id="h2Amp">
+                </div>
+                <div>
+                    <label class="title">Contrast</label><br>
+                    <input type="range" min="0.0" max="2.0" value="1.0" step="0.001" id="h2Contrast">
+                </div>
+                <div>
+                    <label class="title">Brightness</label><br>
+                    <input type="range" min="-3.0" max="3.0" value="0.0" step="0.001" id="h2Brightness">
+                </div>
+                <div>
+                    <label class="title">Scale</label><br>
+                    <input type="range" min="-30.0" max="30.0" value="1.0" step="0.0001" id="h2Scale">
+                </div>
+            </div>
+            <div id="h3" class="tabcontent">
+                <div>
+                    <label class="title">Amplitude</label><br>
+                    <input type="range" min="0" max="2.0" value="1.0" step="0.001" id="h33Amp">
+                </div>
+                <div>
+                    <label class="title">Contrast</label><br>
+                    <input type="range" min="0.0" max="2.0" value="1.0" step="0.001" id="h3Contrast">
+                </div>
+                <div>
+                    <label class="title">Brightness</label><br>
+                    <input type="range" min="-3.0" max="3.0" value="0.0" step="0.001" id="h3Brightness">
+                </div>
+                <div>
+                    <label class="title">Scale</label><br>
+                    <input type="range" min="-30.0" max="30.0" value="1.0" step="0.0001" id="h3Scale">
+                </div>
+            </div>
             <div>
                 <h2>Light</h2>
                 <div>
@@ -131,6 +210,24 @@
             </div>
         </div>
     </div>
+    <script>
+        function openCity(evt, cityName) {
+          var i, tabcontent, tablinks;
+          tabcontent = document.getElementsByClassName("tabcontent");
+          for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablinks");
+          for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+          }
+          document.getElementById(cityName).style.display = "block";
+          evt.currentTarget.className += " active";
+        }
+        
+        // Get the element with id="defaultOpen" and click on it
+        document.getElementById("defaultOpen").click();
+        </script>
 </body>
 
 </html>
