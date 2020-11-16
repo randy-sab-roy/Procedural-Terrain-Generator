@@ -13,10 +13,10 @@ varying vec3 raw_normal;
 
 const float snowLevel = 0.6;
 const float waterLevel = 0.1;
-const vec3 waterColor = vec3(0, 0.2, 1);
-const vec3 rockColor = vec3(0.5, 0.5, 0.5);
-const vec3 snowColor = vec3(0.99, 0.99, 1);
-const vec3 grasscolor = vec3(0.38, 0.502, 0.22);
+const vec3 waterColor = vec3(0, 0.2, 0.5);
+const vec3 rockColor = vec3(0.3, 0.3, 0.3);
+const vec3 snowColor = vec3(0.8, 0.8, 0.8);
+const vec3 grasscolor = vec3(0.15, 0.25, 0.11);
 
 varying vec3 pos;
 varying float height;
@@ -38,7 +38,7 @@ vec4 getLightColor() {
 
 
     vec3 material_color = vec3(0,0,0);
-    if (height <= waterLevel + 0.001) {
+    if (height <= waterLevel+0.0001) {
         material_color = waterColor;
     }
     else if (raw_normal.z<0.6)

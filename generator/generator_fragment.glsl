@@ -229,16 +229,8 @@ float computeHeight(vec2 pos){
     float h2 = ((hyrbidMultifractal(p*convertFreq(h2Freq), 0.5) - 0.5)*h2Contrast+0.5)*h2Amp;
 
     float h3 = ((hyrbidMultifractal(p*convertFreq(h3Freq), 1.0) - 0.5)*h3Contrast+0.5)*h3Amp;
-    
 
-    if(usePerlin)
-    {
-        return ((b2+h1+h2+h3 + globalBrightness)-0.5)*globalContrast+0.5;
-    }
-    else
-    {
-        return ((b2+h1+h2+h3 + globalBrightness)-0.5)*globalContrast+0.5;
-    }
+    return ((b2+h1+h2+h3 + globalBrightness)-0.5)*globalContrast+0.5;
 }
 
 void main() {
@@ -246,5 +238,10 @@ void main() {
     usePerlin = noise == 0;
     vec2 fractalPoint = ((point - vec2(0.5)) * terrainScale) + vec2(terrainOffset);
     float value = computeHeight(fractalPoint);
+    if (value <= 0.1)
+    {
+        usePerlin = false;
+        value = ((fbm(fractalPoint*convertFreq(40.0))-0.5)*0.2+0.5)*0.2;
+    }
     gl_FragColor = vec4(vec3(value), 1.0);
 }

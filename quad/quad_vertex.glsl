@@ -21,9 +21,9 @@ varying float height;
 const float waterLevel = 0.1;
 
 vec3 getNormal() {
-    if(texture2D(heightMap, uv).x <= waterLevel) {
-        return vec3(0.0, 0.0, 1.0);
-    }
+    // if(texture2D(heightMap, uv).x <= waterLevel) {
+    //     return vec3(0.0, 0.0, 1.0);
+    // }
     float d = 1.0/res;
     float p0 = texture2D(heightMap, vec2(uv.x - d, uv.y - d)).x;
     float p1 = texture2D(heightMap, vec2(uv.x, uv.y - d)).x;
