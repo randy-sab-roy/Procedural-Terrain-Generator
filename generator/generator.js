@@ -8,28 +8,7 @@ class Generator {
     res = 255;
     capture = false;
     offset = 0;
-
-    amp0 = null;
-    amp1 = null;
-    amp2 = null;
-    amp3 = null;
-
-    contrast0 = null;
-    contrast1 = null;
-    contrast2 = null;
-    contrast3 = null;
-
-    brightness0 = null;
-    brightness1 = null;
-    brightness2 = null;
-    brightness3 = null;
-
-    freq0 = null;
-    freq1 = null;
-    freq2 = null;
-    freq3 = null;
-
-
+    tempAmp = 0;
     // Initial values
     fFreq = 2.0;
     fAmp = 0.5;
@@ -41,16 +20,19 @@ class Generator {
     h1Contrast = 1.0;
     h1brightness = 0.2;
 
+
     h2Freq = 1.0;
     h2Amp = 2.0;
     h2Contrast = 0.5;
     h2brightness = -0.25;
+
 
     h3Freq = 20.0;
     h3Amp = 0.02;
     h3Contrast = 1.0;
     h3brightness = 0.0;
     
+
 
     async init(gl) {
         this.gl = gl;
@@ -100,8 +82,6 @@ class Generator {
         document.getElementById("h3Contrast").value = this.h3Contrast;
         document.getElementById("h3Amp").value = this.h3Amp;
         document.getElementById("h3Scale").value = this.h3Freq;
-
-
         //
 
         gl.enable(gl.DEPTH_TEST);
@@ -155,7 +135,6 @@ class Generator {
         }
     }
 
-
     updateAttributesAndUniforms() {
         const gl = this.gl;
 
@@ -178,20 +157,24 @@ class Generator {
         gl.uniform1i(this.locations.nOctaves, document.getElementById("octaves").value);
         gl.uniform1i(this.locations.noise, document.querySelector('input[name="noise"]:checked').value);
 
+        this.tempAmp  = document.getElementById("showFbm").checked  ? document.getElementById("fAmp").value : 0.0;
+        gl.uniform1f( this.locations.fAmp, this.tempAmp);
         gl.uniform1f(this.locations.fContrast, document.getElementById("fContrast").value);
-        gl.uniform1f(this.locations.fAmp, document.getElementById("fAmp").value);
         gl.uniform1f(this.locations.fFreq, document.getElementById("fScale").value);
 
+        this.tempAmp  = document.getElementById("showH1").checked ? document.getElementById("h1Amp").value : 0.0;
+        gl.uniform1f( this.locations.h1Amp, this.tempAmp);
         gl.uniform1f(this.locations.h1Contrast, document.getElementById("h1Contrast").value);
-        gl.uniform1f(this.locations.h1Amp, document.getElementById("h1Amp").value);
         gl.uniform1f(this.locations.h1Freq, document.getElementById("h1Scale").value);
 
+        this.tempAmp  = document.getElementById("showH2").checked ? document.getElementById("h2Amp").value : 0.0;
+        gl.uniform1f(this.locations.h2Amp, this.tempAmp);
         gl.uniform1f(this.locations.h2Contrast, document.getElementById("h2Contrast").value);
-        gl.uniform1f(this.locations.h2Amp, document.getElementById("h2Amp").value);
         gl.uniform1f(this.locations.h2Freq, document.getElementById("h2Scale").value);
 
+        this.tempAmp  = document.getElementById("showH3").checked ? document.getElementById("h3Amp").value : 0.0;
+        gl.uniform1f( this.locations.h3Amp, this.tempAmp);
         gl.uniform1f(this.locations.h3Contrast, document.getElementById("h3Contrast").value);
-        gl.uniform1f(this.locations.h3Amp, document.getElementById("h3Amp").value);
         gl.uniform1f(this.locations.h3Freq, document.getElementById("h3Scale").value);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
     };

@@ -227,16 +227,12 @@ float computeHeight(vec2 pos){
 
     if(usePerlin)
     {
-        float pre = b2+h1+h2;
-        return ((pre * h3 + pre + globalBrightness)-0.5)*globalContrast+0.5;
+        return ((b2+h1+h2+h3 + globalBrightness)-0.5)*globalContrast+0.5;
     }
     else
     {
-        float pre = b2+h1+h2;
-        return ((pre * h3 + pre + globalBrightness)-0.5)*globalContrast+0.5;
+        return ((b2+h1+h2+h3 + globalBrightness)-0.5)*globalContrast+0.5;
     }
-        
-
 }
 
 void main() {
