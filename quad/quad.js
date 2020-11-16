@@ -23,7 +23,7 @@ class Quad {
     cameraPos;
     useGen;
     mode;
-    waterLevel;
+    waterLevel = 0;;
 
     async init(gl) {
         this.gl = gl;
@@ -59,7 +59,6 @@ class Quad {
         this.cameraPos = document.getElementById("camera").value;
         this.useGen = document.getElementById("useGen").checked;
         this.mode = document.querySelector('input[name="mode"]:checked').value;
-        this.waterLevel = document.getElementById("waterLevel").value;
     }
 
     computeModelMatrix() {
