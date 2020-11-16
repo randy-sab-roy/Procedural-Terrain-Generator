@@ -246,9 +246,5 @@ void main() {
     usePerlin = noise == 0;
     vec2 fractalPoint = ((point - vec2(0.5)) * terrainScale) + vec2(terrainOffset);
     float value = computeHeight(fractalPoint);
-    if (value == 0.0) 
-    {
-        value += 0.5;//voronoiNoise(fractalPoint);
-    }
     gl_FragColor = vec4(vec3(value), 1.0);
 }

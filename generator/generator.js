@@ -13,24 +13,20 @@ class Generator {
     fFreq = 2.0;
     fAmp = 0.5;
     fContrast = 1.0;
-    fBrightness = 0.0;
 
     h1Freq = 0.4;
     h1Amp = 0.5;
     h1Contrast = 1.0;
-    h1brightness = 0.2;
 
 
     h2Freq = 1.0;
-    h2Amp = 2.0;
+    h2Amp = 1.0;
     h2Contrast = 0.5;
-    h2brightness = -0.25;
 
 
-    h3Freq = 20.0;
+    h3Freq = 6.4;
     h3Amp = 0.02;
     h3Contrast = 1.0;
-    h3brightness = 0.0;
     
 
 
