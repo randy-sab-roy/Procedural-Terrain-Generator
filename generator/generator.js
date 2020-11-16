@@ -28,9 +28,13 @@ class Generator {
     h3Amp = 0.02;
     h3Contrast = 1.0;
     
+    time = 0;
+    startTime;
+    newTime;
 
 
     async init(gl) {
+        this.startTime = new Date();
         this.gl = gl;
         this.buffers = await this.createBuffers();
         this.program = await GlUtils.createWebGLProgramFromPath(gl, "generator/generator_vertex.glsl", "generator/generator_fragment.glsl");
@@ -38,6 +42,7 @@ class Generator {
 
         this.locations.position = gl.getAttribLocation(this.program, "position");
         this.locations.uv = gl.getAttribLocation(this.program, "uv");
+        this.locations.time = gl.getUniformLocation(this.program, "time");
         this.locations.terrainOffset = gl.getUniformLocation(this.program, "terrainOffset");
         this.locations.terrainScale = gl.getUniformLocation(this.program, "terrainScale");
         this.locations.noise = gl.getUniformLocation(this.program, "noise");
@@ -133,7 +138,8 @@ class Generator {
 
     updateAttributesAndUniforms() {
         const gl = this.gl;
-
+        this.newTime = new Date();
+        this.time = this.newTime - this.startTime;
         // Positions
         gl.enableVertexAttribArray(this.locations.position);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
@@ -146,11 +152,13 @@ class Generator {
 
         this.offset += document.getElementById("terrainOffset").value * 1;
         gl.uniform1f(this.locations.terrainOffset, this.offset);
+        gl.uniform1f(this.locations.time, this.time);
         gl.uniform1f(this.locations.terrainScale, document.getElementById("terrainScale").value);
         gl.uniform1f(this.locations.h, document.getElementById("h").value);
         gl.uniform1f(this.locations.globalContrast, document.getElementById("gContrast").value);
         gl.uniform1f(this.locations.globalBrightness, document.getElementById("gBrightness").value);
         gl.uniform1i(this.locations.nOctaves, document.getElementById("octaves").value);
+        gl.uniform1i(this.locations.time, this.time);
         gl.uniform1i(this.locations.noise, document.querySelector('input[name="noise"]:checked').value);
 
         this.tempAmp  = document.getElementById("showFbm").checked  ? document.getElementById("fAmp").value : 0.0;

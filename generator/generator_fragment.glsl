@@ -25,6 +25,8 @@ uniform float h3Amp;
 uniform float h3Contrast;
 uniform float h3Freq;
 
+uniform float time;
+
 varying vec2 point;
 
 const float PI = 3.1415926535;
@@ -238,10 +240,14 @@ void main() {
     usePerlin = noise == 0;
     vec2 fractalPoint = ((point - vec2(0.5)) * terrainScale) + vec2(terrainOffset);
     float value = computeHeight(fractalPoint);
-    if (value <= 0.1)
+    if (value <= waterLevel)
     {
         usePerlin = false;
-        value = ((fbm(fractalPoint*convertFreq(60.0))-0.5)*0.4+0.5)*0.2;
+        float firstNoise = (((fbm(fractalPoint*convertFreq(60.0) - time*0.0005)-0.5)*0.4+0.5)*0.3);
+
+        vec2 offset = vec2(-10.0, 100);
+        float secondNoise = (((fbm((fractalPoint+offset)*convertFreq(40.0) + time*0.0002)-0.5)*0.4+0.5)*0.3);
+        value = waterLevel - 0.1 + (firstNoise + secondNoise)/3.0;
     }
     gl_FragColor = vec4(vec3(value), 1.0);
 }
