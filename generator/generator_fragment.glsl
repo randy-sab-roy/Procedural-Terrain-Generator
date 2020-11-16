@@ -11,22 +11,22 @@ uniform float globalBrightness;
 uniform float fAmp;
 uniform float fContrast;
 uniform float fBrightness;
-uniform float fScale;
+uniform float fFreq;
 
-uniform float h1Amp;
-uniform float h1Contrast;
-uniform float h1Brightness;
-uniform float h1Scale;
+// uniform float h1Amp;
+// uniform float h1Contrast;
+// uniform float h1Brightness;
+// uniform float h1Scale;
 
-uniform float h2Amp;
-uniform float h2Contrast;
-uniform float h2Brightness;
-uniform float h2Scale;
+// uniform float h2Amp;
+// uniform float h2Contrast;
+// uniform float h2Brightness;
+// uniform float h2Scale;
 
-uniform float h3Amp;
-uniform float h3Contrast;
-uniform float h3Brightness;
-uniform float h3Scale;
+// uniform float h3Amp;
+// uniform float h3Contrast;
+// uniform float h3Brightness;
+// uniform float h3Scale;
 
 varying vec2 point;
 
@@ -212,38 +212,36 @@ float hyrbidMultifractal(vec2 point){
 
 }
 
+float convertFreq(float freq)
+{
+    return (freq < 0.0 ? 1.0/-freq : freq);
+}
 float computeHeight(vec2 pos){
     vec2 p = pos;
     
-    float fbmFreq = 1.0;
-    float fbmAmp = 0.5;
-    float fbmContrast = 1.0;
-    float fbmBrightness = 0.0;
-    float b2 = ((fbm(p*fbmFreq)+fbmBrightness)*fbmAmp-0.5)*fbmContrast+0.5;
-
     float h1Freq = 0.4;
     float h1Amp = 0.5;
     float h1Contrast = 1.0;
     float h1brightness = 0.2;
-    float h1 = ((hyrbidMultifractal(p*h1Freq)+h1brightness)*h1Amp - 0.5)*h1Contrast+0.5;
 
     float h2Freq = 1.0;
     float h2Amp = 2.0;
     float h2Contrast = 0.5;
     float h2brightness = -0.25;
-    float h2 = ((hyrbidMultifractal(p*h2Freq)+h2brightness)*h2Amp - 0.5)*h2Contrast+0.5;
 
     float h3Freq = 20.0;
     float h3Amp = 0.02;
     float h3Contrast = 1.0;
     float h3brightness = 0.0;
-    float h3 = ((hyrbidMultifractal(p*h3Freq)+h3brightness)*h3Amp - 0.5)*h3Contrast+0.5;
 
+    
+    float b2 = (((fbm(p*convertFreq(fFreq))+fBrightness)-0.5)*fContrast+0.5)*fAmp;
 
-    // b2 = min(b2, 1.0);
-    // h1 = min(h1, 1.0);
-    // h2 = min(h2, 1.0);
-    // h3 = min(h3, 1.0);
+    float h1 = (((hyrbidMultifractal(p*convertFreq(h1Freq))+h1brightness) - 0.5)*h1Contrast+0.5)*h1Amp;
+
+    float h2 = (((hyrbidMultifractal(p*convertFreq(h2Freq))+h2brightness) - 0.5)*h2Contrast+0.5)*h2Amp;
+
+    float h3 = (((hyrbidMultifractal(p*convertFreq(h3Freq))+h3brightness) - 0.5)*h3Contrast+0.5)*h3Amp;
     
 
     if(usePerlin)

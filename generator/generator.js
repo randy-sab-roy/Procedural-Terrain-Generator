@@ -9,26 +9,47 @@ class Generator {
     capture = false;
     offset = 0;
 
+    amp0 = null;
+    amp1 = null;
+    amp2 = null;
+    amp3 = null;
+
+    contrast0 = null;
+    contrast1 = null;
+    contrast2 = null;
+    contrast3 = null;
+
+    brightness0 = null;
+    brightness1 = null;
+    brightness2 = null;
+    brightness3 = null;
+
+    freq0 = null;
+    freq1 = null;
+    freq2 = null;
+    freq3 = null;
+
+
     // Initial values
-    fbmFreq = 1.0;
-    fbmAmp = 0.5;
-    fbmContrast = 1.0;
-    fbmBrightness = 0.0;
+    fFreq = 2.0;
+    fAmp = 0.5;
+    fContrast = 1.0;
+    fBrightness = 0.0;
 
-    h1Freq = 0.4;
-    h1Amp = 0.5;
-    h1Contrast = 1.0;
-    h1brightness = 0.2;
+    // h1Freq = 0.4;
+    // h1Amp = 0.5;
+    // h1Contrast = 1.0;
+    // h1brightness = 0.2;
 
-    h2Freq = 1.0;
-    h2Amp = 2.0;
-    h2Contrast = 0.5;
-    h2brightness = -0.25;
+    // h2Freq = 1.0;
+    // h2Amp = 2.0;
+    // h2Contrast = 0.5;
+    // h2brightness = -0.25;
 
-    h3Freq = 20.0;
-    h3Amp = 0.02;
-    h3Contrast = 1.0;
-    h3brightness = 0.0;
+    // h3Freq = 20.0;
+    // h3Amp = 0.02;
+    // h3Contrast = 1.0;
+    // h3brightness = 0.0;
     //
 
     async init(gl) {
@@ -48,6 +69,16 @@ class Generator {
         this.locations.nOctaves = gl.getUniformLocation(this.program, "nOctaves");
 
         // 16 sliders
+        this.locations.fAmp = gl.getUniformLocation(this.program, "fAmp");
+        this.locations.fContrast = gl.getUniformLocation(this.program, "fContrast");
+        this.locations.fBrightness = gl.getUniformLocation(this.program, "fBrightness");
+        this.locations.fFreq = gl.getUniformLocation(this.program, "fFreq");
+
+        document.getElementById("fContrast").value = this.fContrast;
+        document.getElementById("fBrightness").value = this.fBrightness;
+        document.getElementById("fAmp").value = this.fAmp;
+        document.getElementById("fScale").value = this.fFreq;
+
 
         //
 
@@ -126,9 +157,12 @@ class Generator {
         gl.uniform1i(this.locations.noise, document.querySelector('input[name="noise"]:checked').value);
 
         gl.uniform1f(this.locations.fContrast, document.getElementById("fContrast").value);
+
         gl.uniform1f(this.locations.fBrightness, document.getElementById("fBrightness").value);
+
         gl.uniform1f(this.locations.fAmp, document.getElementById("fAmp").value);
-        gl.uniform1f(this.locations.fScale, document.getElementById("fScale").value);
+
+        gl.uniform1f(this.locations.fFreq, document.getElementById("fScale").value);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
     };
