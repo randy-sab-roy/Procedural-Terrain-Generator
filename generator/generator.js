@@ -36,21 +36,21 @@ class Generator {
     fContrast = 1.0;
     fBrightness = 0.0;
 
-    // h1Freq = 0.4;
-    // h1Amp = 0.5;
-    // h1Contrast = 1.0;
-    // h1brightness = 0.2;
+    h1Freq = 0.4;
+    h1Amp = 0.5;
+    h1Contrast = 1.0;
+    h1brightness = 0.2;
 
-    // h2Freq = 1.0;
-    // h2Amp = 2.0;
-    // h2Contrast = 0.5;
-    // h2brightness = -0.25;
+    h2Freq = 1.0;
+    h2Amp = 2.0;
+    h2Contrast = 0.5;
+    h2brightness = -0.25;
 
-    // h3Freq = 20.0;
-    // h3Amp = 0.02;
-    // h3Contrast = 1.0;
-    // h3brightness = 0.0;
-    //
+    h3Freq = 20.0;
+    h3Amp = 0.02;
+    h3Contrast = 1.0;
+    h3brightness = 0.0;
+    
 
     async init(gl) {
         this.gl = gl;
@@ -78,6 +78,36 @@ class Generator {
         document.getElementById("fBrightness").value = this.fBrightness;
         document.getElementById("fAmp").value = this.fAmp;
         document.getElementById("fScale").value = this.fFreq;
+
+        this.locations.h1Amp = gl.getUniformLocation(this.program, "h1Amp");
+        this.locations.h1Contrast = gl.getUniformLocation(this.program, "h1Contrast");
+        this.locations.h1Brightness = gl.getUniformLocation(this.program, "h1Brightness");
+        this.locations.h1Freq = gl.getUniformLocation(this.program, "h1Freq");
+
+        document.getElementById("h1Contrast").value = this.h1Contrast;
+        document.getElementById("h1Brightness").value = this.h1Brightness;
+        document.getElementById("h1Amp").value = this.h1Amp;
+        document.getElementById("h1Scale").value = this.h1Freq;
+
+        this.locations.h2Amp = gl.getUniformLocation(this.program, "h2Amp");
+        this.locations.h2Contrast = gl.getUniformLocation(this.program, "h2Contrast");
+        this.locations.h2Brightness = gl.getUniformLocation(this.program, "h2Brightness");
+        this.locations.h2Freq = gl.getUniformLocation(this.program, "h2Freq");
+
+        document.getElementById("h2Contrast").value = this.h2Contrast;
+        document.getElementById("h2Brightness").value = this.h2Brightness;
+        document.getElementById("h2Amp").value = this.h2Amp;
+        document.getElementById("h2Scale").value = this.h2Freq;
+
+        this.locations.h3Amp = gl.getUniformLocation(this.program, "h3Amp");
+        this.locations.h3Contrast = gl.getUniformLocation(this.program, "h3Contrast");
+        this.locations.h3Brightness = gl.getUniformLocation(this.program, "h3Brightness");
+        this.locations.h3Freq = gl.getUniformLocation(this.program, "h3Freq");
+
+        document.getElementById("h3Contrast").value = this.h3Contrast;
+        document.getElementById("h3Brightness").value = this.h3Brightness;
+        document.getElementById("h3Amp").value = this.h3Amp;
+        document.getElementById("h3Scale").value = this.h3Freq;
 
 
         //
@@ -157,13 +187,24 @@ class Generator {
         gl.uniform1i(this.locations.noise, document.querySelector('input[name="noise"]:checked').value);
 
         gl.uniform1f(this.locations.fContrast, document.getElementById("fContrast").value);
-
         gl.uniform1f(this.locations.fBrightness, document.getElementById("fBrightness").value);
-
         gl.uniform1f(this.locations.fAmp, document.getElementById("fAmp").value);
-
         gl.uniform1f(this.locations.fFreq, document.getElementById("fScale").value);
 
+        gl.uniform1f(this.locations.h1Contrast, document.getElementById("h1Contrast").value);
+        gl.uniform1f(this.locations.h1Brightness, document.getElementById("h1Brightness").value);
+        gl.uniform1f(this.locations.h1Amp, document.getElementById("h1Amp").value);
+        gl.uniform1f(this.locations.h1Freq, document.getElementById("h1Scale").value);
+
+        gl.uniform1f(this.locations.h2Contrast, document.getElementById("h2Contrast").value);
+        gl.uniform1f(this.locations.h2Brightness, document.getElementById("h2Brightness").value);
+        gl.uniform1f(this.locations.h2Amp, document.getElementById("h2Amp").value);
+        gl.uniform1f(this.locations.h2Freq, document.getElementById("h2Scale").value);
+
+        gl.uniform1f(this.locations.h3Contrast, document.getElementById("h3Contrast").value);
+        gl.uniform1f(this.locations.h3Brightness, document.getElementById("h3Brightness").value);
+        gl.uniform1f(this.locations.h3Amp, document.getElementById("h3Amp").value);
+        gl.uniform1f(this.locations.h3Freq, document.getElementById("h3Scale").value);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
     };
 
