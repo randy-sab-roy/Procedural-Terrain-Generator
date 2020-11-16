@@ -1,8 +1,6 @@
 class Quad {
     RES = 255;
-    LIGHT_COLOR_A = [1, 0.73, 0.44]
-    LIGHT_COLOR_D = [1, 0.9, 0.7]
-    LIGHT_DIR = [0.5, -1, 1]
+
 
     /** @type {WebGLRenderingContext} */
     gl = null;
@@ -23,7 +21,6 @@ class Quad {
     cameraPos;
     useGen;
     mode;
-    waterLevel = 0;;
 
     async init(gl) {
         this.gl = gl;
@@ -112,7 +109,6 @@ class Quad {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
         gl.vertexAttribPointer(this.locations.position, 3, gl.FLOAT, false, 0, 0);
         gl.uniform1f(this.locations.amp, this.amp)
-        gl.uniform1f(this.locations.waterLevel, this.waterLevel)
 
         // Colors
         gl.enableVertexAttribArray(this.locations.color);
@@ -124,9 +120,6 @@ class Quad {
         gl.uniform1f(this.locations.kd, this.KD);
         gl.uniform1f(this.locations.ks, this.KS);
         gl.uniform1f(this.locations.sv, this.SV);
-        gl.uniform3fv(this.locations.lightColorA, this.LIGHT_COLOR_A);
-        gl.uniform3fv(this.locations.lightColorD, this.LIGHT_COLOR_D);
-        gl.uniform3fv(this.locations.lightDir, this.LIGHT_DIR);
         gl.uniform1f(this.locations.res, this.RES);
         gl.uniform1i(this.locations.mode, this.mode);
 
@@ -184,12 +177,8 @@ class Quad {
         this.locations.ks = gl.getUniformLocation(this.program, "Ks");
         this.locations.sv = gl.getUniformLocation(this.program, "Sv");
         this.locations.amp = gl.getUniformLocation(this.program, "amp");
-        this.locations.lightColorA = gl.getUniformLocation(this.program, "lightColorA");
-        this.locations.lightColorD = gl.getUniformLocation(this.program, "lightColorD");
-        this.locations.lightDir = gl.getUniformLocation(this.program, "lightDir");
         this.locations.res = gl.getUniformLocation(this.program, "res");
         this.locations.mode = gl.getUniformLocation(this.program, "mode");
-        this.locations.waterLevel = gl.getUniformLocation(this.program, "waterLevel");
     }
 
     createQuadData() {

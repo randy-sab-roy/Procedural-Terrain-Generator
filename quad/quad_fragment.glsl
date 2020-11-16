@@ -6,16 +6,28 @@ uniform float Ks;
 uniform float Sv;
 uniform int mode;
 
-uniform vec3 lightColorA;
-uniform vec3 lightColorD;
-uniform vec3 lightDir;
-uniform float waterLevel;
 
 varying vec4 fcolor;
 varying vec3 normal;
 varying vec3 raw_normal;
+
+const float snowLevel = 0.6;
+const float waterLevel = 0.1;
+const vec3 waterColor = vec3(0, 0.2, 1);
+const vec3 rockColor = vec3(0.5, 0.5, 0.5);
+const vec3 snowColor = vec3(0.99, 0.99, 1);
+const vec3 grasscolor = vec3(0.38, 0.502, 0.22);
+
 varying vec3 pos;
 varying float height;
+
+
+const vec3  lightColorA = vec3(1, 1, 0.97);
+const vec3  lightColorD = vec3(1, 1, 0.94);
+const vec3  lightDir = vec3(0.5, -1, 1);
+
+
+
 
 vec4 getLightColor() {
     vec3 N = normalize(normal);
@@ -23,6 +35,24 @@ vec4 getLightColor() {
 
     float lambertian = max(dot(N, L), 0.0);
 
+
+
+    vec3 material_color = vec3(0,0,0);
+    if (height <= waterLevel + 0.001) {
+        material_color = waterColor;
+    }
+    else if (raw_normal.z<0.6)
+    {
+        material_color = rockColor;
+    }
+    else if (height >= snowLevel)
+    {
+        material_color = snowColor;
+    }
+    else
+    {
+        material_color = grasscolor;
+    }
     float specular = 0.0;
     if(lambertian > 0.0) {
         vec3 R = reflect(-L, N);
@@ -31,14 +61,9 @@ vec4 getLightColor() {
         specular = pow(specAngle, Sv);
     }
 
-    vec3 colD = lightColorD;
-    vec3 colA = lightColorA;
-    if (height <= waterLevel + 0.001) {
-        colD = vec3(0.0, 0.0, 0.8);
-        colA = vec3(0.0, 0.0, 0.7);
-    }
 
-    return vec4(Ka * colA + Kd * lambertian * colD + Ks * specular * colD, 1.0);
+
+    return vec4(Ka * material_color + Kd * lambertian * material_color + Ks * specular * material_color, 1.0);
 }
 
 void main() {

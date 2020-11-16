@@ -10,7 +10,6 @@ uniform mat4 normalMat;
 uniform float time;
 uniform float res;
 uniform float amp;
-uniform float waterLevel;
 uniform sampler2D heightMap;
 
 varying vec4 fcolor;
@@ -18,6 +17,8 @@ varying vec3 normal;
 varying vec3 raw_normal;
 varying vec3 pos;
 varying float height;
+
+const float waterLevel = 0.1;
 
 vec3 getNormal() {
     if(texture2D(heightMap, uv).x <= waterLevel) {
