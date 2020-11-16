@@ -33,7 +33,6 @@ bool usePerlin;
 
 const float lacunarity = 2.0;
 const int MAX_ITERATIONS = 12;
-const float offset = 0.0;
 const float gain = 1.0;
 const float waterLevel = 0.1;
 
@@ -138,7 +137,7 @@ float voronoiNoise(vec2 P) {
   	d1.yz = min(d1.yz, d2.yz); // F2 is now not in d2.yz
   	d1.y = min(d1.y, d1.z); // nor in  d1.z
   	d1.y = min(d1.y, d2.x); // F2 is in d1.y, we're done.
-    return (d1.x-0.5)*1.8+0.5;
+    return (d1.x-0.5)*3.0+1.1;
 }
 
 float ridgenoise(vec2 x) {
@@ -167,8 +166,8 @@ float fbm(vec2 x)
 }
 
 // https://www.classes.cs.uchicago.edu/archive/2015/fall/23700-1/final-project/MusgraveTerrain00.pdf
-float hyrbidMultifractal(vec2 point){
-    float frequency, result, signal, weight, remainder;
+float hyrbidMultifractal(vec2 point, float gain){
+    float frequency, result, signal, weight, noise;
     float exponent_array[100];
     vec2 p = point;
     frequency = 1.0;
@@ -182,35 +181,38 @@ float hyrbidMultifractal(vec2 point){
 
     if(usePerlin)
     {
-        result = (perlin(p)+offset) * exponent_array[0];
+        noise = (perlin(p)) ;
     }
     else
     {
-        result = (voronoiNoise(p)+offset) * exponent_array[0];
+        result = (voronoiNoise(p));
 
     }
-    weight = result;
 
-    p *= lacunarity;
-
+    signal = -abs(noise);
+    signal *= signal;
+    result = signal;
+    weight = 1.0;
 
     for(int i=1; i<MAX_ITERATIONS; i++ ) {
         if (i == nOctaves) break;
+        weight*=(signal/2.0);
+        p *= lacunarity;
         if(weight > 1.0) weight = 1.0;
         if(usePerlin)
         {
-            signal = (perlin(p)+offset) * exponent_array[i];
+            noise = (perlin(p));
         }
         else
         {
-            signal = (voronoiNoise(p)+offset) * exponent_array[i];
+            noise = (voronoiNoise(p));
         }
-        result += weight*signal;
-        weight*=signal;
-        p *= lacunarity;
+        signal = -abs(noise);
+        signal *= signal;
+        signal *= weight;
+        result += signal*exponent_array[i];
     }
     return (result-0.5)*0.5+0.5;
-
 }
 
 float convertFreq(float freq)
@@ -222,11 +224,11 @@ float computeHeight(vec2 pos){
     
     float b2 = ((fbm(p*convertFreq(fFreq))-0.5)*fContrast+0.5)*fAmp;
 
-    float h1 = ((hyrbidMultifractal(p*convertFreq(h1Freq)) - 0.5)*h1Contrast+0.5)*h1Amp;
+    float h1 = ((hyrbidMultifractal(p*convertFreq(h1Freq), 1.0) - 0.5)*h1Contrast+0.5)*h1Amp;
 
-    float h2 = ((hyrbidMultifractal(p*convertFreq(h2Freq)) - 0.5)*h2Contrast+0.5)*h2Amp;
+    float h2 = ((hyrbidMultifractal(p*convertFreq(h2Freq), 0.5) - 0.5)*h2Contrast+0.5)*h2Amp;
 
-    float h3 = ((hyrbidMultifractal(p*convertFreq(h3Freq)) - 0.5)*h3Contrast+0.5)*h3Amp;
+    float h3 = ((hyrbidMultifractal(p*convertFreq(h3Freq), 1.0) - 0.5)*h3Contrast+0.5)*h3Amp;
     
 
     if(usePerlin)
