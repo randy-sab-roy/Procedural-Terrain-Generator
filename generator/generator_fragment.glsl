@@ -211,7 +211,7 @@ float hyrbidMultifractal(vec2 point){
 
 float convertFreq(float freq)
 {
-    return (freq < 0.0 ? 1.0/-freq : freq);
+    return (freq < -1.0 ? 1.0/-freq : freq+2.0);
 }
 float computeHeight(vec2 pos){
     vec2 p = pos;
