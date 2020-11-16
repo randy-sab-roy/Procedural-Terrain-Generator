@@ -62,7 +62,7 @@ class Quad {
         const model = mat4.create();
         this.rotation += this.animationSpeed * 1;
 
-        mat4.translate(model, model, [0, 0, this.cameraPos]);
+        mat4.translate(model, model, [0, -1.5, this.cameraPos]);
         mat4.scale(model, model, [5, 5, 5]);
         mat4.rotate(model, model, Math.PI / 2.8, [-1, 0, 0]);
         mat4.rotate(model, model, this.rotation, [0, 0, 1]);
