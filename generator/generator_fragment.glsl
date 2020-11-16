@@ -5,6 +5,8 @@ uniform float terrainScale;
 uniform int noise;
 uniform float H;
 uniform int nOctaves;
+uniform float globalContrast;
+uniform float globalBrightness;
 
 varying vec2 point;
 
@@ -217,12 +219,13 @@ float computeHeight(vec2 pos){
     float h3brightness = 0.0;
     float h3 = ((hyrbidMultifractal(p*h3Freq)+h3brightness)*h3Amp - 0.5)*h3Contrast+0.5;
 
-    float globalContrast = 0.6;
-    float globalBrightness = -1.0;
+
     // b2 = min(b2, 1.0);
     // h1 = min(h1, 1.0);
     // h2 = min(h2, 1.0);
     // h3 = min(h3, 1.0);
+    
+
     if(usePerlin)
     {
         float pre = b2+h1+h2;
