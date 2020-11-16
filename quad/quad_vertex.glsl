@@ -21,9 +21,11 @@ varying float height;
 const float waterLevel = 0.1;
 
 vec3 getNormal() {
-    // if(texture2D(heightMap, uv).x <= waterLevel) {
-    //     return vec3(0.0, 0.0, 1.0);
-    // }
+    float tempAmp = amp;
+    if(texture2D(heightMap, uv).x <= waterLevel) {
+        // water hack
+        tempAmp /= 8.0;
+    }
     float d = 1.0/res;
     float p0 = texture2D(heightMap, vec2(uv.x - d, uv.y - d)).x;
     float p1 = texture2D(heightMap, vec2(uv.x, uv.y - d)).x;
@@ -37,8 +39,8 @@ vec3 getNormal() {
     float gx = p0 + 2.0*p1 +p2 -p6 - 2.0*p7 - p8;
     float gy = p0 - p2 + 2.0*p3 - 2.0*p5 + p7-p8;
 
-    vec3 va = normalize(vec3(8.0*d, 0.0, amp * gx));
-    vec3 vb = normalize(vec3(0.0, 8.0*d, amp * gy));
+    vec3 va = normalize(vec3(8.0*d, 0.0, tempAmp * gx));
+    vec3 vb = normalize(vec3(0.0, 8.0*d, tempAmp * gy));
 
     return normalize(cross(va, vb));
 }

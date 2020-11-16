@@ -241,7 +241,7 @@ void main() {
     if (value <= 0.1)
     {
         usePerlin = false;
-        value = ((fbm(fractalPoint*convertFreq(60.0))-0.5)*0.2+0.5)*0.2;
+        value = ((fbm(fractalPoint*convertFreq(60.0))-0.5)*0.4+0.5)*0.2;
     }
     gl_FragColor = vec4(vec3(value), 1.0);
 }
