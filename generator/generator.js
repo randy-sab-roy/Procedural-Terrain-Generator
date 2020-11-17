@@ -158,7 +158,6 @@ class Generator {
         gl.uniform1f(this.locations.globalContrast, document.getElementById("gContrast").value);
         gl.uniform1f(this.locations.globalBrightness, document.getElementById("gBrightness").value);
         gl.uniform1i(this.locations.nOctaves, document.getElementById("octaves").value);
-        gl.uniform1i(this.locations.time, this.time);
         gl.uniform1i(this.locations.noise, document.querySelector('input[name="noise"]:checked').value);
 
         this.tempAmp  = document.getElementById("showFbm").checked  ? document.getElementById("fAmp").value : 0.0;

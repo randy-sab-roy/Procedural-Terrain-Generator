@@ -1,7 +1,6 @@
 class Quad {
     RES = 255;
 
-
     /** @type {WebGLRenderingContext} */
     gl = null;
     program = null;
