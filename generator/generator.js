@@ -103,12 +103,6 @@ class Generator {
         this.checkCaptureStatus();
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
-        if(document.getElementById("showGen").checked) {
-            gl.viewport(gl.canvas.width - this.RES - 10, 10, this.RES, this.RES);
-            gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
-            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-        }
     };
     
     checkCaptureStatus() {

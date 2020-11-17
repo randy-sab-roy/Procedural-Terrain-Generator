@@ -1,5 +1,5 @@
 class Quad {
-    RES = 1000;
+    RES = 600;
 
     /** @type {WebGLRenderingContext} */
     gl = null;
@@ -7,7 +7,6 @@ class Quad {
     transforms = {}
     locations = {};
     time = 0;
-    rotation = 0;
 
     // Controlled by UI
     enableWire;
@@ -15,7 +14,7 @@ class Quad {
     KD;
     KS;
     SV;
-    animationSpeed;
+    rotation;
     cameraPos;
     mode;
 
@@ -39,7 +38,7 @@ class Quad {
 
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         gl.drawElements(this.enableWire ? gl.LINE_STRIP : gl.TRIANGLES, (this.RES * this.RES) * 6, gl.UNSIGNED_INT, 0);
-        this.time += this.animationSpeed;
+        this.time += 0.05;
     };
 
     getValuesFromControls() {
@@ -48,14 +47,13 @@ class Quad {
         this.KD = document.getElementById("kd").value;
         this.KS = document.getElementById("ks").value;
         this.SV = document.getElementById("sv").value;
-        this.animationSpeed = document.getElementById("animSpeed").value;
+        this.rotation = document.getElementById("rotation").value;
         this.cameraPos = document.getElementById("camera").value;
         this.mode = document.querySelector('input[name="mode"]:checked').value;
     }
 
     computeModelMatrix() {
         const model = mat4.create();
-        this.rotation += this.animationSpeed * 1;
 
         mat4.translate(model, model, [0, -1.5, this.cameraPos]);
         mat4.scale(model, model, [5, 5, 5]);

@@ -9,6 +9,7 @@
     <script src="utils/gl-matrix-min.js"></script>
     <script src="utils/glUtils.js"></script>
     <script src="generator/generator.js"></script>
+    <script src="generatorView/generatorView.js"></script>
     <script src="quad/quad.js"></script>
     <script src="index.js"></script>
 </head>
@@ -172,18 +173,18 @@
                 </div>
                 <div>
                     <label class="title">Shininess</label><br>
-                    <input type="range" min="1" max="128" value="80" step="1" id="sv">
+                    <input type="range" min="1" max="256" value="80" step="1" id="sv">
                 </div>
             </div>
             <div>
                 <h2>Camera</h2>
                 <div>
-                    <label class="title">Rotation Speed</label><br>
-                    <input type="range" min="0" max="0.01" value="0" step="0.0001" id="animSpeed">
+                    <label class="title">Translation Speed</label><br>
+                    <input type="range" min="0" max="0.005" value="0.0002" step="0.00001" id="terrainOffset">
                 </div>
                 <div>
-                    <label class="title">Translation Speed</label><br>
-                    <input type="range" min="0" max="0.005" value="0" step="0.00001" id="terrainOffset">
+                    <label class="title">Rotation</label><br>
+                    <input type="range" min="0" max="3.1416" value="0" step="0.0001" id="rotation">
                 </div>
                 <div>
                     <label class="title">Zoom</label><br>

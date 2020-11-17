@@ -5,6 +5,7 @@ let uints_for_indices;
 
 let generator = null;
 let quad = null;
+let genView = null;
 let capture = false;
 
 
@@ -12,6 +13,7 @@ function draw() {
     GlUtils.resizeCanvas(gl);
 
     generator.draw();
+    genView.draw();
     quad.draw();
 
     requestAnimationFrame(draw);
@@ -24,9 +26,11 @@ async function init() {
 
     generator = new Generator();
     quad = new Quad();
+    genView = new GeneratorView();
 
     await generator.init(gl);
     await quad.init(gl);
+    await genView.init(gl);
 
     draw();
 }
