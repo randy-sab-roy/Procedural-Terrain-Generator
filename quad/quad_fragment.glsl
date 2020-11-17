@@ -5,11 +5,11 @@ uniform float Kd;
 uniform float Ks;
 uniform float Sv;
 uniform int mode;
-uniform float amp;
 
 
 
 varying vec4 fcolor;
+varying float textureColor;
 varying vec3 normal;
 varying vec3 raw_normal;
 
@@ -45,7 +45,7 @@ vec4 getLightColor() {
         material_color = waterColor;
 
     }
-    else if (height <=( waterLevel+0.01*(1.5/amp)) && amp <= 0.6)
+    else if (height <= waterLevel+0.01)
     {
         material_color = sandColor;
     }
@@ -71,9 +71,9 @@ vec4 getLightColor() {
         specular = pow(specAngle, materialSv);
     }
 
-
-
-    return vec4(Ka * material_color + Kd * lambertian * material_color + Ks * specular * material_color, 1.0);
+    vec3 newCol = vec3(textureColor, textureColor, textureColor);
+    return vec4(Ka * newCol + Kd * lambertian * newCol + Ks * specular * newCol, 1.0);
+    // return vec4(Ka * material_color + Kd * lambertian * material_color + Ks * specular * material_color, 1.0);
 }
 
 void main() {
