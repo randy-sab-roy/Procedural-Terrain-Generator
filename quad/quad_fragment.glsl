@@ -6,13 +6,11 @@ uniform float Sv;
 uniform int mode;
 uniform sampler2D heightMap;
 
-
 varying vec4 fcolor;
 varying vec3 normal;
 varying vec3 raw_normal;
 varying vec3 pos;
 varying float height;
-
 
 const vec3 waterColor = vec3(0.0,0.11,0.22);
 const vec3 sandColor = vec3(0.76, 0.69, 0.5);
@@ -23,7 +21,6 @@ const vec3 grassColor = vec3(0.15, 0.25, 0.11);
 const float rockAngle = 0.6;
 const float rockBlend = 0.1;
 
-
 const float waterMaxLevel = 0.1;
 const float sandMaxLevel = waterMaxLevel+0.02;
 const float grassMaxLevel = 0.6;
@@ -33,18 +30,15 @@ const float sandBlend = 0.005;
 const float grassBlend = 0.01;
 const float snowBlend = 0.01;
 
-
 const vec3  lightColorA = vec3(1, 1, 0.97);
 const vec3  lightColorD = vec3(1, 1, 0.94);
 const vec3  lightDir = vec3(0.5, -1, 1);
 
-vec4 getLightColor() {
-    vec3 N = normalize(normal);
-    vec3 L = normalize(lightDir);
-
-    vec3 material_color;
+vec3 getMaterialBlending()
+{
+    vec3 mat;
     if (height <= waterMaxLevel+0.0002) {
-        material_color = waterColor;
+        mat = waterColor;
 
     }
     else if (height < sandMaxLevel)
@@ -53,11 +47,11 @@ vec4 getLightColor() {
         {
             float diff = (waterMaxLevel + sandBlend) - height;
             float lerp = diff/sandBlend;
-            material_color = mix(sandColor, waterColor, lerp);
+            mat = mix(sandColor, waterColor, lerp);
         }
         else
         {
-            material_color = sandColor;
+            mat = sandColor;
         }
     }
     else if (height < grassMaxLevel)
@@ -66,11 +60,11 @@ vec4 getLightColor() {
         {
             float diff = (sandMaxLevel + grassBlend) - height;
             float lerp = diff/grassBlend;
-            material_color = mix(grassColor, sandColor, lerp);
+            mat = mix(grassColor, sandColor, lerp);
         }
         else
         {
-            material_color = grassColor;
+            mat = grassColor;
         }
     }
     else
@@ -79,29 +73,43 @@ vec4 getLightColor() {
         {
             float diff = (grassMaxLevel + snowBlend) - height;
             float lerp = diff/snowBlend;
-            material_color = mix(snowColor, grassColor, lerp);
+            mat = mix(snowColor, grassColor, lerp);
         }
         else
         {
-            material_color = snowColor;
+            mat = snowColor;
         }
     }
+    return mat;
+}
 
+vec3 getRockBlending(vec3 color)
+{
     if (raw_normal.z>rockAngle-rockBlend && raw_normal.z<rockAngle+rockBlend)
     {
         // BLEND ROCK AND grass || snow
         float lerp = (raw_normal.z-(rockAngle-rockBlend))/(2.0*rockBlend);
-        material_color = mix(rockColor, material_color, lerp);
+        color = mix(rockColor, color, lerp);
     }
     else if (raw_normal.z<=rockAngle-rockBlend)
     {
         // ONLY ROCK
-        material_color = rockColor;
+        color = rockColor;
     }
+    return color;
+}
 
+vec4 getLightColor() {
+    vec3 matBlend = getMaterialBlending();
+    vec3 material_color = getRockBlending(matBlend);
 
+    // Height shading
     float cap = 0.6;
     material_color *= (height*cap)+cap;
+
+    // Lights
+    vec3 N = normalize(normal);
+    vec3 L = normalize(lightDir);
     float lambertian = max(dot(N, L), 0.0);
     float materialSv = Sv;
     float specular = 0.0;
