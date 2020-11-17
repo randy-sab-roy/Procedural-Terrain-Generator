@@ -118,6 +118,19 @@ class Generator {
             const pixels = new Uint8Array(this.RES * this.RES * 4);
             gl.readPixels(0, 0, this.RES, this.RES, gl.RGBA, gl.UNSIGNED_BYTE, pixels)
 
+            const bitEnc = [1, 1 / 255, 1 / 65025, 1 / 16581375];
+            for (let i = 0; i < this.RES * this.RES; i++) {
+                let val = 0;
+                for(let j = 0; j < 4; j++) {
+                    val += pixels[(i*4)+j] * bitEnc[j];
+                }
+                for(let j = 0; j < 3; j++) {
+                    pixels[(i*4)+j] = val;
+                }
+                pixels[(i*4)+3] = 255;
+            }
+
+
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
             canvas.width = res;
