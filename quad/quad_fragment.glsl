@@ -12,6 +12,8 @@ varying vec3 raw_normal;
 varying vec3 pos;
 varying float height;
 
+const float infinity = 1.0 / 0.0;
+
 const vec3 waterColor = vec3(0.0,0.11,0.22);
 const vec3 sandColor = vec3(0.76, 0.69, 0.5);
 const vec3 rockColor = vec3(0.3, 0.3, 0.3);
@@ -44,21 +46,22 @@ vec3 getMaterialBlending()
     }
     else if (height < sandMaxLevel)
     {
-        materialSv = 600.0;
         if(height < (waterMaxLevel + sandBlend) )
         {
             float diff = (waterMaxLevel + sandBlend) - height;
             float lerp = diff/sandBlend;
+            materialSv = lerp > 0.7 ? 220.0 : infinity;
             mat = mix(sandColor, waterColor, lerp);
         }
         else
         {
+            materialSv = infinity;
             mat = sandColor;
         }
     }
     else if (height < grassMaxLevel)
     {
-        materialSv = 1500.0;
+        materialSv = infinity;
         if(height < (sandMaxLevel + grassBlend) )
         {
             float diff = (sandMaxLevel + grassBlend) - height;
@@ -72,7 +75,7 @@ vec3 getMaterialBlending()
     }
     else
     {
-        materialSv = 200.0;
+        materialSv = infinity;
         if(height < (grassMaxLevel + snowBlend) )
         {
             float diff = (grassMaxLevel + snowBlend) - height;
