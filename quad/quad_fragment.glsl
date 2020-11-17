@@ -13,13 +13,27 @@ varying vec3 raw_normal;
 varying vec3 pos;
 varying float height;
 
-const float snowLevel = 0.6;
-const float waterLevel = 0.1;
+
 const vec3 waterColor = vec3(0.0,0.11,0.22);
 const vec3 sandColor = vec3(0.76, 0.69, 0.5);
 const vec3 rockColor = vec3(0.3, 0.3, 0.3);
 const vec3 snowColor = vec3(0.8, 0.8, 0.8);
-const vec3 grasscolor = vec3(0.15, 0.25, 0.11);
+const vec3 grassColor = vec3(0.15, 0.25, 0.11);
+
+const float rockAngle = 0.6;
+const float rockBlend = 0.1;
+
+
+const float waterMaxLevel = 0.1;
+const float sandMaxLevel = waterMaxLevel+0.02;
+const float grassMaxLevel = 0.6;
+
+const float waterBlend = 0.01;
+const float sandBlend = 0.005;
+const float grassBlend = 0.01;
+const float snowBlend = 0.01;
+
+
 const vec3  lightColorA = vec3(1, 1, 0.97);
 const vec3  lightColorD = vec3(1, 1, 0.94);
 const vec3  lightDir = vec3(0.5, -1, 1);
@@ -29,26 +43,62 @@ vec4 getLightColor() {
     vec3 L = normalize(lightDir);
 
     vec3 material_color;
-    if (height <= waterLevel+0.0001) {
+    if (height <= waterMaxLevel+0.0002) {
         material_color = waterColor;
 
     }
-    else if (height <= waterLevel+0.01)
+    else if (height < sandMaxLevel)
     {
-        material_color = sandColor;
+        if(height < (waterMaxLevel + sandBlend) )
+        {
+            float diff = (waterMaxLevel + sandBlend) - height;
+            float lerp = diff/sandBlend;
+            material_color = mix(sandColor, waterColor, lerp);
+        }
+        else
+        {
+            material_color = sandColor;
+        }
     }
-    else if (raw_normal.z<0.6)
+    else if (height < grassMaxLevel)
     {
-        material_color = rockColor;
-    }
-    else if (height >= snowLevel)
-    {
-        material_color = snowColor;
+        if(height < (sandMaxLevel + grassBlend) )
+        {
+            float diff = (sandMaxLevel + grassBlend) - height;
+            float lerp = diff/grassBlend;
+            material_color = mix(grassColor, sandColor, lerp);
+        }
+        else
+        {
+            material_color = grassColor;
+        }
     }
     else
     {
-        material_color = grasscolor;
+        if(height < (grassMaxLevel + snowBlend) )
+        {
+            float diff = (grassMaxLevel + snowBlend) - height;
+            float lerp = diff/snowBlend;
+            material_color = mix(snowColor, grassColor, lerp);
+        }
+        else
+        {
+            material_color = snowColor;
+        }
     }
+
+    if (raw_normal.z>rockAngle-rockBlend && raw_normal.z<rockAngle+rockBlend)
+    {
+        // BLEND ROCK AND grass || snow
+        float lerp = (raw_normal.z-(rockAngle-rockBlend))/(2.0*rockBlend);
+        material_color = mix(rockColor, material_color, lerp);
+    }
+    else if (raw_normal.z<=rockAngle-rockBlend)
+    {
+        // ONLY ROCK
+        material_color = rockColor;
+    }
+
 
     float cap = 0.6;
     material_color *= (height*cap)+cap;
