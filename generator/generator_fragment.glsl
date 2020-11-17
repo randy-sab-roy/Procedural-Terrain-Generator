@@ -158,7 +158,7 @@ float fbm(vec2 x)
     for( int i=0; i<MAX_ITERATIONS; i++ )
     {
         if (i == nOctaves) break;
-        t += usePerlin ? a*perlin(f*pos) : a*voronoiNoise(f*pos);
+        t += usePerlin ? a*perlin(f*pos) : 1.8*a*voronoiNoise(f*pos);
         // t += a*ridgenoise(f*x);
         pos += shift;
         f *= lacunarity;
