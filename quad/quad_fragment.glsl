@@ -39,7 +39,7 @@ float materialSv;
 
 vec3 getMaterialBlending()
 {
-    vec3 adjustedGreen = grassColor/((height-0.5)*1.5+1.0);
+    vec3 adjustedGreen = grassColor/((height-0.5)*1.5+1.5);
     vec3 mat;
     if (height <= waterMaxLevel+0.0002) {
         mat = waterColor;
