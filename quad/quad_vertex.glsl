@@ -8,17 +8,15 @@ uniform mat4 model;
 uniform mat4 projection;
 uniform mat4 normalMat;
 uniform float time;
-uniform float res;
 uniform sampler2D heightMap;
-// uniform sampler2D colorMap;
+uniform float res;
 
 varying vec4 fcolor;
-varying float textureColor;
 varying vec3 normal;
 varying vec3 raw_normal;
 varying vec3 pos;
 varying float height;
-
+varying vec3 textureColor;
 const float waterLevel = 0.1;
 
 vec3 getNormal() {
@@ -66,8 +64,6 @@ void main() {
 
     gl_Position = projection * model * vec4( p, 1.0 );
     normal = vec3(normalMat * vec4(-1.0 * raw_normal, 1.0));
-
-    textureColor = texture2D(heightMap, vec2(uv.x, uv.y)).x;
     fcolor = color;
     pos = vec3(gl_Position);
 }

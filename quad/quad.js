@@ -126,6 +126,7 @@ class Quad {
     async createBuffers() {
         const gl = this.gl;
         const image = await GlUtils.loadImageAsync("sample/terrain.png");
+        const colorImage = await GlUtils.loadImageAsync("sample/colors.png");
         const quad = this.createQuadData();
 
         const positions = gl.createBuffer();
@@ -144,10 +145,16 @@ class Quad {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elements);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(quad.elements), gl.STATIC_DRAW);
 
-        const texture = gl.createTexture();
+        const heightTexture = gl.createTexture();
         gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.bindTexture(gl.TEXTURE_2D, heightTexture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
+        const colorTexture = gl.createTexture();
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, heightTexture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, colorImage);
+
         gl.generateMipmap(gl.TEXTURE_2D);
 
         return {
@@ -155,7 +162,8 @@ class Quad {
             elements: elements,
             colors: colors,
             uv: uv,
-            heightMap: texture
+            heightMap: heightTexture,
+            colorMap: colorTexture
         }
     }
 
@@ -165,6 +173,7 @@ class Quad {
         this.locations.projection = gl.getUniformLocation(this.program, "projection");
         this.locations.time = gl.getUniformLocation(this.program, "time");
         this.locations.heightMap = gl.getUniformLocation(this.program, "heightMap");
+        this.locations.colorMap = gl.getUniformLocation(this.program, "colorMap");
         this.locations.position = gl.getAttribLocation(this.program, "position");
         this.locations.color = gl.getAttribLocation(this.program, "color");
         this.locations.uv = gl.getAttribLocation(this.program, "uv");
