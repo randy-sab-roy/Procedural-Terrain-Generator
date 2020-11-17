@@ -9,10 +9,11 @@ uniform mat4 projection;
 uniform mat4 normalMat;
 uniform float time;
 uniform float res;
-uniform float amp;
 uniform sampler2D heightMap;
+// uniform sampler2D colorMap;
 
 varying vec4 fcolor;
+varying float textureColor;
 varying vec3 normal;
 varying vec3 raw_normal;
 varying vec3 pos;
@@ -28,7 +29,7 @@ float DecodeFloatRGBA (vec4 v) {
 }
 
 vec3 getNormal() {
-    float tempAmp = amp;
+    float tempAmp = 1.0;
     if(DecodeFloatRGBA(texture2D(heightMap, uv)) <= waterLevel) {
         // water hack
         tempAmp /= 8.0;
@@ -56,12 +57,12 @@ void main() {
     vec3 p = position;
 
     // Use amplitude as normal to have a uniform quad when flat
-    raw_normal = vec3(0.0, 0.0, -amp + 0.001);
+    raw_normal = vec3(0.0, 0.0, 0.001);
 
     if (uv.x != 0.0 && uv.y != 0.0 && uv.x != 1.0 && uv.y != 1.0)
     {
-        height = max(DecodeFloatRGBA(texture2D(heightMap, vec2(uv.x, uv.y))), waterLevel);
-        p.z = p.z + amp * height;
+        height = max(DecodeFloatRGBA((texture2D(heightMap, vec2(uv.x, uv.y)))), waterLevel);
+        p.z = p.z + height;
         
         float delta = 1.2/res;
         if(uv.x > (0.0 + delta) && uv.y > (0.0 + delta) && uv.x < (1.0 - delta) && uv.y < (1.0 - delta))
@@ -73,6 +74,7 @@ void main() {
     gl_Position = projection * model * vec4( p, 1.0 );
     normal = vec3(normalMat * vec4(-1.0 * raw_normal, 1.0));
 
+    textureColor = DecodeFloatRGBA(texture2D(heightMap, vec2(uv.x, uv.y)));
     fcolor = color;
     pos = vec3(gl_Position);
 }
