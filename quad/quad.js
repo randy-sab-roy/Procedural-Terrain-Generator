@@ -17,7 +17,6 @@ class Quad {
     SV;
     animationSpeed;
     cameraPos;
-    useGen;
     mode;
 
     async init(gl) {
@@ -51,7 +50,6 @@ class Quad {
         this.SV = document.getElementById("sv").value;
         this.animationSpeed = document.getElementById("animSpeed").value;
         this.cameraPos = document.getElementById("camera").value;
-        this.useGen = document.getElementById("useGen").checked;
         this.mode = document.querySelector('input[name="mode"]:checked').value;
     }
 
@@ -96,7 +94,7 @@ class Quad {
         gl.uniform1f(this.locations.time, this.time);
 
         // Texture
-        gl.uniform1i(this.locations.heightMap, this.useGen ? 1 : 0);
+        gl.uniform1i(this.locations.heightMap, 0);
         gl.enableVertexAttribArray(this.locations.uv);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.uv);
         gl.vertexAttribPointer(this.locations.uv, 2, gl.FLOAT, false, 0, 0);
@@ -125,8 +123,6 @@ class Quad {
 
     async createBuffers() {
         const gl = this.gl;
-        const image = await GlUtils.loadImageAsync("sample/terrain.png");
-        const colorImage = await GlUtils.loadImageAsync("sample/colors.png");
         const quad = this.createQuadData();
 
         const positions = gl.createBuffer();
@@ -145,25 +141,11 @@ class Quad {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elements);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(quad.elements), gl.STATIC_DRAW);
 
-        const heightTexture = gl.createTexture();
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, heightTexture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-
-        const colorTexture = gl.createTexture();
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, heightTexture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, colorImage);
-
-        gl.generateMipmap(gl.TEXTURE_2D);
-
         return {
             positions: positions,
             elements: elements,
             colors: colors,
-            uv: uv,
-            heightMap: heightTexture,
-            colorMap: colorTexture
+            uv: uv
         }
     }
 
