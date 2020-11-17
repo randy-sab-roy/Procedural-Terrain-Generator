@@ -1,5 +1,5 @@
 class Quad {
-    RES = 600;
+    RES = 500;
 
     /** @type {WebGLRenderingContext} */
     gl = null;
@@ -20,7 +20,7 @@ class Quad {
 
     async init(gl) {
         this.gl = gl;
-        this.buffers = await this.createBuffers();
+        this.buffers = this.createBuffers();
         this.program = await GlUtils.createWebGLProgramFromPath(gl, "quad/quad_vertex.glsl", "quad/quad_fragment.glsl");
         gl.useProgram(this.program);
         this.bindLocations();
@@ -42,6 +42,12 @@ class Quad {
     };
 
     getValuesFromControls() {
+        const newRes = document.getElementById("res").value * 1.0;
+        if (newRes != this.RES)
+        {
+            this.RES = newRes
+            this.regenQuad();
+        }
         this.enableWire = document.getElementById("wire").checked;
         this.KA = document.getElementById("ka").value;
         this.KD = document.getElementById("kd").value;
@@ -119,7 +125,7 @@ class Quad {
     };
 
 
-    async createBuffers() {
+    createBuffers() {
         const gl = this.gl;
         const quad = this.createQuadData();
 
@@ -145,6 +151,23 @@ class Quad {
             colors: colors,
             uv: uv
         }
+    }
+
+    regenQuad() {
+        const gl = this.gl;
+        const quad = this.createQuadData();
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quad.positions), gl.STATIC_DRAW);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.colors);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quad.colors), gl.STATIC_DRAW);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.uv);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quad.uv), gl.STATIC_DRAW);
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(quad.elements), gl.STATIC_DRAW);
     }
 
     bindLocations() {
