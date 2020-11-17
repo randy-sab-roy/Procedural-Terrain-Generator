@@ -5,7 +5,7 @@ class Generator {
 
     program = null;
     locations = {};
-    res = 255;
+    RES = 255;
     capture = false;
     offset = 0;
     tempAmp = 0;
@@ -87,7 +87,7 @@ class Generator {
         const gl = this.gl;
         gl.useProgram(this.program);
         
-        gl.viewport(0, 0, this.res, this.res);
+        gl.viewport(0, 0, this.RES, this.RES);
         gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         this.updateAttributesAndUniforms();
@@ -100,7 +100,7 @@ class Generator {
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
         if(document.getElementById("showGen").checked) {
-            gl.viewport(gl.canvas.width - this.res - 10, 10, this.res, this.res);
+            gl.viewport(gl.canvas.width - this.RES - 10, 10, this.RES, this.RES);
             gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         }
@@ -109,9 +109,9 @@ class Generator {
     checkCaptureStatus() {
         if (this.capture == true) {
             this.capture = false;
-            const res = 255;
-            const pixels = new Uint8Array(this.res * this.res * 4);
-            gl.readPixels(0, 0, this.res, this.res, gl.RGBA, gl.UNSIGNED_BYTE, pixels)
+            const res = this.RES;
+            const pixels = new Uint8Array(this.RES * this.RES * 4);
+            gl.readPixels(0, 0, this.RES, this.RES, gl.RGBA, gl.UNSIGNED_BYTE, pixels)
     
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
@@ -195,7 +195,7 @@ class Generator {
         const tex = gl.createTexture();
         gl.activeTexture(gl.TEXTURE1);
         gl.bindTexture(gl.TEXTURE_2D, tex);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.res, this.res, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.RES, this.RES, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);

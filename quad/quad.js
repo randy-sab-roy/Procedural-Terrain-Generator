@@ -41,7 +41,7 @@ class Quad {
         this.updateAttributesAndUniforms();
 
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-        gl.drawElements(this.enableWire ? gl.LINE_STRIP : gl.TRIANGLES, (this.RES * this.RES) * 6, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(this.enableWire ? gl.LINE_STRIP : gl.TRIANGLES, (this.RES * this.RES) * 6, gl.UNSIGNED_INT, 0);
         this.time += this.animationSpeed;
     };
 
@@ -146,7 +146,7 @@ class Quad {
 
         const elements = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elements);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(quad.elements), gl.STATIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(quad.elements), gl.STATIC_DRAW);
 
         const texture = gl.createTexture();
         gl.activeTexture(gl.TEXTURE0);

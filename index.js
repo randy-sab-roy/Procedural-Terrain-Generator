@@ -1,5 +1,7 @@
+
 /** @type {WebGLRenderingContext} */
 let gl = null;
+let uints_for_indices;
 
 let generator = null;
 let quad = null;
@@ -18,6 +20,7 @@ function draw() {
 async function init() {
     const mainCanvas = document.getElementById("drawCanvas");
     gl = GlUtils.createContext(mainCanvas);
+    uints_for_indices = gl.getExtension("OES_element_index_uint");
 
     generator = new Generator();
     quad = new Quad();
