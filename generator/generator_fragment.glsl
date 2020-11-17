@@ -25,6 +25,8 @@ uniform float h3Amp;
 uniform float h3Contrast;
 uniform float h3Freq;
 
+uniform float time;
+
 varying vec2 point;
 
 const float PI = 3.1415926535;
@@ -156,7 +158,7 @@ float fbm(vec2 x)
     for( int i=0; i<MAX_ITERATIONS; i++ )
     {
         if (i == nOctaves) break;
-        t += usePerlin ? a*perlin(f*pos) : a*voronoiNoise(f*pos);
+        t += usePerlin ? a*perlin(f*pos) : 1.8*a*voronoiNoise(f*pos);
         // t += a*ridgenoise(f*x);
         pos += shift;
         f *= lacunarity;
@@ -230,18 +232,29 @@ float computeHeight(vec2 pos){
 
     float h3 = ((hyrbidMultifractal(p*convertFreq(h3Freq), 1.0) - 0.5)*h3Contrast+0.5)*h3Amp;
 
-    return ((b2+h1+h2+h3 + globalBrightness)-0.5)*globalContrast+0.5;
+    return (((b2+h1+h2+h3 + globalBrightness)-0.5)*globalContrast+0.5)/(0.6*(fAmp+h1Amp+h2Amp+h3Amp));
 }
 
+float computeWaterAnimation(float height, vec2 fractalPoint)
+{
+
+    usePerlin = false;
+    float firstNoise = (((fbm(fractalPoint*convertFreq(60.0) - time*0.5)-0.5)*0.4+0.5)*0.3);
+    vec2 offset = vec2(-10.0, 100);
+    float secondNoise = (((fbm((fractalPoint+offset)*convertFreq(40.0) + time*0.2)-0.5)*0.4+0.5)*0.3);
+    return waterLevel - 0.1 + (firstNoise + secondNoise)/3.0;
+
+}
 void main() {
     // Allow to offset and scale the terrain
     usePerlin = noise == 0;
     vec2 fractalPoint = ((point - vec2(0.5)) * terrainScale) + vec2(terrainOffset);
+
     float value = computeHeight(fractalPoint);
-    if (value <= 0.1)
+    if (value <= waterLevel)
     {
-        usePerlin = false;
-        value = ((fbm(fractalPoint*convertFreq(60.0))-0.5)*0.2+0.5)*0.2;
+        value = computeWaterAnimation(value, fractalPoint);
     }
+
     gl_FragColor = vec4(vec3(value), 1.0);
 }
