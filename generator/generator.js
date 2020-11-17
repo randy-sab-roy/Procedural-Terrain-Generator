@@ -27,7 +27,7 @@ class Generator {
     h3Freq = 6.4;
     h3Amp = 0.1;
     h3Contrast = 1.0;
-    
+
     time = 0.0;
     startTime;
     newTime;
@@ -91,12 +91,18 @@ class Generator {
     draw() {
         const gl = this.gl;
         gl.useProgram(this.program);
-        
+        const newRes = document.getElementById("res").value * 1.0;
+        if (this.RES != newRes) {
+            this.RES = newRes;
+            gl.bindTexture(gl.TEXTURE_2D, this.buffers.texture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.RES, this.RES, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        }
+
         gl.viewport(0, 0, this.RES, this.RES);
         gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         this.updateAttributesAndUniforms();
-        
+
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.buffers.frame);
         gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
 
@@ -104,14 +110,14 @@ class Generator {
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     };
-    
+
     checkCaptureStatus() {
         if (this.capture == true) {
             this.capture = false;
             const res = this.RES;
             const pixels = new Uint8Array(this.RES * this.RES * 4);
             gl.readPixels(0, 0, this.RES, this.RES, gl.RGBA, gl.UNSIGNED_BYTE, pixels)
-    
+
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
             canvas.width = res;
@@ -120,7 +126,7 @@ class Generator {
             data.data.set(pixels);
             context.putImageData(data, 0, 0);
             const imgUrl = canvas.toDataURL();
-    
+
             const link = document.createElement("a");
             link.setAttribute("download", "height_map.png");
             link.setAttribute("href", imgUrl);
@@ -133,7 +139,7 @@ class Generator {
     updateAttributesAndUniforms() {
         const gl = this.gl;
         this.newTime = new Date();
-        this.time = (this.newTime - this.startTime)/1000.0;
+        this.time = (this.newTime - this.startTime) / 1000.0;
         // Positions
         gl.enableVertexAttribArray(this.locations.position);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
@@ -154,23 +160,23 @@ class Generator {
         gl.uniform1i(this.locations.nOctaves, document.getElementById("octaves").value);
         gl.uniform1i(this.locations.noise, document.querySelector('input[name="noise"]:checked').value);
 
-        this.tempAmp  = document.getElementById("showFbm").checked  ? document.getElementById("fAmp").value : 0.0;
-        gl.uniform1f( this.locations.fAmp, this.tempAmp);
+        this.tempAmp = document.getElementById("showFbm").checked ? document.getElementById("fAmp").value : 0.0;
+        gl.uniform1f(this.locations.fAmp, this.tempAmp);
         gl.uniform1f(this.locations.fContrast, document.getElementById("fContrast").value);
         gl.uniform1f(this.locations.fFreq, document.getElementById("fScale").value);
 
-        this.tempAmp  = document.getElementById("showH1").checked ? document.getElementById("h1Amp").value : 0.0;
-        gl.uniform1f( this.locations.h1Amp, this.tempAmp);
+        this.tempAmp = document.getElementById("showH1").checked ? document.getElementById("h1Amp").value : 0.0;
+        gl.uniform1f(this.locations.h1Amp, this.tempAmp);
         gl.uniform1f(this.locations.h1Contrast, document.getElementById("h1Contrast").value);
         gl.uniform1f(this.locations.h1Freq, document.getElementById("h1Scale").value);
 
-        this.tempAmp  = document.getElementById("showH2").checked ? document.getElementById("h2Amp").value : 0.0;
+        this.tempAmp = document.getElementById("showH2").checked ? document.getElementById("h2Amp").value : 0.0;
         gl.uniform1f(this.locations.h2Amp, this.tempAmp);
         gl.uniform1f(this.locations.h2Contrast, document.getElementById("h2Contrast").value);
         gl.uniform1f(this.locations.h2Freq, document.getElementById("h2Scale").value);
 
-        this.tempAmp  = document.getElementById("showH3").checked ? document.getElementById("h3Amp").value : 0.0;
-        gl.uniform1f( this.locations.h3Amp, this.tempAmp);
+        this.tempAmp = document.getElementById("showH3").checked ? document.getElementById("h3Amp").value : 0.0;
+        gl.uniform1f(this.locations.h3Amp, this.tempAmp);
         gl.uniform1f(this.locations.h3Contrast, document.getElementById("h3Contrast").value);
         gl.uniform1f(this.locations.h3Freq, document.getElementById("h3Scale").value);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
