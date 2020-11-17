@@ -25,8 +25,7 @@ const float waterMaxLevel = 0.1;
 const float sandMaxLevel = waterMaxLevel+0.02;
 const float grassMaxLevel = 0.6;
 
-const float waterBlend = 0.01;
-const float sandBlend = 0.005;
+const float sandBlend = 0.01;
 const float grassBlend = 0.01;
 const float snowBlend = 0.01;
 
@@ -100,8 +99,12 @@ vec3 getRockBlending(vec3 color)
 }
 
 vec4 getLightColor() {
-    vec3 matBlend = getMaterialBlending();
-    vec3 material_color = getRockBlending(matBlend);
+    vec3 material_color;
+    material_color = getMaterialBlending();
+    if(height > sandMaxLevel)
+    {
+        material_color = getRockBlending(material_color);
+    }
 
     // Height shading
     float cap = 0.6;
