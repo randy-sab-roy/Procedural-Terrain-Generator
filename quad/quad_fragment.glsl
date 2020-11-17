@@ -39,6 +39,7 @@ float materialSv;
 
 vec3 getMaterialBlending()
 {
+    vec3 adjustedGreen = grassColor/((height-0.5)*1.5+1.0);
     vec3 mat;
     if (height <= waterMaxLevel+0.0002) {
         mat = waterColor;
@@ -66,11 +67,11 @@ vec3 getMaterialBlending()
         {
             float diff = (sandMaxLevel + grassBlend) - height;
             float lerp = diff/grassBlend;
-            mat = mix(grassColor, sandColor, lerp);
+            mat = mix(adjustedGreen, sandColor, lerp);
         }
         else
         {
-            mat = grassColor;
+            mat = adjustedGreen;
         }
     }
     else
@@ -80,7 +81,7 @@ vec3 getMaterialBlending()
         {
             float diff = (grassMaxLevel + snowBlend) - height;
             float lerp = diff/snowBlend;
-            mat = mix(snowColor, grassColor, lerp);
+            mat = mix(snowColor, adjustedGreen, lerp);
         }
         else
         {
