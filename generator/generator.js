@@ -25,10 +25,10 @@ class Generator {
 
 
     h3Freq = 6.4;
-    h3Amp = 0.02;
+    h3Amp = 0.1;
     h3Contrast = 1.0;
     
-    time = 0;
+    time = 0.0;
     startTime;
     newTime;
 
@@ -139,7 +139,7 @@ class Generator {
     updateAttributesAndUniforms() {
         const gl = this.gl;
         this.newTime = new Date();
-        this.time = this.newTime - this.startTime;
+        this.time = (this.newTime - this.startTime)/1000.0;
         // Positions
         gl.enableVertexAttribArray(this.locations.position);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
