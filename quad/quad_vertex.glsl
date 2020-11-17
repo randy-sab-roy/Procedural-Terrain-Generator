@@ -16,6 +16,7 @@ varying vec3 normal;
 varying vec3 raw_normal;
 varying vec3 pos;
 varying float height;
+varying float fogValue;
 const float waterLevel = 0.1;
 
 // https://stackoverflow.com/questions/18453302/how-do-you-pack-one-32bit-int-into-4-8bit-ints-in-glsl-webgl
@@ -53,6 +54,18 @@ vec3 getNormal() {
     return normalize(cross(va, vb));
 }
 
+float getFogValue()
+{
+    vec2 pos = vec2(uv.x, uv.y);
+    
+    vec2 diff = (pos - vec2(0.5));
+    float avg = ((0.5 - uv.x+0.5) + (0.5 - uv.y+0.5))/2.0;
+    float side = min((0.5 - uv.x+0.5), (0.5 - uv.y+0.5));
+    float dist = min(avg, side);
+    // float dist = 2.0*length(diff);
+    float n = 1.0-smoothstep(0.003, 300.0, dist);
+    return n*(1.0-exp(-200.0*dist*dist));
+}
 void main() {
     vec3 p = position;
 
@@ -73,7 +86,7 @@ void main() {
 
     gl_Position = projection * model * vec4( p, 1.0 );
     normal = vec3(normalMat * vec4(-1.0 * raw_normal, 1.0));
-
+    fogValue = getFogValue();
     fcolor = color;
     pos = vec3(gl_Position);
 }

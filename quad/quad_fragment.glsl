@@ -11,6 +11,7 @@ varying vec3 normal;
 varying vec3 raw_normal;
 varying vec3 pos;
 varying float height;
+varying float fogValue;
 
 const float infinity = 1.0 / 0.0;
 
@@ -125,6 +126,7 @@ vec4 getLightColor() {
     // Height shading
     float cap = 0.6;
     material_color *= (height*cap)+cap;
+    material_color = mix(vec3(0.5,0.5,0.5) , material_color, fogValue);
 
     // Lights
     vec3 N = normalize(normal);

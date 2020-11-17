@@ -1,5 +1,7 @@
 html {
-    background-color: rgb(158, 201, 250);
+    background-image: url("sky.png");
+    background-position: top;
+    background-size: cover;
     text-align: center;
     color: white;
 }
