@@ -13,7 +13,6 @@ class Quad {
     KA;
     KD;
     KS;
-    SV;
     rotation;
     cameraPos;
     mode;
@@ -52,7 +51,6 @@ class Quad {
         this.KA = document.getElementById("ka").value;
         this.KD = document.getElementById("kd").value;
         this.KS = document.getElementById("ks").value;
-        this.SV = document.getElementById("sv").value;
         this.rotation = document.getElementById("rotation").value;
         this.cameraPos = document.getElementById("camera").value;
         this.mode = document.querySelector('input[name="mode"]:checked').value;
@@ -117,7 +115,6 @@ class Quad {
         gl.uniform1f(this.locations.ka, this.KA);
         gl.uniform1f(this.locations.kd, this.KD);
         gl.uniform1f(this.locations.ks, this.KS);
-        gl.uniform1f(this.locations.sv, this.SV);
         gl.uniform1f(this.locations.res, this.RES);
         gl.uniform1i(this.locations.mode, this.mode);
 
@@ -183,7 +180,6 @@ class Quad {
         this.locations.ka = gl.getUniformLocation(this.program, "Ka");
         this.locations.kd = gl.getUniformLocation(this.program, "Kd");
         this.locations.ks = gl.getUniformLocation(this.program, "Ks");
-        this.locations.sv = gl.getUniformLocation(this.program, "Sv");
         this.locations.res = gl.getUniformLocation(this.program, "res");
         this.locations.mode = gl.getUniformLocation(this.program, "mode");
     }
