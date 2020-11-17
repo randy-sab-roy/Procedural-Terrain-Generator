@@ -245,6 +245,17 @@ float computeWaterAnimation(float height, vec2 fractalPoint)
     return waterLevel - 0.1 + (firstNoise + secondNoise)/3.0;
 
 }
+
+// https://stackoverflow.com/questions/18453302/how-do-you-pack-one-32bit-int-into-4-8bit-ints-in-glsl-webgl
+const vec4 bitEnc = vec4(1.,255.,65025.,16581375.);
+vec4 EncodeFloatRGBA (float v) {
+    vec4 enc = bitEnc * v;
+    enc = fract(enc);
+    enc -= enc.yzww * vec2(1./255., 0.).xxxy;
+    return enc;
+}
+
+
 void main() {
     // Allow to offset and scale the terrain
     usePerlin = noise == 0;
@@ -256,5 +267,5 @@ void main() {
         value = computeWaterAnimation(value, fractalPoint);
     }
 
-    gl_FragColor = vec4(vec3(value), 1.0);
+    gl_FragColor = EncodeFloatRGBA(value);
 }

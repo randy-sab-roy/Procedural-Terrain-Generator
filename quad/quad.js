@@ -1,5 +1,5 @@
 class Quad {
-    RES = 255;
+    RES = 1000;
 
     /** @type {WebGLRenderingContext} */
     gl = null;
