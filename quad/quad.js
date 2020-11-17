@@ -15,7 +15,6 @@ class Quad {
     KD;
     KS;
     SV;
-    amp;
     animationSpeed;
     cameraPos;
     useGen;
@@ -50,7 +49,6 @@ class Quad {
         this.KD = document.getElementById("kd").value;
         this.KS = document.getElementById("ks").value;
         this.SV = document.getElementById("sv").value;
-        this.amp = document.getElementById("amp").value;
         this.animationSpeed = document.getElementById("animSpeed").value;
         this.cameraPos = document.getElementById("camera").value;
         this.useGen = document.getElementById("useGen").checked;
@@ -107,7 +105,6 @@ class Quad {
         gl.enableVertexAttribArray(this.locations.position);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.positions);
         gl.vertexAttribPointer(this.locations.position, 3, gl.FLOAT, false, 0, 0);
-        gl.uniform1f(this.locations.amp, this.amp)
 
         // Colors
         gl.enableVertexAttribArray(this.locations.color);
@@ -175,7 +172,6 @@ class Quad {
         this.locations.kd = gl.getUniformLocation(this.program, "Kd");
         this.locations.ks = gl.getUniformLocation(this.program, "Ks");
         this.locations.sv = gl.getUniformLocation(this.program, "Sv");
-        this.locations.amp = gl.getUniformLocation(this.program, "amp");
         this.locations.res = gl.getUniformLocation(this.program, "res");
         this.locations.mode = gl.getUniformLocation(this.program, "mode");
     }
