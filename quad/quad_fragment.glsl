@@ -57,7 +57,7 @@ vec3 getMaterialBlending()
         }
         else
         {
-            materialSv = 5000.0;//infinity;
+            materialSv = 5000.0;
             mat = sandColor;
         }
     }
@@ -125,7 +125,7 @@ vec4 getLightColor() {
     // Height shading
     float cap = 0.6;
     material_color *= (height*cap)+cap;
-    material_color = mix(vec3(0.5,0.5,0.5) , material_color, fogValue);
+    material_color = mix(vec3(0.5,0.52,0.53) , material_color, fogValue);
 
     // Lights
     vec3 N = normalize(normal);

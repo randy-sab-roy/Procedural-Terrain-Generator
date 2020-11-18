@@ -62,9 +62,8 @@ float getFogValue()
     float avg = ((0.5 - uv.x+0.5) + (0.5 - uv.y+0.5))/2.0;
     float side = min((0.5 - uv.x+0.5), (0.5 - uv.y+0.5));
     float dist = min(avg, side);
-    // float dist = 2.0*length(diff);
-    float n = 1.0-smoothstep(0.003, 300.0, dist);
-    return n*(1.0-exp(-200.0*dist*dist));
+
+    return 1.0-exp(-800.0*dist*dist);
 }
 void main() {
     vec3 p = position;
