@@ -84,6 +84,8 @@ class Generator {
         document.getElementById("h3Amp").value = this.h3Amp;
         document.getElementById("h3Scale").value = this.h3Freq;
         //
+        this.locations.waterLevel = gl.getUniformLocation(this.program, "waterLevel");
+        document.getElementById("waterLevel").value = this.waterLevel;
 
         gl.enable(gl.DEPTH_TEST);
     }
@@ -192,6 +194,10 @@ class Generator {
         gl.uniform1f(this.locations.h3Amp, this.tempAmp);
         gl.uniform1f(this.locations.h3Contrast, document.getElementById("h3Contrast").value);
         gl.uniform1f(this.locations.h3Freq, document.getElementById("h3Scale").value);
+
+        //
+        gl.uniform1f(this.locations.waterLevel, document.getElementById("waterLevel").value);
+
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
     };
 

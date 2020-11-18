@@ -17,12 +17,27 @@ class Quad {
     cameraPos;
     mode;
 
+    forceDefaultvalues(){
+        document.getElementById("waterLevel").value = document.getElementById("waterLevel").defaultValue;
+    }
+
     async init(gl) {
         this.gl = gl;
         this.buffers = this.createBuffers();
         this.program = await GlUtils.createWebGLProgramFromPath(gl, "quad/quad_vertex.glsl", "quad/quad_fragment.glsl");
         gl.useProgram(this.program);
         this.bindLocations();
+        //
+        this.forceDefaultvalues();
+        this.locations.waterLevel = gl.getUniformLocation(this.program, "waterLevel");
+        this.locations.wsBlend = gl.getUniformLocation(this.program, "wsBlend");
+        this.locations.sandLevel = gl.getUniformLocation(this.program, "sandLevel");
+        this.locations.sgBlend = gl.getUniformLocation(this.program, "sgBlend");
+        this.locations.grassLevel = gl.getUniformLocation(this.program, "grassLevel");
+        this.locations.gsBlend = gl.getUniformLocation(this.program, "gsBlend");
+        this.locations.rockAngle = gl.getUniformLocation(this.program, "rockAngle");
+        this.locations.rockBlend = gl.getUniformLocation(this.program, "rockBlend");
+
         gl.enable(gl.DEPTH_TEST);
     }
 
@@ -117,6 +132,17 @@ class Quad {
         gl.uniform1f(this.locations.ks, this.KS);
         gl.uniform1f(this.locations.res, this.RES);
         gl.uniform1i(this.locations.mode, this.mode);
+
+        // Terrain
+        gl.uniform1f(this.locations.waterLevel, document.getElementById("waterLevel").value);
+        gl.uniform1f(this.locations.wsBlend, document.getElementById("wsBlend").value);
+        gl.uniform1f(this.locations.sandLevel, document.getElementById("sandLevel").value);
+        gl.uniform1f(this.locations.sgBlend, document.getElementById("sgBlend").value);
+        gl.uniform1f(this.locations.grassLevel, document.getElementById("grassLevel").value);
+        gl.uniform1f(this.locations.gsBlend, document.getElementById("gsBlend").value);
+        gl.uniform1f(this.locations.rockAngle, document.getElementById("rockAngle").value);
+        gl.uniform1f(this.locations.rockBlend, document.getElementById("rockBlend").value);
+
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
     };

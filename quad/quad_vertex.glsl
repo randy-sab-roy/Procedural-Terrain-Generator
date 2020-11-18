@@ -10,6 +10,7 @@ uniform mat4 normalMat;
 uniform float time;
 uniform sampler2D heightMap;
 uniform float res;
+uniform float waterLevel;
 
 varying vec4 fcolor;
 varying vec3 normal;
@@ -17,7 +18,6 @@ varying vec3 raw_normal;
 varying vec3 pos;
 varying float height;
 varying float fogValue;
-const float waterLevel = 0.1;
 
 // https://stackoverflow.com/questions/18453302/how-do-you-pack-one-32bit-int-into-4-8bit-ints-in-glsl-webgl
 const vec4 bitEnc = vec4(1.,255.,65025.,16581375.);

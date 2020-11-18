@@ -36,7 +36,7 @@ bool usePerlin;
 const float lacunarity = 2.0;
 const int MAX_ITERATIONS = 12;
 const float gain = 1.0;
-const float waterLevel = 0.1;
+uniform float waterLevel;
 
 
 // https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
