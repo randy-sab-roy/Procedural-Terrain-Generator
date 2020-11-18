@@ -10,19 +10,19 @@ class Generator {
     offset = 0;
     tempAmp = 0;
     // Initial values
-    fAmp = 0.5;
-    fContrast = 1.0;
+    fAmp = 0.24;
+    fContrast = 0.881;
 
-    h1Amp = 0.5;
-    h1Contrast = 1.0;
-
-
-    h2Amp = 1.0;
-    h2Contrast = 0.5;
+    h1Amp = 0.75;
+    h1Contrast = 1.5;
 
 
-    h3Amp = 0.1;
-    h3Contrast = 1.0;
+    h2Amp = 0.55;
+    h2Contrast = 0.4;
+
+
+    h3Amp = 0.25;
+    h3Contrast = 0.45;
 
     time = 0.0;
     startTime;
@@ -100,7 +100,7 @@ class Generator {
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     };
-
+    
     checkCaptureStatus() {
         if (this.capture == true) {
             this.capture = false;

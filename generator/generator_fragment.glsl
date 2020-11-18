@@ -205,7 +205,7 @@ float hyrbidMultifractal(vec2 point){
 
         }
         if(weight > 1.0) weight = 1.0;
-        if(weight < 0.0) weight = 0.0;
+        // if(weight < 0.0) weight = 0.0;
         signal = noise*exponent_array[i];
         result += weight*signal;
         weight *= signal;
@@ -223,7 +223,7 @@ float computeHeight(vec2 pos){
     vec2 p = pos;
     
     bool tempNoiseClass = usePerlin;
-    
+
     float b2 = ((fbm(p*convertFreq(fFreq))-0.5)*fContrast+0.5)*fAmp;
 
     usePerlin = true;
