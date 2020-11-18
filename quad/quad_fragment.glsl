@@ -6,14 +6,13 @@ uniform float Sv;
 uniform int mode;
 uniform sampler2D heightMap;
 uniform float waterLevel;
-uniform float wsBlend;
+const float wsBlend = 0.022;
 uniform float sandLevel;
-uniform float sgBlend;
+const float sgBlend = 0.07;
 uniform float grassLevel;
-uniform float gsBlend;
+const float gsBlend = 0.04;
 uniform float rockAngle;
-uniform float rockBlend;
-
+const float rockBlend = 0.25;
 varying vec4 fcolor;
 varying vec3 normal;
 varying vec3 raw_normal;
