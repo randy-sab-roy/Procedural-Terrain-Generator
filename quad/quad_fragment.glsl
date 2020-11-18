@@ -24,7 +24,7 @@ const float infinity = 1.0 / 0.0;
 
 const vec3 waterColor = vec3(0.0,0.11,0.22);
 const vec3 sandColor = vec3(0.76, 0.69, 0.5);
-const vec3 rockColor = vec3(0.3, 0.3, 0.3);
+const vec3 rockColor = vec3(0.255, 0.2325, 0.22);
 const vec3 snowColor = vec3(0.8, 0.8, 0.8);
 const vec3 grassColor = vec3(0.15, 0.25, 0.11);
 
