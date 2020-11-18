@@ -142,24 +142,18 @@ float voronoiNoise(vec2 P) {
     return (d1.x-0.5)*2.0+1.0;
 }
 
-float ridgenoise(vec2 x) {
-  return 2.0 * (0.5 - abs(0.5 -  (usePerlin ? perlin(x) : voronoiNoise(x))));
-}
-
 float fbm(vec2 x)
 {    
-    float G = exp2(-H);
+    float G = exp(-H);
     float f = 1.0;
     float a = 0.1;
     float t = 0.0;
-    float cumulative = 0.0;
     vec2 shift = vec2(100.0);
     vec2 pos = x;
     for( int i=0; i<MAX_ITERATIONS; i++ )
     {
         if (i == nOctaves) break;
         t += usePerlin ? a*perlin(f*pos) : 1.8*a*voronoiNoise(f*pos);
-        // t += a*ridgenoise(f*x);
         pos += shift;
         f *= lacunarity;
         a *= G;
@@ -168,12 +162,14 @@ float fbm(vec2 x)
 }
 
 // https://www.classes.cs.uchicago.edu/archive/2015/fall/23700-1/final-project/MusgraveTerrain00.pdf
-float hyrbidMultifractal(vec2 point, float gain){
+float hyrbidMultifractal(vec2 point){
     float frequency, result, signal, weight, noise;
     float exponent_array[100];
     vec2 p = point;
+    float amp = 1.0;
     frequency = 1.0;
     //filling the exponent array
+
 
     for(int i=0; i<MAX_ITERATIONS; ++i){
         if (i == nOctaves) break;
@@ -181,40 +177,41 @@ float hyrbidMultifractal(vec2 point, float gain){
         frequency *= lacunarity;
     }
 
+    frequency = 1.0;
+
     if(usePerlin)
     {
         noise = (perlin(p)) ;
     }
     else
     {
-        result = (voronoiNoise(p));
+        noise = (voronoiNoise(p));
 
     }
 
-    signal = -abs(noise);
-    signal *= signal;
-    result = signal;
-    weight = 1.0;
-
-    for(int i=1; i<MAX_ITERATIONS; i++ ) {
-        if (i == nOctaves) break;
-        weight*=(signal/2.0);
-        p *= lacunarity;
-        if(weight > 1.0) weight = 1.0;
+    signal = result = 0.5*noise* exponent_array[0];
+    weight = result;
+    for(int i=1; i<MAX_ITERATIONS; i++) {
+        if(i == nOctaves) break;
+        
         if(usePerlin)
         {
-            noise = (perlin(p));
+            noise =1.0-abs((perlin(p))) ;
         }
         else
         {
             noise = (voronoiNoise(p));
+
         }
-        signal = -abs(noise);
-        signal *= signal;
-        signal *= weight;
-        result += signal*exponent_array[i];
+        if(weight > 1.0) weight = 1.0;
+        if(weight < 0.0) weight = 0.0;
+        signal = noise*exponent_array[i];
+        result += weight*signal;
+        weight *= signal;
+
+        p *= lacunarity;
     }
-    return (result-0.5)*0.5+0.5;
+    return (result-0.5)*1.0+0.5;
 }
 
 float convertFreq(float freq)
@@ -226,13 +223,13 @@ float computeHeight(vec2 pos){
     
     float b2 = ((fbm(p*convertFreq(fFreq))-0.5)*fContrast+0.5)*fAmp;
 
-    float h1 = ((hyrbidMultifractal(p*convertFreq(h1Freq), 1.0) - 0.5)*h1Contrast+0.5)*h1Amp;
+    float h1 = ((hyrbidMultifractal(p*convertFreq(h1Freq)) - 0.5)*h1Contrast+0.5)*h1Amp;
 
-    float h2 = ((hyrbidMultifractal(p*convertFreq(h2Freq), 0.5) - 0.5)*h2Contrast+0.5)*h2Amp;
+    float h2 = ((hyrbidMultifractal(p*convertFreq(h2Freq)) - 0.5)*h2Contrast+0.5)*h2Amp;
 
-    float h3 = ((hyrbidMultifractal(p*convertFreq(h3Freq), 1.0) - 0.5)*h3Contrast+0.5)*h3Amp;
+    float h3 = ((hyrbidMultifractal(p*convertFreq(h3Freq)) - 0.5)*h3Contrast+0.5)*h3Amp;
 
-    return (((b2+h1+h2+h3 + globalBrightness)-0.5)*globalContrast+0.5)/(0.6*(fAmp+h1Amp+h2Amp+h3Amp));
+    return (((b2+h1+h2+h3 + globalBrightness)-0.5)*globalContrast+0.5);///(0.6*(fAmp+h1Amp+h2Amp+h3Amp));
 }
 
 float computeWaterAnimation(float height, vec2 fractalPoint)
