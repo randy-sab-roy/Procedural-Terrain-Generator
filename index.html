@@ -46,7 +46,7 @@
                 </div>
                 <div>
                     <label class="title">H</label><br>
-                    <input type="range" min="0.0" max="2.0" value="0.315" step="0.0001" id="h">
+                    <input type="range" min="0.0" max="1.0" value="0.315" step="0.0001" id="h">
                 </div>
                 <div>
                     <label class="title">Octaves</label><br>
@@ -54,11 +54,11 @@
                 </div>
                 <div>
                     <label class="title">Contrast</label><br>
-                    <input type="range" min="0.0" max="6.0" value="0.166" step="0.001" id="gContrast">
+                    <input type="range" min="0.0" max="2.0" value="0.166" step="0.001" id="gContrast">
                 </div>
                 <div>
                     <label class="title">Brightness</label><br>
-                    <input type="range" min="-0.4" max="0.0" value="-0.305" step="0.001" id="gBrightness">
+                    <input type="range" min="-1.0" max="1.0" value="-0.305" step="0.001" id="gBrightness">
                 </div>
                 <div>
                     <label class="title">Scale</label><br>
@@ -67,12 +67,11 @@
             </div>
             <div>
                 <label class="title">Choose a fractal:</label>
-
                 <div class="tab" style="margin-bottom: 0px;">
-                    <button class="tablinks active" onclick="openTab(event, 'fbm')">Fbm</button>
-                    <button class="tablinks" onclick="openTab(event, 'h1')">H1</button>
-                    <button class="tablinks" onclick="openTab(event, 'h2')">H2</button>
-                    <button class="tablinks" onclick="openTab(event, 'h3')">H3</button>
+                    <button class="tablinks active" onclick="openTab(event, 'fbm')">Texture detail</button>
+                    <button class="tablinks" onclick="openTab(event, 'h1')">Big Hills</button>
+                    <button class="tablinks" onclick="openTab(event, 'h2')">Mountains</button>
+                    <button class="tablinks" onclick="openTab(event, 'h3')">Small Hills</button>
                 </div>
                 <div id="fbm" class="tabcontent" style="display: block;">
                     <div>
@@ -86,10 +85,6 @@
                     <div>
                         <label class="title">Contrast</label><br>
                         <input type="range" min="0.0" max="2.0" value="1.0" step="0.001" id="fContrast">
-                    </div>
-                    <div>
-                        <label class="title">Scale</label><br>
-                        <input type="range" min="-10.0" max="8.0" value="-5.17" step="0.0001" id="fScale">
                     </div>
                 </div>
                 <div id="h1" class="tabcontent">
@@ -105,10 +100,6 @@
                         <label class="title">Contrast</label><br>
                         <input type="range" min="0.0" max="2.0" value="1.15" step="0.001" id="h1Contrast">
                     </div>
-                    <div>
-                        <label class="title">Scale</label><br>
-                        <input type="range" min="-10.0" max="8.0" value="-0.82" step="0.0001" id="h1Scale">
-                    </div>
                 </div>
                 <div id="h2" class="tabcontent">
                     <div>
@@ -122,10 +113,6 @@
                     <div>
                         <label class="title">Contrast</label><br>
                         <input type="range" min="0.0" max="2.0" value="0.6" step="0.001" id="h2Contrast">
-                    </div>
-                    <div>
-                        <label class="title">Scale</label><br>
-                        <input type="range" min="-10.0" max="8.0" value="1.35" step="0.0001" id="h2Scale">
                     </div>
                 </div>
                 <div id="h3" class="tabcontent">
@@ -141,10 +128,7 @@
                         <label class="title">Contrast</label><br>
                         <input type="range" min="0.0" max="2.0" value="1.0" step="0.001" id="h3Contrast">
                     </div>
-                    <div>
-                        <label class="title">Scale</label><br>
-                        <input type="range" min="-10.0" max="8.0" value="6.4" step="0.0001" id="h3Scale">
-                    </div>
+
                 </div>
             </div>
             <div>

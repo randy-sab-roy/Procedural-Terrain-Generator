@@ -221,15 +221,19 @@ float convertFreq(float freq)
 float computeHeight(vec2 pos){
     vec2 p = pos;
     
+    usePerlin = true;
     float b2 = ((fbm(p*convertFreq(fFreq))-0.5)*fContrast+0.5)*fAmp;
 
+    usePerlin = true;
     float h1 = ((hyrbidMultifractal(p*convertFreq(h1Freq)) - 0.5)*h1Contrast+0.5)*h1Amp;
 
+    usePerlin = false;
     float h2 = ((hyrbidMultifractal(p*convertFreq(h2Freq)) - 0.5)*h2Contrast+0.5)*h2Amp;
 
+    usePerlin = true;
     float h3 = ((hyrbidMultifractal(p*convertFreq(h3Freq)) - 0.5)*h3Contrast+0.5)*h3Amp;
 
-    return (((b2+h1+h2+h3 + globalBrightness)-0.5)*globalContrast+0.5);///(0.6*(fAmp+h1Amp+h2Amp+h3Amp));
+    return (((b2+h1+h2+h3 + globalBrightness)-0.5)*globalContrast+0.5);
 }
 
 float computeWaterAnimation(float height, vec2 fractalPoint)

@@ -58,7 +58,6 @@ class Generator {
 
         document.getElementById("fContrast").value = this.fContrast;
         document.getElementById("fAmp").value = this.fAmp;
-        document.getElementById("fScale").value = this.fFreq;
 
         this.locations.h1Amp = gl.getUniformLocation(this.program, "h1Amp");
         this.locations.h1Contrast = gl.getUniformLocation(this.program, "h1Contrast");
@@ -66,7 +65,6 @@ class Generator {
 
         document.getElementById("h1Contrast").value = this.h1Contrast;
         document.getElementById("h1Amp").value = this.h1Amp;
-        document.getElementById("h1Scale").value = this.h1Freq;
 
         this.locations.h2Amp = gl.getUniformLocation(this.program, "h2Amp");
         this.locations.h2Contrast = gl.getUniformLocation(this.program, "h2Contrast");
@@ -74,7 +72,6 @@ class Generator {
 
         document.getElementById("h2Contrast").value = this.h2Contrast;
         document.getElementById("h2Amp").value = this.h2Amp;
-        document.getElementById("h2Scale").value = this.h2Freq;
 
         this.locations.h3Amp = gl.getUniformLocation(this.program, "h3Amp");
         this.locations.h3Contrast = gl.getUniformLocation(this.program, "h3Contrast");
@@ -82,7 +79,6 @@ class Generator {
 
         document.getElementById("h3Contrast").value = this.h3Contrast;
         document.getElementById("h3Amp").value = this.h3Amp;
-        document.getElementById("h3Scale").value = this.h3Freq;
         //
         this.locations.waterLevel = gl.getUniformLocation(this.program, "waterLevel");
         document.getElementById("waterLevel").value = this.waterLevel;
@@ -178,22 +174,20 @@ class Generator {
         this.tempAmp = document.getElementById("showFbm").checked ? document.getElementById("fAmp").value : 0.0;
         gl.uniform1f(this.locations.fAmp, this.tempAmp);
         gl.uniform1f(this.locations.fContrast, document.getElementById("fContrast").value);
-        gl.uniform1f(this.locations.fFreq, document.getElementById("fScale").value);
+
 
         this.tempAmp = document.getElementById("showH1").checked ? document.getElementById("h1Amp").value : 0.0;
         gl.uniform1f(this.locations.h1Amp, this.tempAmp);
         gl.uniform1f(this.locations.h1Contrast, document.getElementById("h1Contrast").value);
-        gl.uniform1f(this.locations.h1Freq, document.getElementById("h1Scale").value);
+
 
         this.tempAmp = document.getElementById("showH2").checked ? document.getElementById("h2Amp").value : 0.0;
         gl.uniform1f(this.locations.h2Amp, this.tempAmp);
         gl.uniform1f(this.locations.h2Contrast, document.getElementById("h2Contrast").value);
-        gl.uniform1f(this.locations.h2Freq, document.getElementById("h2Scale").value);
 
         this.tempAmp = document.getElementById("showH3").checked ? document.getElementById("h3Amp").value : 0.0;
         gl.uniform1f(this.locations.h3Amp, this.tempAmp);
         gl.uniform1f(this.locations.h3Contrast, document.getElementById("h3Contrast").value);
-        gl.uniform1f(this.locations.h3Freq, document.getElementById("h3Scale").value);
 
         //
         gl.uniform1f(this.locations.waterLevel, document.getElementById("waterLevel").value);
