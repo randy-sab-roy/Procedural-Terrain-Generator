@@ -27,6 +27,7 @@ float DecodeFloatRGBA (vec4 v) {
     return dot(v, bitDec);
 }
 
+// Sobel filter to get normals from heightmap
 vec3 getNormal() {
     float tempAmp = 1.0;
 
@@ -46,7 +47,7 @@ vec3 getNormal() {
 
     if(DecodeFloatRGBA(texture2D(heightMap, uv)) <= waterLevel) 
     {
-        // water hack
+        // water amp hack
         tempAmp /= 8.0;
     }
     vec3 va = normalize(vec3(8.0*d, 0.0, tempAmp * gx));
@@ -55,6 +56,7 @@ vec3 getNormal() {
     return normalize(cross(va, vb));
 }
 
+// Custom falloff function for fog
 float getFogValue()
 {
     vec2 pos = vec2(uv.x, uv.y);

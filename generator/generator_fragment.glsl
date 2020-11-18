@@ -2,23 +2,19 @@ precision mediump float;
 
 uniform float terrainOffset;
 uniform float terrainScale;
-uniform int noise;
 uniform float H;
 uniform int nOctaves;
 uniform float globalContrast;
 uniform float globalBrightness;
+uniform float time;
+uniform int noise;
+uniform float waterLevel;
 
 uniform float fAmp;
 uniform float fContrast;
 
-const float fFreq = 2.0;
-const float h1Freq = 0.1;
-const float h2Freq = 1.0;
-const float h3Freq = 4.0;
-
 uniform float h1Amp;
 uniform float h1Contrast;
-uniform float h1Brightness;
 
 uniform float h2Amp;
 uniform float h2Contrast;
@@ -26,19 +22,20 @@ uniform float h2Contrast;
 uniform float h3Amp;
 uniform float h3Contrast;
 
-uniform float time;
+const float fFreq = 2.0; // texturing
+const float h1Freq = 0.1; // Sparse hills
+const float h2Freq = 1.0; // Mountains
+const float h3Freq = 4.0; // Small hills
 
 varying vec2 point;
 
 const float PI = 3.1415926535;
-bool first = true;
-bool usePerlin;
-
 const float lacunarity = 2.0;
 const int MAX_ITERATIONS = 12;
 const float gain = 1.0;
-uniform float waterLevel;
 
+
+// NOISE GENERATION SECTION
 
 // https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 vec2 fade(vec2 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
@@ -97,13 +94,17 @@ float perlin(vec2 P){
     return 2.3 *  n_xy;
 }
 
-vec3 dist(vec3 x, vec3 y,  bool manhattanDistance) {
-  return manhattanDistance ?  abs(x) + abs(y) :  (x * x + y * y);
+// Cellular noise ("Worley noise") in 2D in GLSL.
+// Copyright (c) Stefan Gustavson 2011-04-19. All rights reserved.
+// This code is released under the conditions of the MIT license.
+// See LICENSE file for details.
+// https://github.com/stegu/webgl-noise
+vec3 dist(vec3 x, vec3 y) {
+  return (x * x + y * y);
 }
 
 float voronoiNoise(vec2 P) {
     float jitter = 1.0;
-    bool manhattanDistance = false;
     float K= 0.142857142857; // 1/7
     float Ko= 0.428571428571 ;// 3/7
   	vec2 Pi = mod(floor(P), 289.0);
@@ -116,19 +117,19 @@ float voronoiNoise(vec2 P) {
   	vec3 oy = mod(floor(p*K),7.0)*K - Ko;
   	vec3 dx = Pf.x + 0.5 + jitter*ox;
   	vec3 dy = Pf.y - of + jitter*oy;
-  	vec3 d1 = dist(dx,dy, manhattanDistance); // d11, d12 and d13, squared
+  	vec3 d1 = dist(dx,dy); // d11, d12 and d13, squared
   	p = permute(px.y + Pi.y + oi); // p21, p22, p23
   	ox = fract(p*K) - Ko;
   	oy = mod(floor(p*K),7.0)*K - Ko;
   	dx = Pf.x - 0.5 + jitter*ox;
   	dy = Pf.y - of + jitter*oy;
-  	vec3 d2 = dist(dx,dy, manhattanDistance); // d21, d22 and d23, squared
+  	vec3 d2 = dist(dx,dy); // d21, d22 and d23, squared
   	p = permute(px.z + Pi.y + oi); // p31, p32, p33
   	ox = fract(p*K) - Ko;
   	oy = mod(floor(p*K),7.0)*K - Ko;
   	dx = Pf.x - 1.5 + jitter*ox;
   	dy = Pf.y - of + jitter*oy;
-  	vec3 d3 = dist(dx,dy, manhattanDistance); // d31, d32 and d33, squared
+  	vec3 d3 = dist(dx,dy); // d31, d32 and d33, squared
   	// Sort out the two smallest distances (F1, F2)
   	vec3 d1a = min(d1, d2);
   	d2 = max(d1, d2); // Swap to keep candidates for F2
@@ -143,7 +144,8 @@ float voronoiNoise(vec2 P) {
     return (d1.x-0.5)*2.0+1.0;
 }
 
-float fbm(vec2 x)
+// https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
+float fbm(vec2 x, bool isPerlin)
 {    
     float G = exp(-H);
     float f = 1.0;
@@ -154,7 +156,7 @@ float fbm(vec2 x)
     for( int i=0; i<MAX_ITERATIONS; i++ )
     {
         if (i == nOctaves) break;
-        t += usePerlin ? a*perlin(f*pos) : 1.8*a*voronoiNoise(f*pos);
+        t += isPerlin ? a*perlin(f*pos) : 1.8*a*voronoiNoise(f*pos);
         pos += shift;
         f *= lacunarity;
         a *= G;
@@ -163,7 +165,7 @@ float fbm(vec2 x)
 }
 
 // https://www.classes.cs.uchicago.edu/archive/2015/fall/23700-1/final-project/MusgraveTerrain00.pdf
-float hyrbidMultifractal(vec2 point){
+float hyrbidMultifractal(vec2 point, bool isPerlin){
     float frequency, result, signal, weight, noise;
     float exponent_array[100];
     vec2 p = point;
@@ -180,7 +182,7 @@ float hyrbidMultifractal(vec2 point){
 
     frequency = 1.0;
 
-    if(usePerlin)
+    if(isPerlin)
     {
         noise = (perlin(p)) ;
     }
@@ -195,7 +197,7 @@ float hyrbidMultifractal(vec2 point){
     for(int i=1; i<MAX_ITERATIONS; i++) {
         if(i == nOctaves) break;
         
-        if(usePerlin)
+        if(isPerlin)
         {
             noise =1.0-abs((perlin(p))) ;
         }
@@ -215,40 +217,30 @@ float hyrbidMultifractal(vec2 point){
     return (result-0.5)*1.0+0.5;
 }
 
+// UI converter
 float convertFreq(float freq)
 {
     return (freq < -1.0 ? 1.0/-freq : freq+2.0);
 }
-float computeHeight(vec2 pos){
+
+// Combine different fractals
+float computeHeight(vec2 pos, bool usePerlin){
     vec2 p = pos;
-    
-    bool tempNoiseClass = usePerlin;
-
-    float b2 = ((fbm(p*convertFreq(fFreq))-0.5)*fContrast+0.5)*fAmp;
-
-    usePerlin = true;
-    float h1 = ((hyrbidMultifractal(p*convertFreq(h1Freq)) - 0.5)*h1Contrast+0.5)*h1Amp;
-
-    usePerlin = false;
-    float h2 = ((hyrbidMultifractal(p*convertFreq(h2Freq)) - 0.5)*h2Contrast+0.5)*h2Amp;
-
-    usePerlin = true;
-    float h3 = ((hyrbidMultifractal(p*convertFreq(h3Freq)) - 0.5)*h3Contrast+0.5)*h3Amp;
-
-    usePerlin = tempNoiseClass;
+    float b2 = ((fbm(p*convertFreq(fFreq), usePerlin)-0.5)*fContrast+0.5)*fAmp;
+    float h1 = ((hyrbidMultifractal(p*convertFreq(h1Freq), true) - 0.5)*h1Contrast+0.5)*h1Amp;
+    float h2 = ((hyrbidMultifractal(p*convertFreq(h2Freq), false) - 0.5)*h2Contrast+0.5)*h2Amp;
+    float h3 = ((hyrbidMultifractal(p*convertFreq(h3Freq), true) - 0.5)*h3Contrast+0.5)*h3Amp;
 
     return (((b2+h1+h2+h3 + globalBrightness)-0.5)*globalContrast+0.5);
 }
 
+// Custom made water animation inspired by https://www.shadertoy.com/view/wdG3Rz
 float computeWaterAnimation(float height, vec2 fractalPoint)
 {
-
-    usePerlin = false;
-    float firstNoise = (((fbm(fractalPoint*convertFreq(60.0) - time*0.5)-0.5)*0.4+0.5)*0.3);
+    float firstNoise = (((fbm(fractalPoint*convertFreq(60.0) - time*0.5, false)-0.5)*0.4+0.5)*0.3);
     vec2 offset = vec2(-10.0, 100);
-    float secondNoise = (((fbm((fractalPoint+offset)*convertFreq(40.0) + time*0.2)-0.5)*0.4+0.5)*0.3);
-    return waterLevel - 0.1 + (firstNoise + secondNoise)/3.0;
-
+    float secondNoise = (((fbm((fractalPoint+offset)*convertFreq(40.0) + time*0.2, false)-0.5)*0.4+0.5)*0.3);
+    return waterLevel - 0.15 + min((firstNoise + secondNoise)/2.5, 0.15);
 }
 
 // https://stackoverflow.com/questions/18453302/how-do-you-pack-one-32bit-int-into-4-8bit-ints-in-glsl-webgl
@@ -260,17 +252,15 @@ vec4 EncodeFloatRGBA (float v) {
     return enc;
 }
 
-
 void main() {
     // Allow to offset and scale the terrain
-    usePerlin = noise == 0;
     vec2 fractalPoint = ((point - vec2(0.5)) * terrainScale) + vec2(terrainOffset);
-
-    float value = computeHeight(fractalPoint);
+    bool usePerlin = noise == 0;
+    
+    float value = computeHeight(fractalPoint, usePerlin);
     if (value <= waterLevel)
     {
         value = computeWaterAnimation(value, fractalPoint);
     }
-
     gl_FragColor = EncodeFloatRGBA(value);
 }
