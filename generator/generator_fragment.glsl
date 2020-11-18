@@ -10,20 +10,21 @@ uniform float globalBrightness;
 
 uniform float fAmp;
 uniform float fContrast;
-uniform float fFreq;
+
+const float fFreq = 2.0;
+const float h1Freq = 0.1;
+const float h2Freq = 1.0;
+const float h3Freq = 4.0;
 
 uniform float h1Amp;
 uniform float h1Contrast;
 uniform float h1Brightness;
-uniform float h1Freq;
 
 uniform float h2Amp;
 uniform float h2Contrast;
-uniform float h2Freq;
 
 uniform float h3Amp;
 uniform float h3Contrast;
-uniform float h3Freq;
 
 uniform float time;
 
@@ -221,7 +222,8 @@ float convertFreq(float freq)
 float computeHeight(vec2 pos){
     vec2 p = pos;
     
-    usePerlin = true;
+    bool tempNoiseClass = usePerlin;
+    
     float b2 = ((fbm(p*convertFreq(fFreq))-0.5)*fContrast+0.5)*fAmp;
 
     usePerlin = true;
@@ -232,6 +234,8 @@ float computeHeight(vec2 pos){
 
     usePerlin = true;
     float h3 = ((hyrbidMultifractal(p*convertFreq(h3Freq)) - 0.5)*h3Contrast+0.5)*h3Amp;
+
+    usePerlin = tempNoiseClass;
 
     return (((b2+h1+h2+h3 + globalBrightness)-0.5)*globalContrast+0.5);
 }

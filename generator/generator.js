@@ -10,21 +10,17 @@ class Generator {
     offset = 0;
     tempAmp = 0;
     // Initial values
-    fFreq = 2.0;
     fAmp = 0.5;
     fContrast = 1.0;
 
-    h1Freq = 0.4;
     h1Amp = 0.5;
     h1Contrast = 1.0;
 
 
-    h2Freq = 1.0;
     h2Amp = 1.0;
     h2Contrast = 0.5;
 
 
-    h3Freq = 6.4;
     h3Amp = 0.1;
     h3Contrast = 1.0;
 
@@ -54,28 +50,24 @@ class Generator {
         // 16 sliders
         this.locations.fAmp = gl.getUniformLocation(this.program, "fAmp");
         this.locations.fContrast = gl.getUniformLocation(this.program, "fContrast");
-        this.locations.fFreq = gl.getUniformLocation(this.program, "fFreq");
 
         document.getElementById("fContrast").value = this.fContrast;
         document.getElementById("fAmp").value = this.fAmp;
 
         this.locations.h1Amp = gl.getUniformLocation(this.program, "h1Amp");
         this.locations.h1Contrast = gl.getUniformLocation(this.program, "h1Contrast");
-        this.locations.h1Freq = gl.getUniformLocation(this.program, "h1Freq");
 
         document.getElementById("h1Contrast").value = this.h1Contrast;
         document.getElementById("h1Amp").value = this.h1Amp;
 
         this.locations.h2Amp = gl.getUniformLocation(this.program, "h2Amp");
         this.locations.h2Contrast = gl.getUniformLocation(this.program, "h2Contrast");
-        this.locations.h2Freq = gl.getUniformLocation(this.program, "h2Freq");
 
         document.getElementById("h2Contrast").value = this.h2Contrast;
         document.getElementById("h2Amp").value = this.h2Amp;
 
         this.locations.h3Amp = gl.getUniformLocation(this.program, "h3Amp");
         this.locations.h3Contrast = gl.getUniformLocation(this.program, "h3Contrast");
-        this.locations.h3Freq = gl.getUniformLocation(this.program, "h3Freq");
 
         document.getElementById("h3Contrast").value = this.h3Contrast;
         document.getElementById("h3Amp").value = this.h3Amp;
@@ -175,7 +167,6 @@ class Generator {
         gl.uniform1f(this.locations.fAmp, this.tempAmp);
         gl.uniform1f(this.locations.fContrast, document.getElementById("fContrast").value);
 
-
         this.tempAmp = document.getElementById("showH1").checked ? document.getElementById("h1Amp").value : 0.0;
         gl.uniform1f(this.locations.h1Amp, this.tempAmp);
         gl.uniform1f(this.locations.h1Contrast, document.getElementById("h1Contrast").value);
@@ -188,7 +179,6 @@ class Generator {
         this.tempAmp = document.getElementById("showH3").checked ? document.getElementById("h3Amp").value : 0.0;
         gl.uniform1f(this.locations.h3Amp, this.tempAmp);
         gl.uniform1f(this.locations.h3Contrast, document.getElementById("h3Contrast").value);
-
         //
         gl.uniform1f(this.locations.waterLevel, document.getElementById("waterLevel").value);
 
