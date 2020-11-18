@@ -33,6 +33,7 @@ class Quad {
         this.locations.sandLevel = gl.getUniformLocation(this.program, "sandLevel");
         this.locations.grassLevel = gl.getUniformLocation(this.program, "grassLevel");
         this.locations.rockAngle = gl.getUniformLocation(this.program, "rockAngle");
+        this.locations.blurWindow = gl.getUniformLocation(this.program, "blurWindow");
 
         gl.enable(gl.DEPTH_TEST);
     }
@@ -134,6 +135,7 @@ class Quad {
         gl.uniform1f(this.locations.sandLevel, document.getElementById("sandLevel").value);
         gl.uniform1f(this.locations.grassLevel, document.getElementById("grassLevel").value);
         gl.uniform1f(this.locations.rockAngle, document.getElementById("rockAngle").value);
+        gl.uniform1f(this.locations.blurWindow, document.getElementById("blurWindow").value);
 
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);

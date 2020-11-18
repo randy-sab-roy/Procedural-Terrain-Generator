@@ -11,6 +11,7 @@ uniform float time;
 uniform sampler2D heightMap;
 uniform float res;
 uniform float waterLevel;
+uniform float blurWindow;
 
 varying vec4 fcolor;
 varying vec3 normal;
@@ -65,15 +66,61 @@ float getFogValue()
 
     return 1.0-exp(-800.0*dist*dist);
 }
+
+// Code du TP4
+vec4 FiltreGaussien(vec2 pos, float etendue)
+{
+	vec4 sum = vec4(0.0);
+    etendue /= res;
+    float x = pos.x;
+    float y = pos.y;
+    if (etendue <= 0.001)
+    {
+        return texture2D(heightMap, vec2(x, y));
+    }
+
+	sum += texture2D(heightMap, vec2(x - 2.0 *etendue, y - 2.0 *etendue)) * 0.028672;
+	sum += texture2D(heightMap, vec2(x - 2.0 *etendue, y - 1.0 *etendue)) * 0.036333;
+	sum += texture2D(heightMap, vec2(x - 2.0 *etendue, y)) * 0.039317;
+	sum += texture2D(heightMap, vec2(x - 2.0 *etendue, y + 1.0 *etendue)) * 0.036333;
+	sum += texture2D(heightMap, vec2(x - 2.0 *etendue, y + 2.0 *etendue)) * 0.028672;
+
+	sum += texture2D(heightMap, vec2(x - 1.0 *etendue, y - 2.0 *etendue)) * 0.036333;
+	sum += texture2D(heightMap, vec2(x - 1.0 *etendue, y - 1.0 *etendue)) * 0.046042;
+	sum += texture2D(heightMap, vec2(x - 1.0 *etendue, y)) * 0.049824;
+	sum += texture2D(heightMap, vec2(x - 1.0 *etendue, y + 1.0 *etendue)) * 0.046042;
+	sum += texture2D(heightMap, vec2(x - 1.0 *etendue, y + 2.0 *etendue)) * 0.036333;
+
+	sum += texture2D(heightMap, vec2(x, y - 2.0 *etendue)) * 0.039317;
+	sum += texture2D(heightMap, vec2(x, y - 1.0 *etendue)) * 0.049824;
+	sum += texture2D(heightMap, vec2(x, y)) * 0.053916;
+	sum += texture2D(heightMap, vec2(x, y + 1.0 *etendue)) * 0.049824;
+	sum += texture2D(heightMap, vec2(x, y + 2.0 *etendue)) * 0.039317;
+
+	sum += texture2D(heightMap, vec2(x + 1.0 *etendue, y - 2.0 *etendue)) * 0.036333;
+	sum += texture2D(heightMap, vec2(x + 1.0 *etendue, y - 1.0 *etendue)) * 0.046042;
+	sum += texture2D(heightMap, vec2(x + 1.0 *etendue, y)) * 0.049824;
+	sum += texture2D(heightMap, vec2(x + 1.0 *etendue, y + 1.0 *etendue)) * 0.046042;
+	sum += texture2D(heightMap, vec2(x + 1.0 *etendue, y + 2.0 *etendue)) * 0.036333;
+
+	sum += texture2D(heightMap, vec2(x + 2.0 *etendue, y - 2.0 *etendue)) * 0.028672;
+	sum += texture2D(heightMap, vec2(x + 2.0 *etendue, y - 1.0 *etendue)) * 0.036333;
+	sum += texture2D(heightMap, vec2(x + 2.0 *etendue, y)) * 0.039317;
+	sum += texture2D(heightMap, vec2(x + 2.0 *etendue, y + 1.0 *etendue)) * 0.036333;
+	sum += texture2D(heightMap, vec2(x + 2.0 *etendue, y + 2.0 *etendue)) * 0.028672;
+
+	return vec4(sum.xyz, 1.0);
+}
+
 void main() {
     vec3 p = position;
-
+    vec4 blurred_height = FiltreGaussien(vec2(uv.x, uv.y), blurWindow);
     // Use amplitude as normal to have a uniform quad when flat
     raw_normal = vec3(0.0, 0.0, 0.001);
 
     if (uv.x != 0.0 && uv.y != 0.0 && uv.x != 1.0 && uv.y != 1.0)
     {
-        height = max(DecodeFloatRGBA((texture2D(heightMap, vec2(uv.x, uv.y)))), waterLevel);
+        height = max(DecodeFloatRGBA(blurred_height), waterLevel);
         p.z = p.z + height;
         
         float delta = 1.2/res;
