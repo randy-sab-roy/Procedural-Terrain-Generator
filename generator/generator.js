@@ -10,14 +10,14 @@ class Generator {
     offset = 0;
     tempAmp = 0;
     // Initial values
-    fAmp = 0.24;
-    fContrast = 0.881;
+    fAmp = 0.2;
+    fContrast = 0.6;
 
     h1Amp = 0.75;
     h1Contrast = 1.5;
 
 
-    h2Amp = 0.81;
+    h2Amp = 0.5;
     h2Contrast = 0.4;
 
 

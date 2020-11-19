@@ -156,7 +156,7 @@ float fbm(vec2 x, bool isPerlin)
     for( int i=0; i<MAX_ITERATIONS; i++ )
     {
         if (i == nOctaves) break;
-        t += isPerlin ? a*perlin(f*pos) : 1.8*a*voronoiNoise(f*pos);
+        t += isPerlin ? a*perlin(f*pos) : a*voronoiNoise(f*pos);
         pos += shift;
         f *= lacunarity;
         a *= G;
@@ -171,9 +171,8 @@ float hyrbidMultifractal(vec2 point, bool isPerlin){
     vec2 p = point;
     float amp = 1.0;
     frequency = 1.0;
+
     //filling the exponent array
-
-
     for(int i=0; i<MAX_ITERATIONS; ++i){
         if (i == nOctaves) break;
         exponent_array[i] = pow(frequency, -H);
@@ -199,7 +198,7 @@ float hyrbidMultifractal(vec2 point, bool isPerlin){
         
         if(isPerlin)
         {
-            noise =1.0-abs((perlin(p))) ;
+            noise = perlin(p) ;
         }
         else
         {
