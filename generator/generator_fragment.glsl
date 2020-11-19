@@ -236,9 +236,9 @@ float computeHeight(vec2 pos, bool usePerlin){
 // Custom made water animation inspired by https://www.shadertoy.com/view/wdG3Rz
 float computeWaterAnimation(float height, vec2 fractalPoint)
 {
-    float firstNoise = (((fbm(fractalPoint*convertFreq(60.0) - time*0.5, false)-0.5)*0.4+0.5)*0.3);
+    float firstNoise = (((fbm(fractalPoint*convertFreq(60.0) - time, false)-0.5)*0.4+0.5)*0.3);
     vec2 offset = vec2(-10.0, 100);
-    float secondNoise = (((fbm((fractalPoint+offset)*convertFreq(40.0) + time*0.2, false)-0.5)*0.4+0.5)*0.3);
+    float secondNoise = (((fbm((fractalPoint+offset)*convertFreq(40.0) + time*0.4, false)-0.5)*0.4+0.5)*0.3);
     return waterLevel - 0.15 + min((firstNoise + secondNoise)/2.5, 0.15);
 }
 
