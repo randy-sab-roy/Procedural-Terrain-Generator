@@ -11,7 +11,6 @@ uniform float time;
 uniform sampler2D heightMap;
 uniform float res;
 uniform float waterLevel;
-uniform float blurWindow;
 
 varying vec4 fcolor;
 varying vec3 normal;
@@ -70,16 +69,16 @@ float getFogValue()
 }
 
 // Code du TP4
-vec4 FiltreGaussien(vec2 pos, float etendue)
+vec4 FiltreGaussien(vec2 pos)
 {
 	vec4 sum = vec4(0.0);
-    etendue /= res;
     float x = pos.x;
     float y = pos.y;
-    if (etendue <= 0.001)
-    {
-        return texture2D(heightMap, vec2(x, y));
-    }
+
+    // Filter span depends on sltitude and steepness
+    float etendue = (1.0-(DecodeFloatRGBA(texture2D(heightMap, vec2(x,y))))) * 5.0;
+    etendue = mix(etendue, raw_normal.z*5.0 , 0.5);
+    etendue /= res;
 
 	sum += texture2D(heightMap, vec2(x - 2.0 *etendue, y - 2.0 *etendue)) * 0.028672;
 	sum += texture2D(heightMap, vec2(x - 2.0 *etendue, y - 1.0 *etendue)) * 0.036333;
@@ -116,7 +115,7 @@ vec4 FiltreGaussien(vec2 pos, float etendue)
 
 void main() {
     vec3 p = position;
-    vec4 blurred_height = FiltreGaussien(vec2(uv.x, uv.y), blurWindow);
+    vec4 blurred_height = FiltreGaussien(vec2(uv.x, uv.y));
     // Use amplitude as normal to have a uniform quad when flat
     raw_normal = vec3(0.0, 0.0, 0.001);
 

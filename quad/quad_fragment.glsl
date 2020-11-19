@@ -1,8 +1,6 @@
 precision mediump float;
 uniform float Ka;
 uniform float Kd;
-uniform float Ks;
-uniform float Sv;
 uniform int mode;
 
 uniform sampler2D heightMap;
@@ -26,18 +24,19 @@ const float infinity = 1.0 / 0.0;
 const vec3 waterColor = vec3(0.0,0.11,0.22);
 const vec3 sandColor = vec3(0.50, 0.46, 0.33);
 const vec3 rockColor = vec3(0.2225, 0.175, 0.147);
-const vec3 snowColor = vec3(0.8, 0.8, 0.8);
+const vec3 snowColor = vec3(0.6, 0.6, 0.61);
 const vec3 grassColor = vec3(0.195, 0.325, 0.143);
 
 float sandMaxLevel = waterLevel+sandLevel;
 float grassMaxLevel = sandMaxLevel+grassLevel;
 const float grassSnowBlend = 0.01;
+float Ks;
 
 const vec3  lightColorA = vec3(1, 1, 0.97);
 const vec3  lightColorD = vec3(1, 1, 0.94);
 const vec3  lightDir = vec3(0.5, -1, 1);
 
-float materialSv;
+
 
 vec3 getMaterialBlending()
 {
@@ -45,7 +44,7 @@ vec3 getMaterialBlending()
     vec3 mat;
     if (height <= waterLevel+0.0002) {
         mat = waterColor;
-        materialSv = 220.0;
+        Ks = 1.0;
     }
     else if (height < sandMaxLevel)
     {
@@ -53,18 +52,18 @@ vec3 getMaterialBlending()
         {
             float diff = (waterLevel + wsBlend) - height;
             float lerp = diff/wsBlend;
-            materialSv = lerp > 0.7 ? 220.0 : infinity;
+            Ks = lerp > 0.7 ? 1.0 : 0.01;
             mat = mix(sandColor, waterColor, lerp);
         }
         else
         {
-            materialSv = 5000.0;
+            Ks = 0.01;
             mat = sandColor;
         }
     }
     else if (height < grassMaxLevel)
     {
-        materialSv = infinity;
+        Ks = 0.02;
         if(height < (sandMaxLevel + sgBlend) )
         {
             float diff = (sandMaxLevel + sgBlend) - height;
@@ -79,7 +78,7 @@ vec3 getMaterialBlending()
     }
     else
     {
-        materialSv = infinity;
+        Ks = 0.5;
         if(height < (grassMaxLevel + gsBlend))
         {
             float diff = (grassMaxLevel + gsBlend) - height;
@@ -135,6 +134,7 @@ vec4 getLightColor() {
     vec3 L = normalize(lightDir);
     float lambertian = max(dot(N, L), 0.0);
     float specular = 0.0;
+    float materialSv = 220.0;
     if(lambertian > 0.0) {
         vec3 R = reflect(-L, N);
         vec3 V = normalize(-pos);
