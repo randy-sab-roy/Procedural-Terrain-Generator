@@ -17,12 +17,12 @@ class Generator {
     h1Contrast = 1.5;
 
 
-    h2Amp = 0.55;
+    h2Amp = 0.81;
     h2Contrast = 0.4;
 
 
     h3Amp = 0.25;
-    h3Contrast = 0.45;
+    h3Contrast = 0.4;
 
     time = 0.0;
     startTime;

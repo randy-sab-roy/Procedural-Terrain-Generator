@@ -10,7 +10,7 @@ const float wsBlend = 0.022;
 uniform float sandLevel;
 const float sgBlend = 0.07;
 uniform float grassLevel;
-const float gsBlend = 0.04;
+const float gsBlend = 0.05;
 uniform float rockAngle;
 const float rockBlend = 0.25;
 varying vec4 fcolor;
@@ -23,10 +23,10 @@ varying float fogValue;
 const float infinity = 1.0 / 0.0;
 
 const vec3 waterColor = vec3(0.0,0.11,0.22);
-const vec3 sandColor = vec3(0.76, 0.69, 0.5);
-const vec3 rockColor = vec3(0.255, 0.2325, 0.22);
+const vec3 sandColor = vec3(0.50, 0.46, 0.33);
+const vec3 rockColor = vec3(0.2225, 0.175, 0.147);
 const vec3 snowColor = vec3(0.8, 0.8, 0.8);
-const vec3 grassColor = vec3(0.15, 0.25, 0.11);
+const vec3 grassColor = vec3(0.195, 0.325, 0.143);
 
 float sandMaxLevel = waterLevel+sandLevel;
 float grassMaxLevel = sandMaxLevel+grassLevel;
@@ -68,6 +68,7 @@ vec3 getMaterialBlending()
         {
             float diff = (sandMaxLevel + sgBlend) - height;
             float lerp = diff/sgBlend;
+            lerp = pow(lerp, 9.0); // Non-linear blend
             mat = mix(adjustedGreen, sandColor, lerp);
         }
         else
