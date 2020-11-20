@@ -175,7 +175,7 @@ float hyrbidMultifractal(vec2 point, bool isPerlin){
     }
 
     frequency = 1.0;
-
+    float offset = isPerlin ? 0.3:0.0;
     if(isPerlin)
     {
         noise = (perlin(p)) ;
@@ -192,7 +192,7 @@ float hyrbidMultifractal(vec2 point, bool isPerlin){
         if(i == nOctaves) break;
 
         noise = isPerlin ? perlin(p) : voronoiNoise(p);
-        signal = noise*exponent_array[i];
+        signal = noise*exponent_array[i]+offset;
 
         weight = min(weight, 1.0);
         result += weight*signal;
