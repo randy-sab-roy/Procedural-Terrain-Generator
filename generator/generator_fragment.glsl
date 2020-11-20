@@ -23,9 +23,9 @@ uniform float h3Amp;
 uniform float h3Contrast;
 
 const float fFreq = 2.0; // texturing
-const float h1Freq = 0.1; // Sparse hills
-const float h2Freq = 1.0; // Mountains
-const float h3Freq = 4.0; // Small hills
+const float h1Freq = 2.1; // Sparse hills
+const float h2Freq = 3.0; // Mountains
+const float h3Freq = 6.0; // Small hills
 
 varying vec2 point;
 
@@ -202,19 +202,13 @@ float hyrbidMultifractal(vec2 point, bool isPerlin){
     return result;
 }
 
-// UI converter
-float convertFreq(float freq)
-{
-    return (freq < -1.0 ? 1.0/-freq : freq+2.0);
-}
-
 // Combine different fractals
 float computeHeight(vec2 pos, bool usePerlin){
     vec2 p = pos;
-    float b2 = ((fbm(p*convertFreq(fFreq), usePerlin)-0.5)*fContrast+0.5)*fAmp;
-    float h1 = ((hyrbidMultifractal(p*convertFreq(h1Freq), true) - 0.5)*h1Contrast+0.5)*h1Amp;
-    float h2 = ((hyrbidMultifractal(p*convertFreq(h2Freq), false) - 0.5)*h2Contrast+0.5)*h2Amp;
-    float h3 = ((hyrbidMultifractal(p*convertFreq(h3Freq), true) - 0.5)*h3Contrast+0.5)*h3Amp;
+    float b2 = ((fbm(p*fFreq, usePerlin)-0.5)*fContrast+0.5)*fAmp;
+    float h1 = ((hyrbidMultifractal(p*h1Freq, true) - 0.5)*h1Contrast+0.5)*h1Amp;
+    float h2 = ((hyrbidMultifractal(p*h2Freq, false) - 0.5)*h2Contrast+0.5)*h2Amp;
+    float h3 = ((hyrbidMultifractal(p*h3Freq, true) - 0.5)*h3Contrast+0.5)*h3Amp;
 
     return (((b2+h1+h2+h3 + globalBrightness)-0.5)*globalContrast+0.5);
 }
@@ -222,9 +216,9 @@ float computeHeight(vec2 pos, bool usePerlin){
 // Custom made water animation inspired by https://www.shadertoy.com/view/wdG3Rz
 float computeWaterAnimation(float height, vec2 fractalPoint)
 {
-    float firstNoise = (((fbm(fractalPoint*convertFreq(60.0) - time, false)-0.5)*0.4+0.5)*0.3);
+    float firstNoise = (((fbm(fractalPoint*60.0 - time, false)-0.5)*0.4+0.5)*0.3);
     vec2 offset = vec2(-10.0, 100);
-    float secondNoise = (((fbm((fractalPoint+offset)*convertFreq(40.0) + time*0.4, false)-0.5)*0.4+0.5)*0.3);
+    float secondNoise = (((fbm((fractalPoint+offset)*40.0 + time*0.4, false)-0.5)*0.4+0.5)*0.3);
     return waterLevel - 0.15 + min((firstNoise + secondNoise)/2.5, 0.15);
 }
 
