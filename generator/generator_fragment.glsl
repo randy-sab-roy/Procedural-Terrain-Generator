@@ -32,8 +32,6 @@ varying vec2 point;
 const float PI = 3.1415926535;
 const float lacunarity = 2.0;
 const int MAX_ITERATIONS = 12;
-const float gain = 1.0;
-
 
 // NOISE GENERATION SECTION
 
@@ -44,7 +42,6 @@ vec3 permute(vec3 x) {return mod(((x*34.0)+1.0)*x, 289.0);}
 float adapt(float x) {return (x+1.0)/2.0;}
 
 float rand2dTo1d(vec2 value, vec2 dotDir){
-    // vec2 dotDir = vec2(12.9898, 78.233);
     vec2 smallValue = vec2(sin(value.x), sin(value.y));
     float random = dot(smallValue, dotDir);
     random = fract(sin(random) * 143758.5453);
@@ -206,14 +203,13 @@ float hyrbidMultifractal(vec2 point, bool isPerlin){
 
         }
         if(weight > 1.0) weight = 1.0;
-        // if(weight < 0.0) weight = 0.0;
         signal = noise*exponent_array[i];
         result += weight*signal;
         weight *= signal;
 
         p *= lacunarity;
     }
-    return (result-0.5)*1.0+0.5;
+    return result;
 }
 
 // UI converter

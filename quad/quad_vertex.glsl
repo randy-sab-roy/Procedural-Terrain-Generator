@@ -76,8 +76,8 @@ vec4 FiltreGaussien(vec2 pos)
     float y = pos.y;
 
     // Filter span depends on sltitude and steepness
-    float etendue = (1.0-(DecodeFloatRGBA(texture2D(heightMap, vec2(x,y))))) * 5.0;
-    etendue = mix(etendue, raw_normal.z*5.0 , 0.5);
+    float etendue = (1.0-(DecodeFloatRGBA(texture2D(heightMap, vec2(x,y))))) * 3.0;
+    etendue = mix(etendue, raw_normal.z*3.0 , 0.5);
     etendue /= res;
 
 	sum += texture2D(heightMap, vec2(x - 2.0 *etendue, y - 2.0 *etendue)) * 0.028672;

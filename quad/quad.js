@@ -33,6 +33,7 @@ class Quad {
         this.locations.sandLevel = gl.getUniformLocation(this.program, "sandLevel");
         this.locations.grassLevel = gl.getUniformLocation(this.program, "grassLevel");
         this.locations.rockAngle = gl.getUniformLocation(this.program, "rockAngle");
+        this.locations.movement = gl.getUniformLocation(this.program, "movement");
 
         gl.enable(gl.DEPTH_TEST);
     }
@@ -65,6 +66,7 @@ class Quad {
         this.rotation = document.getElementById("rotation").value;
         this.cameraPos = document.getElementById("camera").value;
         this.mode = document.querySelector('input[name="mode"]:checked').value;
+        
     }
 
     computeModelMatrix() {
@@ -134,6 +136,8 @@ class Quad {
         gl.uniform1f(this.locations.sandLevel, document.getElementById("sandLevel").value);
         gl.uniform1f(this.locations.grassLevel, document.getElementById("grassLevel").value);
         gl.uniform1f(this.locations.rockAngle, document.getElementById("rockAngle").value);
+        gl.uniform1f(this.locations.movement, document.getElementById("terrainOffset").value);
+
 
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);

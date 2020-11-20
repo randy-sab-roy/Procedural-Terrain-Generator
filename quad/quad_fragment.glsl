@@ -2,6 +2,7 @@ precision mediump float;
 uniform float Ka;
 uniform float Kd;
 uniform int mode;
+uniform float movement;
 
 uniform sampler2D heightMap;
 uniform float waterLevel;
@@ -127,7 +128,10 @@ vec4 getLightColor() {
     material_color = mix(material_color, vec3(height-0.3), 0.2); 
 
     // Fog
-    material_color = mix(vec3(0.5,0.52,0.53) , material_color, fogValue);
+    if(abs(movement) > 0.0001)
+    {
+        material_color = mix(vec3(0.5,0.52,0.53) , material_color, fogValue);
+    }
 
     // Lights
     vec3 N = normalize(normal);
