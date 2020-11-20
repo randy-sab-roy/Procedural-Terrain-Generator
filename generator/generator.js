@@ -5,19 +5,19 @@ class Generator {
 
     program = null;
     locations = {};
-    RES = 500;
+    RES = 250;
     capture = false;
     offset = 0;
     tempAmp = 0;
     // Initial values
-    fAmp = 0.2;
-    fContrast = 0.6;
+    fAmp = 0.4;
+    fContrast = 0.3;
 
     h1Amp = 0.75;
     h1Contrast = 1.5;
 
 
-    h2Amp = 0.5;
+    h2Amp = 0.3;
     h2Contrast = 0.4;
 
 
