@@ -241,5 +241,7 @@ void main() {
     {
         value = computeWaterAnimation(value, fractalPoint);
     }
-    gl_FragColor = EncodeFloatRGBA(value);
+
+    // We ensure the value is <= 1.0 in order for the vector encoding to work properly
+    gl_FragColor = EncodeFloatRGBA(min(value, 0.9999999));
 }
