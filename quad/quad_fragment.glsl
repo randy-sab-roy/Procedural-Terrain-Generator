@@ -20,6 +20,7 @@ varying vec3 raw_normal;
 varying vec3 pos;
 varying float height;
 varying float fogValue;
+varying float shadow;
 
 const float infinity = 1.0 / 0.0;
 const vec3 waterColor = vec3(0.0,0.11,0.22);
@@ -132,6 +133,9 @@ vec4 getLightColor() {
     {
         material_color = mix(vec3(0.5,0.52,0.53) , material_color, fogValue);
     }
+
+    float shadowWeight = (shadow-0.5)*1.0+0.5;
+    material_color *= max(min(shadowWeight, 1.0), 0.0);
 
     // Lights
     vec3 N = normalize(normal);

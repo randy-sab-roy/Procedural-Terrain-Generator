@@ -5,7 +5,7 @@ class Generator {
 
     program = null;
     locations = {};
-    RES = 250;
+    RES = 500;
     capture = false;
     offset = 0;
     tempAmp = 0;
