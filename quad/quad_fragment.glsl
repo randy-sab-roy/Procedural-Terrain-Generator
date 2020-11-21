@@ -36,7 +36,7 @@ float Ks;
 
 const vec3  lightColorA = vec3(1, 1, 0.97);
 const vec3  lightColorD = vec3(1, 1, 0.94);
-const vec3  lightDir = vec3(0.5, -1, 1);
+const vec3  lightDir = vec3(-1, -1, 0);
 
 
 
@@ -126,16 +126,17 @@ vec4 getLightColor() {
     }
 
     // Height shading
-    material_color = mix(material_color, vec3(height-0.3), 0.2); 
+    // material_color = mix(material_color, vec3(height-0.3), 0.2); 
 
     // Fog
     if(abs(movement) > 0.0001)
     {
         material_color = mix(vec3(0.5,0.52,0.53) , material_color, fogValue);
+        float shadowWeight = (shadow-0.5)*1.0+0.5;
+        material_color *= max(min(shadowWeight, 1.0), 0.0);
     }
 
-    float shadowWeight = (shadow-0.5)*1.0+0.5;
-    material_color *= max(min(shadowWeight, 1.0), 0.0);
+
 
     // Lights
     vec3 N = normalize(normal);
