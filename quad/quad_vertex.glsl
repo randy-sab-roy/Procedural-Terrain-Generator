@@ -29,18 +29,19 @@ float DecodeFloatRGBA (vec4 v) {
 
 float getShadow(vec2 offset)
 {
-    const float pas = 1.0/500.0;
+    const float MAX_RES = 800.0;
     const float rate = 1.0;
     float maxDiffHeight = 0.0;
-    float x = uv.x + offset.x*pas;
+    float uv_step = 1.0/res;
+    float x = uv.x + offset.x*uv_step;
+    float y = uv.y + offset.y*uv_step;
     float cumulative = 0.0;
-    for (float i = 0.0; i < 1.0; i+=pas)
+    for (float i = 0.0; i < MAX_RES; i++)
     {
-        if(i > x && uv.y+offset.y > 0.0 && uv.y+offset.y < 1.0) 
+        if(i*uv_step > x && i<res) 
         {
-
-            float diff = i-x;
-            float terrainHeight = DecodeFloatRGBA(texture2D(heightMap, vec2(i, uv.y + offset.y*pas)));
+            float diff = i*uv_step-x;
+            float terrainHeight = DecodeFloatRGBA(texture2D(heightMap, vec2(i*uv_step, y)));
             float lightHeight = height + diff*rate;
             float heightDiff = terrainHeight - lightHeight;
             if (heightDiff > maxDiffHeight)
@@ -120,11 +121,11 @@ void main() {
     fogValue = getFogValue();
     fcolor = color;
     float p0 = getShadow(vec2(0.0));
+    // shadow = p0;
     float p1 = getShadow(vec2(0.0, 1.0));
     float p2 = getShadow(vec2(0.0, -1.0));
     float p3 = getShadow(vec2(1.0, 0.0));
     float p4 = getShadow(vec2(-1.0, 0.0));
     shadow = (p0*4.0+p1+p2+p3+p4)/8.0;
-    // shadow = p0;
     pos = vec3(gl_Position);
 }
