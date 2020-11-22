@@ -115,22 +115,24 @@ void main() {
         if(uv.x > (0.0 + delta) && uv.y > (0.0 + delta) && uv.x < (1.0 - delta) && uv.y < (1.0 - delta))
         {
             raw_normal = getNormal();
+            
+            bool shadowEnabled = shadows == 0.0;
+            if (shadowEnabled)
+            {
+                float p0 = getShadow(vec2(0.0));
+                float p1 = getShadow(vec2(0.0, 1.0));
+                float p2 = getShadow(vec2(0.0, -1.0));
+                float p3 = getShadow(vec2(1.0, 0.0));
+                float p4 = getShadow(vec2(-1.0, 0.0));
+                shadow = (p0*4.0+p1+p2+p3+p4)/8.0;
+            }
         }
+
     }
 
     gl_Position = projection * model * vec4( p, 1.0 );
     normal = vec3(normalMat * vec4(-1.0 * raw_normal, 1.0));
     fogValue = getFogValue();
     fcolor = color;
-    bool shadowEnabled = shadows == 0.0;
-    if (shadowEnabled)
-    {
-        float p0 = getShadow(vec2(0.0));
-        float p1 = getShadow(vec2(0.0, 1.0));
-        float p2 = getShadow(vec2(0.0, -1.0));
-        float p3 = getShadow(vec2(1.0, 0.0));
-        float p4 = getShadow(vec2(-1.0, 0.0));
-        shadow = (p0*4.0+p1+p2+p3+p4)/8.0;
-    }
     pos = vec3(gl_Position);
 }
