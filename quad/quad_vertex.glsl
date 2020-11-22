@@ -44,12 +44,9 @@ float getShadow(vec2 offset, vec3 light)
     float rate = -(direction/(length(vec2(direction.x, direction.y)))).z; // determined by light.z
     float maxDiffHeight = 0.0;
     float uv_step = 1.0/res;
-    float x = uv.x + offset.x*uv_step;
-    float y = uv.y + offset.y*uv_step;
     float cumulative = 0.0;
     for (float i = 0.0; i < MAX_RES; i++)
     {
-        // vec2 startPoint = vec2(uv.x+startingDiff*direction.x , uv.y+startingDiff*direction.y);
         vec2 newTerrainCoords = uv + i*uv_step*direction.xy;
         if(newTerrainCoords.x >1.0 || newTerrainCoords.y >1.0 || newTerrainCoords.x < 0.0 || newTerrainCoords.y < 0.0) break; // out of bounds
         else
