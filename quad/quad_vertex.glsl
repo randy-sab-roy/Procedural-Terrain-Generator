@@ -28,10 +28,19 @@ float DecodeFloatRGBA (vec4 v) {
     return dot(v, bitDec);
 }
 
-float getShadow(vec2 offset)
+float getStartinPoint(vec2 direction)
 {
-    const float MAX_RES = 800.0;
-    const float rate = 1.0;
+    float i_x = uv.x/direction.x;
+    float i_y = uv.y/direction.y;
+    return -min(i_x, i_y);
+}
+
+float getShadow(vec2 offset, vec3 light)
+{
+    vec3 direction = normalize(light);
+    // float startingDiff = getStartinPoint(direction);
+    const float MAX_RES = 1132.0; // diag length of max res (800.0)
+    float rate = (direction/(length(vec2(direction.x, direction.y)))).z; // determined by light.z
     float maxDiffHeight = 0.0;
     float uv_step = 1.0/res;
     float x = uv.x + offset.x*uv_step;
@@ -39,12 +48,13 @@ float getShadow(vec2 offset)
     float cumulative = 0.0;
     for (float i = 0.0; i < MAX_RES; i++)
     {
-        float uv_i = i*uv_step;
-        if(i>=res) break;
-        if(uv_i > x) 
+        // vec2 startPoint = vec2(uv.x+startingDiff*direction.x , uv.y+startingDiff*direction.y);
+        vec2 newTerrainCoords = uv + i*uv_step*direction.xy;
+        if(newTerrainCoords.x >1.0 || newTerrainCoords.y >1.0 || newTerrainCoords.x < 0.0 || newTerrainCoords.y < 0.0) break; // out of bounds
+        else
         {
-            float diff = uv_i-x;
-            float terrainHeight = DecodeFloatRGBA(texture2D(heightMap, vec2(uv_i, y)));
+            float diff = length(newTerrainCoords - uv);
+            float terrainHeight = DecodeFloatRGBA(texture2D(heightMap, newTerrainCoords));
             float lightHeight = height + diff*rate;
             float heightDiff = terrainHeight - lightHeight;
             if (heightDiff > maxDiffHeight)
@@ -119,11 +129,13 @@ void main() {
             bool shadowEnabled = shadows == 0.0;
             if (shadowEnabled)
             {
-                float p0 = getShadow(vec2(0.0));
-                float p1 = getShadow(vec2(0.0, 1.0));
-                float p2 = getShadow(vec2(0.0, -1.0));
-                float p3 = getShadow(vec2(1.0, 0.0));
-                float p4 = getShadow(vec2(-1.0, 0.0));
+
+                vec3 LD = vec3(1.0,0.0,0.01);
+                float p0 = getShadow(vec2(0.0), LD);
+                float p1 = getShadow(vec2(0.0, 1.0), LD);
+                float p2 = getShadow(vec2(0.0, -1.0), LD);
+                float p3 = getShadow(vec2(1.0, 0.0), LD);
+                float p4 = getShadow(vec2(-1.0, 0.0), LD);
                 shadow = (p0*4.0+p1+p2+p3+p4)/8.0;
             }
         }
