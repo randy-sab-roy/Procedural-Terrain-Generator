@@ -39,10 +39,12 @@ float getShadow(vec2 offset)
     float cumulative = 0.0;
     for (float i = 0.0; i < MAX_RES; i++)
     {
-        if(i*uv_step > x && i<res) 
+        float uv_i = i*uv_step;
+        if(i>=res) break;
+        if(uv_i > x) 
         {
-            float diff = i*uv_step-x;
-            float terrainHeight = DecodeFloatRGBA(texture2D(heightMap, vec2(i*uv_step, y)));
+            float diff = uv_i-x;
+            float terrainHeight = DecodeFloatRGBA(texture2D(heightMap, vec2(uv_i, y)));
             float lightHeight = height + diff*rate;
             float heightDiff = terrainHeight - lightHeight;
             if (heightDiff > maxDiffHeight)
