@@ -131,7 +131,7 @@ vec4 getLightColor() {
         material_color = mix(vec3(0.5,0.52,0.53) , material_color, fogValue);
     }
 
-    float shadowWeight = (shadow-0.5)*0.8+0.6;
+    float shadowWeight = (shadow-0.5)*0.8+0.8;
     material_color *= max(min(shadowWeight, 1.0), 0.0);
 
     // Lights

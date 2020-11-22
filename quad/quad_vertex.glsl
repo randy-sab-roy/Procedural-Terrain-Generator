@@ -120,11 +120,11 @@ void main() {
     fogValue = getFogValue();
     fcolor = color;
     float p0 = getShadow(vec2(0.0));
-    // float p1 = getShadow(vec2(0.0, 1.0));
-    // float p2 = getShadow(vec2(0.0, -1.0));
-    // float p3 = getShadow(vec2(1.0, 0.0));
-    // float p4 = getShadow(vec2(-1.0, 0.0));
-    // shadow = (p0*4.0+p1+p2+p3+p4)/8.0;
-    shadow = p0;
+    float p1 = getShadow(vec2(0.0, 1.0));
+    float p2 = getShadow(vec2(0.0, -1.0));
+    float p3 = getShadow(vec2(1.0, 0.0));
+    float p4 = getShadow(vec2(-1.0, 0.0));
+    shadow = (p0*4.0+p1+p2+p3+p4)/8.0;
+    // shadow = p0;
     pos = vec3(gl_Position);
 }
