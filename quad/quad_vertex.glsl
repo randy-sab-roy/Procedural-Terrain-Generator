@@ -27,66 +27,33 @@ float DecodeFloatRGBA (vec4 v) {
     return dot(v, bitDec);
 }
 
-float getNeighbourShadow(vec2 offset)
+float getShadow(vec2 offset)
 {
     const float pas = 1.0/500.0;
     const float rate = 1.0;
     float maxDiffHeight = 0.0;
-    float maxHeightDistance = 0.0;
     float x = uv.x + offset.x*pas;
+    float cumulative = 0.0;
     for (float i = 0.0; i < 1.0; i+=pas)
     {
-        // return (uv.x <= 0.5) ? 0.0:1.0;
-        if(i > x && offset.y > 0.0 && offset.y < 1.0) 
+        if(i > x && uv.y+offset.y > 0.0 && uv.y+offset.y < 1.0) 
         {
 
             float diff = i-x;
-            float terrainHeight = DecodeFloatRGBA(texture2D(heightMap, vec2(i, uv.y + offset.y/255.0)));
+            float terrainHeight = DecodeFloatRGBA(texture2D(heightMap, vec2(i, uv.y + offset.y*pas)));
             float lightHeight = height + diff*rate;
             float heightDiff = terrainHeight - lightHeight;
             if (heightDiff > maxDiffHeight)
             {
-                maxHeightDistance = diff/terrainHeight; // proportion of max shadow distance;
-                maxHeightDistance = smoothstep(0.1, 0.9, maxHeightDistance);
+                float shadowDistanceFactor = diff/terrainHeight; // proportion of max shadow distance;
                 maxDiffHeight = heightDiff;
-                maxDiffHeight /= maxHeightDistance;
+                float weight = maxDiffHeight/shadowDistanceFactor;
+                weight = smoothstep(0.0, 0.5, weight);
+                cumulative += weight;
             }
         }
     }
-    return min(maxDiffHeight, 1.0);
-}
-
-float getShadow()
-{
-    const float pas = 1.0/500.0;
-    const float rate = 1.0;
-    float maxDiffHeight = 0.0;
-    float maxHeightDistance = 0.0;
-    float x = uv.x;
-    for (float i = 0.0; i < 1.0; i+=pas)
-    {
-        if(i > x+pas) 
-        {
-
-            float diff = i-x;
-            float terrainHeight = DecodeFloatRGBA(texture2D(heightMap, vec2(i, uv.y)));
-            float lightHeight = height + diff*rate;
-            float heightDiff = terrainHeight - lightHeight;
-            if (heightDiff > maxDiffHeight)
-            {
-                maxHeightDistance = diff/terrainHeight; // proportion of max shadow distance;
-                maxHeightDistance = smoothstep(0.0, 0.8, maxHeightDistance);
-                maxDiffHeight = heightDiff;
-                maxDiffHeight /= maxHeightDistance;
-            }
-        }
-    }
-    float result = min(maxDiffHeight, 1.0);
-    float p1 = getNeighbourShadow(vec2(0.0, 1.0));
-    float p2 = getNeighbourShadow(vec2(0.0, -1.0));
-    float p3 = getNeighbourShadow(vec2(1.0, 0.0));
-    float p4 = getNeighbourShadow(vec2(-1.0, 0.0));
-    return 1.0 - (2.0*result + p1 + p2 + p3 + p4)/6.0;
+    return 1.0-min(cumulative, 1.0);
 }
 
 // Sobel filter to get normals from heightmap
@@ -152,6 +119,12 @@ void main() {
     normal = vec3(normalMat * vec4(-1.0 * raw_normal, 1.0));
     fogValue = getFogValue();
     fcolor = color;
-    shadow = getShadow();
+    float p0 = getShadow(vec2(0.0));
+    // float p1 = getShadow(vec2(0.0, 1.0));
+    // float p2 = getShadow(vec2(0.0, -1.0));
+    // float p3 = getShadow(vec2(1.0, 0.0));
+    // float p4 = getShadow(vec2(-1.0, 0.0));
+    // shadow = (p0*4.0+p1+p2+p3+p4)/8.0;
+    shadow = p0;
     pos = vec3(gl_Position);
 }

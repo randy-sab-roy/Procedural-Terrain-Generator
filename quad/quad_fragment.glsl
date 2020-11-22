@@ -125,18 +125,14 @@ vec4 getLightColor() {
         material_color = mix(getRockBlending(material_color),material_color,lerp);
     }
 
-    // Height shading
-    // material_color = mix(material_color, vec3(height-0.3), 0.2); 
-
     // Fog
     if(abs(movement) > 0.0001)
     {
         material_color = mix(vec3(0.5,0.52,0.53) , material_color, fogValue);
-        float shadowWeight = (shadow-0.5)*1.0+0.5;
-        material_color *= max(min(shadowWeight, 1.0), 0.0);
     }
 
-
+    float shadowWeight = (shadow-0.5)*0.8+0.6;
+    material_color *= max(min(shadowWeight, 1.0), 0.0);
 
     // Lights
     vec3 N = normalize(normal);
