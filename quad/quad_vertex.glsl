@@ -128,7 +128,7 @@ void main() {
             if (shadowEnabled)
             {
                 // Light rotation from slider
-                vec3 LD = vec3(0.0,-1.0,-1.0);
+                vec3 LD = vec3(0.0,-1.0,-0.5);
                 LD.xy = rotate(LD.xy, -rotation);
 
                 // Shadow component
