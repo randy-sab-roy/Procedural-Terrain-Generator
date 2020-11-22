@@ -130,7 +130,9 @@ void main() {
             if (shadowEnabled)
             {
 
-                vec3 LD = vec3(1.0,0.0,0.01);
+                vec3 LD = vec3(1.0,0.0,1.0);
+                //  TODO: ROTATE LD ON Z AXIS HERE
+                
                 float p0 = getShadow(vec2(0.0), LD);
                 float p1 = getShadow(vec2(0.0, 1.0), LD);
                 float p2 = getShadow(vec2(0.0, -1.0), LD);
