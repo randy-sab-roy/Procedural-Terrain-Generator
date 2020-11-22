@@ -113,6 +113,7 @@ float getFogValue()
 }
 
 vec2 rotate(vec2 v, float a) {
+    // inexpensive 2D rotation
 	float s = sin(a);
 	float c = cos(a);
 	mat2 m = mat2(c, -s, s, c);
@@ -139,7 +140,6 @@ void main() {
             {
 
                 vec3 LD = vec3(0.0,-1.0,-1.0);
-                //  TODO: ROTATE LD ON Z AXIS HERE
                 LD.xy = rotate(LD.xy, -rotation);
                 float p0 = getShadow(vec2(0.0), LD);
                 float p1 = getShadow(vec2(0.0, 1.0), LD);
