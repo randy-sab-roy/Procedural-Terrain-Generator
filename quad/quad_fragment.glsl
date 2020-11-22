@@ -23,7 +23,6 @@ varying float height;
 varying float fogValue;
 varying float shadow;
 
-const float infinity = 1.0 / 0.0;
 const vec3 waterColor = vec3(0.0,0.11,0.22);
 const vec3 sandColor = vec3(0.50, 0.46, 0.33);
 const vec3 rockColor = vec3(0.2225, 0.175, 0.147);
