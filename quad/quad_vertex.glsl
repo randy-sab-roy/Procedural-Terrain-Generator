@@ -13,6 +13,7 @@ uniform float res;
 uniform float waterLevel;
 uniform float shadows;
 uniform float rotation;
+uniform float movement;
 
 varying vec4 fcolor;
 varying vec3 normal;
@@ -29,42 +30,33 @@ float DecodeFloatRGBA (vec4 v) {
     return dot(v, bitDec);
 }
 
-float getStartinPoint(vec2 direction)
-{
-    float i_x = uv.x/direction.x;
-    float i_y = uv.y/direction.y;
-    return -min(i_x, i_y);
-}
-
 float getShadow(vec2 offset, vec3 light)
 {
     vec3 direction = normalize(light);
-    // float startingDiff = getStartinPoint(direction);
     const float MAX_RES = 1132.0; // diag length of max res (800.0)
-    float rate = -(direction/(length(vec2(direction.x, direction.y)))).z; // determined by light.z
+    float rate = -(direction/(length(direction.xy))).z; // determined by light.z
     float maxDiffHeight = 0.0;
-    float uv_step = 1.0/res;
     float cumulative = 0.0;
-    for (float i = 0.0; i < MAX_RES; i++)
+    float uv_step = 1.0/res;
+
+    for (float i = 0.0; i < MAX_RES; ++i)
     {
-        vec2 newTerrainCoords = uv + i*uv_step*direction.xy;
+        float lightStep = i*uv_step;
+        vec2 newTerrainCoords = uv + uv_step*offset + lightStep*direction.xy;
         if(newTerrainCoords.x >1.0 || newTerrainCoords.y >1.0 || newTerrainCoords.x < 0.0 || newTerrainCoords.y < 0.0) break; // out of bounds
         else
         {
-            float diff = length(newTerrainCoords - uv);
             float terrainHeight = DecodeFloatRGBA(texture2D(heightMap, newTerrainCoords));
-            float lightHeight = height + diff*rate;
+            float lightHeight = height + lightStep*rate;
             float heightDiff = terrainHeight - lightHeight;
             if (heightDiff > maxDiffHeight)
             {
-                float shadowDistanceFactor = diff/terrainHeight; // proportion of max shadow distance;
                 maxDiffHeight = heightDiff;
-                float weight = maxDiffHeight/shadowDistanceFactor;
-                cumulative += weight;
+                cumulative += heightDiff*terrainHeight/lightStep;// no falloff on short distances;
             }
         }
     }
-    return 1.0-min(cumulative, 1.0);
+    return 1.0 - min(cumulative, 1.0);
 }
 
 // Sobel filter to get normals from heightmap
@@ -135,15 +127,12 @@ void main() {
             bool shadowEnabled = shadows == 0.0;
             if (shadowEnabled)
             {
-
+                // Light rotation from slider
                 vec3 LD = vec3(0.0,-1.0,-1.0);
                 LD.xy = rotate(LD.xy, -rotation);
-                float p0 = getShadow(vec2(0.0), LD);
-                float p1 = getShadow(vec2(0.0, 1.0), LD);
-                float p2 = getShadow(vec2(0.0, -1.0), LD);
-                float p3 = getShadow(vec2(1.0, 0.0), LD);
-                float p4 = getShadow(vec2(-1.0, 0.0), LD);
-                shadow = (p0*4.0+p1+p2+p3+p4)/8.0;
+
+                // Shadow component
+                shadow = getShadow(vec2(0.0), LD);
             }
         }
 
@@ -151,7 +140,7 @@ void main() {
 
     gl_Position = projection * model * vec4( p, 1.0 );
     normal = vec3(normalMat * vec4(-1.0 * raw_normal, 1.0));
-    fogValue = getFogValue();
+    fogValue = abs(movement) > 0.0001 ? getFogValue() : 1.0;
     fcolor = color;
     pos = vec3(gl_Position);
 }
