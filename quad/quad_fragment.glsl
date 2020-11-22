@@ -3,6 +3,7 @@ uniform float Ka;
 uniform float Kd;
 uniform int mode;
 uniform float movement;
+uniform float shadows;
 
 uniform sampler2D heightMap;
 uniform float waterLevel;
@@ -131,8 +132,13 @@ vec4 getLightColor() {
         material_color = mix(vec3(0.5,0.52,0.53) , material_color, fogValue);
     }
 
-    float shadowWeight = (shadow-0.5)*0.8+0.8;
-    material_color *= max(min(shadowWeight, 1.0), 0.0);
+    bool shadowsEnabled = (shadows == 0.0);
+    if (shadowsEnabled)
+    {
+        float shadowWeight = (shadow-0.5)*0.8+1.0;
+        material_color *= max(min(shadowWeight, 1.0), 0.0);
+    }
+
 
     // Lights
     vec3 N = normalize(normal);

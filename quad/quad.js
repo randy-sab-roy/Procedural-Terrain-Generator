@@ -16,6 +16,7 @@ class Quad {
     rotation;
     cameraPos;
     mode;
+    shadows;
 
     forceDefaultvalues(){
         document.getElementById("waterLevel").value = document.getElementById("waterLevel").defaultValue;
@@ -66,6 +67,7 @@ class Quad {
         this.rotation = document.getElementById("rotation").value;
         this.cameraPos = document.getElementById("camera").value;
         this.mode = document.querySelector('input[name="mode"]:checked').value;
+        this.shadows = document.getElementById("shadows").checked ? 0.0:1.0;
         
     }
 
@@ -130,6 +132,7 @@ class Quad {
         gl.uniform1f(this.locations.ks, this.KS);
         gl.uniform1f(this.locations.res, this.RES);
         gl.uniform1i(this.locations.mode, this.mode);
+        gl.uniform1i(this.locations.shadows, this.shadows);
 
         // Terrain
         gl.uniform1f(this.locations.waterLevel, document.getElementById("waterLevel").value);
@@ -137,6 +140,7 @@ class Quad {
         gl.uniform1f(this.locations.grassLevel, document.getElementById("grassLevel").value);
         gl.uniform1f(this.locations.rockAngle, document.getElementById("rockAngle").value);
         gl.uniform1f(this.locations.movement, document.getElementById("terrainOffset").value);
+        gl.uniform1f(this.locations.shadows, this.shadows);
 
 
 
@@ -204,6 +208,7 @@ class Quad {
         this.locations.ks = gl.getUniformLocation(this.program, "Ks");
         this.locations.res = gl.getUniformLocation(this.program, "res");
         this.locations.mode = gl.getUniformLocation(this.program, "mode");
+        this.locations.shadows = gl.getUniformLocation(this.program, "shadows");
     }
 
     createQuadData() {
