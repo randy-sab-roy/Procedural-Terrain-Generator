@@ -12,6 +12,7 @@ uniform sampler2D heightMap;
 uniform float res;
 uniform float waterLevel;
 uniform float shadows;
+uniform float rotation;
 
 varying vec4 fcolor;
 varying vec3 normal;
@@ -40,7 +41,7 @@ float getShadow(vec2 offset, vec3 light)
     vec3 direction = normalize(light);
     // float startingDiff = getStartinPoint(direction);
     const float MAX_RES = 1132.0; // diag length of max res (800.0)
-    float rate = (direction/(length(vec2(direction.x, direction.y)))).z; // determined by light.z
+    float rate = -(direction/(length(vec2(direction.x, direction.y)))).z; // determined by light.z
     float maxDiffHeight = 0.0;
     float uv_step = 1.0/res;
     float x = uv.x + offset.x*uv_step;
@@ -111,6 +112,13 @@ float getFogValue()
     return 1.0-exp(-800.0*dist*dist);
 }
 
+vec2 rotate(vec2 v, float a) {
+	float s = sin(a);
+	float c = cos(a);
+	mat2 m = mat2(c, -s, s, c);
+	return m * v;
+}
+
 void main() {
     vec3 p = position;
     // Use amplitude as normal to have a uniform quad when flat
@@ -130,9 +138,9 @@ void main() {
             if (shadowEnabled)
             {
 
-                vec3 LD = vec3(1.0,0.0,1.0);
+                vec3 LD = vec3(0.0,-1.0,-1.0);
                 //  TODO: ROTATE LD ON Z AXIS HERE
-                
+                LD.xy = rotate(LD.xy, -rotation);
                 float p0 = getShadow(vec2(0.0), LD);
                 float p1 = getShadow(vec2(0.0, 1.0), LD);
                 float p2 = getShadow(vec2(0.0, -1.0), LD);

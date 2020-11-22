@@ -35,6 +35,7 @@ class Quad {
         this.locations.grassLevel = gl.getUniformLocation(this.program, "grassLevel");
         this.locations.rockAngle = gl.getUniformLocation(this.program, "rockAngle");
         this.locations.movement = gl.getUniformLocation(this.program, "movement");
+        this.locations.rotation = gl.getUniformLocation(this.program, "rotation");
 
         gl.enable(gl.DEPTH_TEST);
     }
@@ -140,6 +141,7 @@ class Quad {
         gl.uniform1f(this.locations.grassLevel, document.getElementById("grassLevel").value);
         gl.uniform1f(this.locations.rockAngle, document.getElementById("rockAngle").value);
         gl.uniform1f(this.locations.movement, document.getElementById("terrainOffset").value);
+        gl.uniform1f(this.locations.rotation, document.getElementById("rotation").value);
         gl.uniform1f(this.locations.shadows, this.shadows);
 
 
