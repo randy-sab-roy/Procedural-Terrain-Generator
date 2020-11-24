@@ -34,9 +34,9 @@ float DecodeFloatRGBA (vec4 v) {
     return dot(v, bitDec);
 }
 
-float getShadow(vec2 offset, vec3 ld)
+float getShadow(vec3 ld)
 {
-    vec3 direction = normalize(vec3(-ld.x, ld.y, ld.z));
+    vec3 direction = normalize(vec3(ld.y, ld.x, -ld.z));
     const float MAX_RES = 1132.0; // diag length of max res (800.0)
     float rate = (direction/(length(direction.xy))).z; // determined by light.z
     float maxDiffHeight = 0.0;
@@ -45,8 +45,8 @@ float getShadow(vec2 offset, vec3 ld)
 
     for (float i = 0.0; i < MAX_RES; ++i)
     {
-        float lightStep = min(pow(i,1.5), 3.0*i)*uv_step;
-        vec2 newTerrainCoords = uv + uv_step*offset + lightStep*direction.xy;
+        float lightStep = i*uv_step;
+        vec2 newTerrainCoords = uv + lightStep*direction.xy;
         if(newTerrainCoords.x >1.0 || newTerrainCoords.y >1.0 || newTerrainCoords.x < 0.0 || newTerrainCoords.y < 0.0) break; // out of bounds
         else
         {
@@ -128,7 +128,7 @@ void main() {
                 vec3 LD = (inverseMat*vec4(light, 1.0)).xyz;
 
                 // Shadow component
-                shadow = getShadow(vec2(0.0), LD);
+                shadow = getShadow(LD);
             }
         }
 

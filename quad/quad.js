@@ -68,22 +68,24 @@ class Quad {
 
     computeModelMatrix() {
         const model = mat4.create();
+        const inverseMat = mat4.create();
 
         mat4.translate(model, model, [0, -1.5, this.cameraPos]);
         mat4.scale(model, model, [5, 5, 5]);
-        mat4.rotate(model, model, Math.PI / 2.8, [-1, 0, 0]);
-        mat4.rotate(model, model, this.rotation, [0, 0, 1]);
 
+        mat4.rotate(inverseMat, inverseMat, Math.PI / 2.8, [-1, 0, 0]);
+        mat4.rotate(inverseMat, inverseMat, this.rotation, [0, 0, 1]);
+        mat4.mul(model, model, inverseMat);
+        
         this.transforms.model = model;
 
-        const inverseMat = mat4.create();
-        mat4.invert(inverseMat, model);
         
         const normalMat = mat4.create();
         mat4.invert(normalMat, model);
         mat4.transpose(normalMat, normalMat);
-
         this.transforms.normalMat = normalMat;
+        
+        mat4.invert(inverseMat, inverseMat);
         this.transforms.inverseMat = inverseMat;
     };
 
