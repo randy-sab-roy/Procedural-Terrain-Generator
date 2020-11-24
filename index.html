@@ -16,6 +16,9 @@
 
 <body onload="init()">
     <div id="drawZone">
+        <div id="fpsBox">
+            <span id="fps"></span>
+        </div>
         <canvas id="drawCanvas"></canvas>
     </div>
     <div id="menu">
@@ -220,6 +223,13 @@
                 </div>
                 <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
                     <button onclick="record()">Record 5 seconds</button>
+                </div>
+            </div>
+            <div>
+                <h2>Debug</h2>
+                <div>
+                    <label class="title">Show FPS Counter</label>
+                    <input type="checkbox" checked id="showFps">
                 </div>
             </div>
         </div>
