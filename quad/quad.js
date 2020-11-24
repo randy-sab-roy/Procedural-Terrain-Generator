@@ -133,7 +133,7 @@ class Quad {
         gl.uniform1f(this.locations.kd, this.KD);
         gl.uniform1f(this.locations.res, this.RES);
         gl.uniform1i(this.locations.mode, this.mode);
-        gl.uniform1i(this.locations.shadows, this.shadows);
+        gl.uniform1f(this.locations.shadows, this.shadows);
 
         // Terrain
         gl.uniform1f(this.locations.waterLevel, document.getElementById("waterLevel").value);
@@ -143,7 +143,6 @@ class Quad {
         gl.uniform1f(this.locations.movement, document.getElementById("terrainOffset").value);
         gl.uniform1f(this.locations.rotation, document.getElementById("rotation").value);
         gl.uniform1f(this.locations.ld, document.getElementById("ld").value);
-        gl.uniform1f(this.locations.shadows, this.shadows);
         gl.uniform3fv(this.locations.light, this.light);
 
 
