@@ -141,7 +141,6 @@ class Quad {
         gl.uniform1f(this.locations.movement, document.getElementById("terrainOffset").value);
         gl.uniform1f(this.locations.rotation, document.getElementById("rotation").value);
         gl.uniform1f(this.locations.ld, document.getElementById("ld").value);
-        gl.uniform1f(this.locations.shadows, this.shadows);
         gl.uniform3fv(this.locations.light, this.light);
 
 
