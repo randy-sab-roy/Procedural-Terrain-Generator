@@ -27,11 +27,12 @@ const float h1Freq = 2.1; // Sparse hills
 const float h2Freq = 3.0; // Mountains
 const float h3Freq = 6.0; // Small hills
 
-varying vec2 point;
-
 const float PI = 3.1415926535;
 const float lacunarity = 2.0;
 const int MAX_ITERATIONS = 12;
+
+varying vec2 point;
+
 
 // NOISE GENERATION SECTION
 
@@ -183,7 +184,6 @@ float hyrbidMultifractal(vec2 point, bool isPerlin){
     else
     {
         noise = (voronoiNoise(p));
-
     }
 
     signal = result = 0.5*noise* exponent_array[0];

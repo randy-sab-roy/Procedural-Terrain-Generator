@@ -5,16 +5,22 @@ uniform int mode;
 uniform float movement;
 uniform float shadows;
 uniform vec3 light;
-
 uniform sampler2D heightMap;
 uniform float waterLevel;
-const float wsBlend = 0.022;
 uniform float sandLevel;
-const float sgBlend = 0.07;
 uniform float grassLevel;
-const float gsBlend = 0.05;
 uniform float rockAngle;
+
+const float wsBlend = 0.022;
+const float sgBlend = 0.07;
+const float gsBlend = 0.05;
 const float rockBlend = 0.25;
+
+const vec3 waterColor = vec3(0.0,0.11,0.22);
+const vec3 sandColor = vec3(0.50, 0.46, 0.33);
+const vec3 rockColor = vec3(0.2225, 0.175, 0.147);
+const vec3 snowColor = vec3(0.6, 0.6, 0.61);
+const vec3 grassColor = vec3(0.195, 0.325, 0.143);
 
 varying vec4 fcolor;
 varying vec3 normal;
@@ -24,15 +30,9 @@ varying float height;
 varying float fogValue;
 varying float shadow;
 
-const vec3 waterColor = vec3(0.0,0.11,0.22);
-const vec3 sandColor = vec3(0.50, 0.46, 0.33);
-const vec3 rockColor = vec3(0.2225, 0.175, 0.147);
-const vec3 snowColor = vec3(0.6, 0.6, 0.61);
-const vec3 grassColor = vec3(0.195, 0.325, 0.143);
-
 float sandMaxLevel = waterLevel+sandLevel;
 float grassMaxLevel = sandMaxLevel+grassLevel;
-float Ks;
+float Ks = 0.0;
 
 vec3 getMaterialBlending()
 {
@@ -98,7 +98,6 @@ vec3 getRockBlending(vec3 color)
     }
     else if (raw_normal.z<=rockAngle-rockBlend)
     {
-        // ONLY ROCK
         color = rockColor;
     }
     return color;
@@ -120,7 +119,6 @@ vec4 getLightColor() {
     }
 
     // Fog
-
     material_color = mix(vec3(0.5,0.52,0.53) , material_color, fogValue);
 
     bool shadowsEnabled = (shadows == 0.0);

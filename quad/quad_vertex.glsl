@@ -25,8 +25,6 @@ varying float height;
 varying float fogValue;
 varying float shadow;
 
-
-
 // https://stackoverflow.com/questions/18453302/how-do-you-pack-one-32bit-int-into-4-8bit-ints-in-glsl-webgl
 const vec4 bitEnc = vec4(1.,255.,65025.,16581375.);
 const vec4 bitDec = 1./bitEnc;
@@ -66,7 +64,6 @@ float getShadow(vec3 ld)
 // Sobel filter to get normals from heightmap
 vec3 getNormal() {
     float tempAmp = 1.0;
-
     float d = 1.0/res;
     float p0 = DecodeFloatRGBA(texture2D(heightMap, vec2(uv.x - d, uv.y - d)));
     float p1 = DecodeFloatRGBA(texture2D(heightMap, vec2(uv.x, uv.y - d)));
@@ -79,7 +76,6 @@ vec3 getNormal() {
 
     float gx = p0 + 2.0*p1 +p2 -p6 - 2.0*p7 - p8;
     float gy = p0 - p2 + 2.0*p3 - 2.0*p5 + p7-p8;
-
 
     if(DecodeFloatRGBA(texture2D(heightMap, uv)) <= waterLevel) 
     {
@@ -96,7 +92,6 @@ vec3 getNormal() {
 float getFogValue()
 {
     vec2 pos = vec2(uv.x, uv.y);
-    
     vec2 diff = (pos - vec2(0.5));
     float avg = ((0.5 - uv.x+0.5) + (0.5 - uv.y+0.5))/2.0;
     float side = min((0.5 - uv.x+0.5), (0.5 - uv.y+0.5));
@@ -114,16 +109,14 @@ void main() {
     {
         height = max(DecodeFloatRGBA(texture2D(heightMap, vec2(uv.x, uv.y))), waterLevel);
         p.z = p.z + height;
-        
         float delta = 1.2/res;
+
         if(uv.x > (0.0 + delta) && uv.y > (0.0 + delta) && uv.x < (1.0 - delta) && uv.y < (1.0 - delta))
         {
             raw_normal = getNormal();
-            
             bool shadowEnabled = shadows == 0.0;
             if (shadowEnabled)
             {
-
                 // Light rotation from slider
                 vec3 LD = (inverseMat*vec4(light, 1.0)).xyz;
 
@@ -131,9 +124,7 @@ void main() {
                 shadow = getShadow(LD);
             }
         }
-
     }
-
     gl_Position = projection * model * vec4( p, 1.0 );
     normal = vec3(normalMat * vec4(-1.0 * raw_normal, 1.0));
     fogValue = abs(movement) > 0.0001 ? getFogValue() : 1.0;
