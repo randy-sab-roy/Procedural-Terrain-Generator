@@ -15,7 +15,7 @@ let genTime = 0;
 let quadTime = 0;
 
 function draw() {
-    fps = alpha * fps + (1.0 - alpha) * (1000 / (Date.now() - prevTime));
+    fps = alpha * fps + (1.0 - alpha) * Math.min(1000 / (Date.now() - prevTime), 9999);
     document.getElementById("fps").textContent = Math.trunc(fps);
     document.getElementById("fpsBox").style = document.getElementById("showFps").checked ? "" : "display:none;";
     prevTime = Date.now();
