@@ -7,6 +7,7 @@ attribute vec2 uv;
 uniform mat4 model;
 uniform mat4 projection;
 uniform mat4 normalMat;
+uniform mat4 inverseMat;
 uniform float time;
 uniform sampler2D heightMap;
 uniform float res;
@@ -14,7 +15,7 @@ uniform float waterLevel;
 uniform float shadows;
 uniform float rotation;
 uniform float movement;
-uniform float sunAngle;
+uniform vec3 light;
 
 varying vec4 fcolor;
 varying vec3 normal;
@@ -24,6 +25,8 @@ varying float height;
 varying float fogValue;
 varying float shadow;
 
+
+
 // https://stackoverflow.com/questions/18453302/how-do-you-pack-one-32bit-int-into-4-8bit-ints-in-glsl-webgl
 const vec4 bitEnc = vec4(1.,255.,65025.,16581375.);
 const vec4 bitDec = 1./bitEnc;
@@ -31,11 +34,11 @@ float DecodeFloatRGBA (vec4 v) {
     return dot(v, bitDec);
 }
 
-float getShadow(vec2 offset, vec3 light)
+float getShadow(vec2 offset, vec3 ld)
 {
-    vec3 direction = normalize(light);
+    vec3 direction = normalize(vec3(-ld.x, ld.y, ld.z));
     const float MAX_RES = 1132.0; // diag length of max res (800.0)
-    float rate = -(direction/(length(direction.xy))).z; // determined by light.z
+    float rate = (direction/(length(direction.xy))).z; // determined by light.z
     float maxDiffHeight = 0.0;
     float cumulative = 0.0;
     float uv_step = 1.0/res;
@@ -102,14 +105,6 @@ float getFogValue()
     return 1.0-exp(-800.0*dist*dist);
 }
 
-vec2 rotate(vec2 v, float a) {
-    // inexpensive 2D rotation
-	float s = sin(a);
-	float c = cos(a);
-	mat2 m = mat2(c, -s, s, c);
-	return m * v;
-}
-
 void main() {
     vec3 p = position;
     // Use amplitude as normal to have a uniform quad when flat
@@ -130,11 +125,10 @@ void main() {
             {
 
                 // Light rotation from slider
-                vec3 lightVector = vec3(0.0,cos(sunAngle),-sin(sunAngle));
-                lightVector.xy = rotate(lightVector.xy, -rotation);
+                vec3 LD = (inverseMat*vec4(light, 1.0)).xyz;
 
                 // Shadow component
-                shadow = getShadow(vec2(0.0), lightVector);
+                shadow = getShadow(vec2(0.0), LD);
             }
         }
 

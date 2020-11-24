@@ -16,7 +16,7 @@ class Quad {
     cameraPos;
     mode;
     shadows;
-    ld;
+    light;
 
     forceDefaultvalues(){
         document.getElementById("waterLevel").value = document.getElementById("waterLevel").defaultValue;
@@ -28,16 +28,7 @@ class Quad {
         this.program = await GlUtils.createWebGLProgramFromPath(gl, "quad/quad_vertex.glsl", "quad/quad_fragment.glsl");
         gl.useProgram(this.program);
         this.bindLocations();
-        //
         this.forceDefaultvalues();
-        this.locations.waterLevel = gl.getUniformLocation(this.program, "waterLevel");
-        this.locations.sandLevel = gl.getUniformLocation(this.program, "sandLevel");
-        this.locations.grassLevel = gl.getUniformLocation(this.program, "grassLevel");
-        this.locations.rockAngle = gl.getUniformLocation(this.program, "rockAngle");
-        this.locations.movement = gl.getUniformLocation(this.program, "movement");
-        this.locations.rotation = gl.getUniformLocation(this.program, "rotation");
-        this.locations.ld = gl.getUniformLocation(this.program, "ld");
-
         gl.enable(gl.DEPTH_TEST);
     }
 
@@ -69,7 +60,10 @@ class Quad {
         this.cameraPos = document.getElementById("camera").value;
         this.mode = document.querySelector('input[name="mode"]:checked').value;
         this.shadows = document.getElementById("shadows").checked ? 0.0:1.0;
-        
+
+        const sunAngle = document.getElementById("ld").value;
+        this.light = [-Math.cos(sunAngle), -Math.sin(sunAngle), 0];
+
     }
 
     computeModelMatrix() {
@@ -82,11 +76,15 @@ class Quad {
 
         this.transforms.model = model;
 
+        const inverseMat = mat4.create();
+        mat4.invert(inverseMat, model);
+        
         const normalMat = mat4.create();
         mat4.invert(normalMat, model);
         mat4.transpose(normalMat, normalMat);
 
         this.transforms.normalMat = normalMat;
+        this.transforms.inverseMat = inverseMat;
     };
 
     computePerspectiveMatrix() {
@@ -106,6 +104,7 @@ class Quad {
         // MVP Matrices
         gl.uniformMatrix4fv(this.locations.model, false, new Float32Array(this.transforms.model));
         gl.uniformMatrix4fv(this.locations.normalMat, false, new Float32Array(this.transforms.normalMat));
+        gl.uniformMatrix4fv(this.locations.inverseMat, false, new Float32Array(this.transforms.inverseMat));
         gl.uniformMatrix4fv(this.locations.projection, false, new Float32Array(this.transforms.projection));
 
         // Time
@@ -143,6 +142,7 @@ class Quad {
         gl.uniform1f(this.locations.rotation, document.getElementById("rotation").value);
         gl.uniform1f(this.locations.ld, document.getElementById("ld").value);
         gl.uniform1f(this.locations.shadows, this.shadows);
+        gl.uniform3fv(this.locations.light, this.light);
 
 
 
@@ -198,6 +198,7 @@ class Quad {
     bindLocations() {
         this.locations.model = gl.getUniformLocation(this.program, "model");
         this.locations.normalMat = gl.getUniformLocation(this.program, "normalMat");
+        this.locations.inverseMat = gl.getUniformLocation(this.program, "inverseMat");
         this.locations.projection = gl.getUniformLocation(this.program, "projection");
         this.locations.time = gl.getUniformLocation(this.program, "time");
         this.locations.heightMap = gl.getUniformLocation(this.program, "heightMap");
@@ -211,7 +212,13 @@ class Quad {
         this.locations.res = gl.getUniformLocation(this.program, "res");
         this.locations.mode = gl.getUniformLocation(this.program, "mode");
         this.locations.shadows = gl.getUniformLocation(this.program, "shadows");
-        this.locations.ld = gl.getUniformLocation(this.program, "sunAngle");
+        this.locations.waterLevel = gl.getUniformLocation(this.program, "waterLevel");
+        this.locations.sandLevel = gl.getUniformLocation(this.program, "sandLevel");
+        this.locations.grassLevel = gl.getUniformLocation(this.program, "grassLevel");
+        this.locations.rockAngle = gl.getUniformLocation(this.program, "rockAngle");
+        this.locations.movement = gl.getUniformLocation(this.program, "movement");
+        this.locations.rotation = gl.getUniformLocation(this.program, "rotation");
+        this.locations.light = gl.getUniformLocation(this.program, "light");
     }
 
     createQuadData() {
