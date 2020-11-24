@@ -17,7 +17,7 @@ class Quad {
     cameraPos;
     mode;
     shadows;
-    light = [-1,0,0];
+    light = [-1,-1,0];
 
     forceDefaultvalues(){
         document.getElementById("waterLevel").value = document.getElementById("waterLevel").defaultValue;
@@ -69,15 +69,17 @@ class Quad {
 
         mat4.translate(model, model, [0, -1.5, this.cameraPos]);
         mat4.scale(model, model, [5, 5, 5]);
-        // mat4.rotate(model, model, Math.PI / 2.8, [-1, 0, 0]);
+        mat4.rotate(model, model, Math.PI / 2.8, [-1, 0, 0]);
         mat4.rotate(model, model, this.rotation, [0, 0, 1]);
 
         this.transforms.model = model;
 
-        const inverseMat = mat4.create(); 
-        const normalMat = mat4.create();
+        const inverseMat = mat4.create();
         mat4.invert(inverseMat, model);
-        mat4.transpose(normalMat, inverseMat);
+        
+        const normalMat = mat4.create();
+        mat4.invert(normalMat, model);
+        mat4.transpose(normalMat, normalMat);
 
         this.transforms.normalMat = normalMat;
         this.transforms.inverseMat = inverseMat;

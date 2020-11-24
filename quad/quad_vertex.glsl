@@ -37,9 +37,9 @@ float DecodeFloatRGBA (vec4 v) {
 
 float getShadow(vec2 offset, vec3 light)
 {
-    vec3 direction = normalize(light);
+    vec3 direction = normalize(vec3(-light.x, light.y, light.z));
     const float MAX_RES = 1132.0; // diag length of max res (800.0)
-    float rate = -(direction/(length(direction.xy))).z; // determined by light.z
+    float rate = (direction/(length(direction.xy))).z; // determined by light.z
     float maxDiffHeight = 0.0;
     float cumulative = 0.0;
     float uv_step = 1.0/res;
