@@ -94,9 +94,9 @@ vec3 getRockBlending(vec3 color)
     if (raw_normal.z>rockAngle-rockBlend && raw_normal.z<rockAngle+rockBlend)
     {
         float lerp = (raw_normal.z-(rockAngle-rockBlend))/(2.0*rockBlend);
-        color = mix(rockColor, color, lerp);
+        color = mix(color, rockColor, lerp);
     }
-    else if (raw_normal.z<=rockAngle-rockBlend)
+    else if (raw_normal.z>rockAngle+rockBlend)
     {
         color = rockColor;
     }
