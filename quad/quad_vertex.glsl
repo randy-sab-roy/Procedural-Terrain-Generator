@@ -7,6 +7,7 @@ attribute vec2 uv;
 uniform mat4 model;
 uniform mat4 projection;
 uniform mat4 normalMat;
+uniform mat4 inverseMat;
 uniform float time;
 uniform sampler2D heightMap;
 uniform float res;
@@ -14,6 +15,8 @@ uniform float waterLevel;
 uniform float shadows;
 uniform float rotation;
 uniform float movement;
+uniform vec3 light;
+
 
 varying vec4 fcolor;
 varying vec3 normal;
@@ -22,6 +25,8 @@ varying vec3 pos;
 varying float height;
 varying float fogValue;
 varying float shadow;
+
+
 
 // https://stackoverflow.com/questions/18453302/how-do-you-pack-one-32bit-int-into-4-8bit-ints-in-glsl-webgl
 const vec4 bitEnc = vec4(1.,255.,65025.,16581375.);
@@ -128,8 +133,8 @@ void main() {
             if (shadowEnabled)
             {
                 // Light rotation from slider
-                vec3 LD = vec3(0.0,-1.0,-0.5);
-                LD.xy = rotate(LD.xy, -rotation);
+                vec3 LD = (inverseMat*vec4(light, 1.0)).xyz;
+                // LD.xy = rotate(LD.xy, -rotation);
 
                 // Shadow component
                 shadow = getShadow(vec2(0.0), LD);

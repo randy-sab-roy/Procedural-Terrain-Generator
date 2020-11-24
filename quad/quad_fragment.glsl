@@ -4,6 +4,7 @@ uniform float Kd;
 uniform int mode;
 uniform float movement;
 uniform float shadows;
+uniform vec3 light;
 
 uniform sampler2D heightMap;
 uniform float waterLevel;
@@ -32,7 +33,6 @@ const vec3 grassColor = vec3(0.195, 0.325, 0.143);
 float sandMaxLevel = waterLevel+sandLevel;
 float grassMaxLevel = sandMaxLevel+grassLevel;
 float Ks;
-const vec3  lightDir = vec3(-1, -1, 0);
 
 
 
@@ -135,7 +135,7 @@ vec4 getLightColor() {
 
     // Lights
     vec3 N = normalize(normal);
-    vec3 L = normalize(lightDir);
+    vec3 L = normalize(light);
     float lambertian = max(dot(N, L), 0.0);
     float specular = 0.0;
     float materialSv = 220.0;
