@@ -12,11 +12,11 @@ class Quad {
     enableWire;
     KA;
     KD;
-    KS;
     rotation;
     cameraPos;
     mode;
     shadows;
+    ld;
 
     forceDefaultvalues(){
         document.getElementById("waterLevel").value = document.getElementById("waterLevel").defaultValue;
@@ -36,6 +36,7 @@ class Quad {
         this.locations.rockAngle = gl.getUniformLocation(this.program, "rockAngle");
         this.locations.movement = gl.getUniformLocation(this.program, "movement");
         this.locations.rotation = gl.getUniformLocation(this.program, "rotation");
+        this.locations.ld = gl.getUniformLocation(this.program, "ld");
 
         gl.enable(gl.DEPTH_TEST);
     }
@@ -64,7 +65,6 @@ class Quad {
         this.enableWire = document.getElementById("wire").checked;
         this.KA = document.getElementById("ka").value;
         this.KD = document.getElementById("kd").value;
-        this.KS = document.getElementById("ks").value;
         this.rotation = document.getElementById("rotation").value;
         this.cameraPos = document.getElementById("camera").value;
         this.mode = document.querySelector('input[name="mode"]:checked').value;
@@ -130,7 +130,6 @@ class Quad {
         // Light
         gl.uniform1f(this.locations.ka, this.KA);
         gl.uniform1f(this.locations.kd, this.KD);
-        gl.uniform1f(this.locations.ks, this.KS);
         gl.uniform1f(this.locations.res, this.RES);
         gl.uniform1i(this.locations.mode, this.mode);
         gl.uniform1i(this.locations.shadows, this.shadows);
@@ -142,6 +141,7 @@ class Quad {
         gl.uniform1f(this.locations.rockAngle, document.getElementById("rockAngle").value);
         gl.uniform1f(this.locations.movement, document.getElementById("terrainOffset").value);
         gl.uniform1f(this.locations.rotation, document.getElementById("rotation").value);
+        gl.uniform1f(this.locations.ld, document.getElementById("ld").value);
         gl.uniform1f(this.locations.shadows, this.shadows);
 
 
@@ -211,6 +211,7 @@ class Quad {
         this.locations.res = gl.getUniformLocation(this.program, "res");
         this.locations.mode = gl.getUniformLocation(this.program, "mode");
         this.locations.shadows = gl.getUniformLocation(this.program, "shadows");
+        this.locations.ld = gl.getUniformLocation(this.program, "sunAngle");
     }
 
     createQuadData() {

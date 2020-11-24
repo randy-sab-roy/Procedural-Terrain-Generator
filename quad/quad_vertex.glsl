@@ -14,6 +14,7 @@ uniform float waterLevel;
 uniform float shadows;
 uniform float rotation;
 uniform float movement;
+uniform float sunAngle;
 
 varying vec4 fcolor;
 varying vec3 normal;
@@ -127,12 +128,13 @@ void main() {
             bool shadowEnabled = shadows == 0.0;
             if (shadowEnabled)
             {
+
                 // Light rotation from slider
-                vec3 LD = vec3(0.0,-1.0,-0.5);
-                LD.xy = rotate(LD.xy, -rotation);
+                vec3 lightVector = vec3(0.0,cos(sunAngle),-sin(sunAngle));
+                lightVector.xy = rotate(lightVector.xy, -rotation);
 
                 // Shadow component
-                shadow = getShadow(vec2(0.0), LD);
+                shadow = getShadow(vec2(0.0), lightVector);
             }
         }
 
