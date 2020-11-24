@@ -131,7 +131,7 @@ class Quad {
         gl.uniform1f(this.locations.kd, this.KD);
         gl.uniform1f(this.locations.res, this.RES);
         gl.uniform1i(this.locations.mode, this.mode);
-        gl.uniform1i(this.locations.shadows, this.shadows);
+        gl.uniform1f(this.locations.shadows, this.shadows);
 
         // Terrain
         gl.uniform1f(this.locations.waterLevel, document.getElementById("waterLevel").value);
