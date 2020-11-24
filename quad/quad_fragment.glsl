@@ -31,11 +31,7 @@ const vec3 grassColor = vec3(0.195, 0.325, 0.143);
 
 float sandMaxLevel = waterLevel+sandLevel;
 float grassMaxLevel = sandMaxLevel+grassLevel;
-const float grassSnowBlend = 0.01;
 float Ks;
-
-const vec3  lightColorA = vec3(1, 1, 0.97);
-const vec3  lightColorD = vec3(1, 1, 0.94);
 const vec3  lightDir = vec3(-1, -1, 0);
 
 
@@ -126,10 +122,8 @@ vec4 getLightColor() {
     }
 
     // Fog
-    if(abs(movement) > 0.0001)
-    {
-        material_color = mix(vec3(0.5,0.52,0.53) , material_color, fogValue);
-    }
+
+    material_color = mix(vec3(0.5,0.52,0.53) , material_color, fogValue);
 
     bool shadowsEnabled = (shadows == 0.0);
     if (shadowsEnabled)
