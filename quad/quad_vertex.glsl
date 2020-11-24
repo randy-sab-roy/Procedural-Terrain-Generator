@@ -85,7 +85,7 @@ vec3 getNormal() {
     vec3 va = normalize(vec3(8.0*d, 0.0, tempAmp * gx));
     vec3 vb = normalize(vec3(0.0, 8.0*d, tempAmp * gy));
 
-    return normalize(cross(va, vb));
+    return normalize(cross(vb, va));
 }
 
 // Custom falloff function for fog
@@ -126,7 +126,7 @@ void main() {
         }
     }
     gl_Position = projection * model * vec4( p, 1.0 );
-    normal = vec3(normalMat * vec4(-1.0 * raw_normal, 1.0));
+    normal = vec3(normalMat * vec4(raw_normal, 1.0));
     fogValue = abs(movement) > 0.0001 ? getFogValue() : 1.0;
     fcolor = color;
     pos = vec3(gl_Position);
