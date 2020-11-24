@@ -50,7 +50,7 @@ class Quad {
         this.updateAttributesAndUniforms();
 
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-        gl.drawElements(this.enableWire ? gl.LINE_STRIP : gl.TRIANGLES, (this.RES * this.RES) * 6, gl.UNSIGNED_INT, 0);
+        gl.drawElements(this.enableWire ? gl.LINES : gl.TRIANGLES, (this.RES * this.RES) * 6, gl.UNSIGNED_INT, 0);
         this.time += 0.05;
     };
 
