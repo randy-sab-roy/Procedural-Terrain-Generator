@@ -14,7 +14,7 @@ uniform float rockAngle;
 const float wsBlend = 0.022;
 const float sgBlend = 0.07;
 const float gsBlend = 0.05;
-const float rockBlend = 0.25;
+const float rockBlend = 0.15;
 
 const vec3 waterColor = vec3(0.0,0.11,0.22);
 const vec3 sandColor = vec3(0.50, 0.46, 0.33);
