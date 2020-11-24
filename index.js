@@ -8,10 +8,20 @@ let quad = null;
 let genView = null;
 let capture = false;
 
+let prevTime = Date.now();
+let alpha = 0.99;
+let fps = 60;
+let genTime = 0;
+let quadTime = 0;
 
 function draw() {
-    GlUtils.resizeCanvas(gl);
+    fps = alpha * fps + (1.0 - alpha) * (1000 / (Date.now() - prevTime));
+    document.getElementById("fps").textContent = Math.trunc(fps);
+    document.getElementById("fpsBox").style = document.getElementById("showFps").checked ? "" : "display:none;";
+    prevTime = Date.now();
 
+    GlUtils.resizeCanvas(gl);
+    
     generator.draw();
     genView.draw();
     quad.draw();
