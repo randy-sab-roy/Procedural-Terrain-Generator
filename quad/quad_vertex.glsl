@@ -24,13 +24,12 @@ varying float height;
 varying float fogValue;
 varying float shadow;
 
-// https://stackoverflow.com/questions/18453302/how-do-you-pack-one-32bit-int-into-4-8bit-ints-in-glsl-webgl
-const vec4 bitEnc = vec4(1.,255.,65025.,16581375.);
-const vec4 bitDec = 1./bitEnc;
+// Allows to decode floating point values from vec4
 float DecodeFloatRGBA (vec4 v) {
-    return dot(v, bitDec);
+    return dot(v, 1./vec4(1.,255.,65025.,16581375.));
 }
 
+// Estimates the shadow based on the height texture
 float getShadow(vec3 ld)
 {
     vec3 direction = normalize(vec3(ld.y, ld.x, -ld.z));
@@ -60,7 +59,7 @@ float getShadow(vec3 ld)
     return 1.0 - min(cumulative, 1.0);
 }
 
-// Sobel filter to get normals from heightmap
+// Compute normals from heightmap's gradients
 vec3 getNormal() {
     float tempAmp = 1.0;
     float d = 1.0/res;
@@ -101,16 +100,19 @@ float getFogValue()
 
 void main() {
     vec3 p = position;
+
     // Use amplitude as normal to have a uniform quad when flat
     raw_normal = vec3(0.0, 0.0, 0.001);
 
+    // Do not compute height on edges
     if (uv.x != 0.0 && uv.y != 0.0 && uv.x != 1.0 && uv.y != 1.0)
     {
         height = max(DecodeFloatRGBA(texture2D(heightMap, vec2(uv.x, uv.y))), waterLevel);
         p.z = p.z + height;
-        float delta = 1.2/res;
 
-        if(uv.x > (0.0 + delta) && uv.y > (0.0 + delta) && uv.x < (1.0 - delta) && uv.y < (1.0 - delta))
+        // Do not compute normals if too close to the edges
+        float delta = 1.2/res;
+        if(uv.x > delta && uv.y > delta && uv.x < (1.0 - delta) && uv.y < (1.0 - delta))
         {
             raw_normal = getNormal();
             bool shadowEnabled = shadows == 0.0;
@@ -124,6 +126,7 @@ void main() {
             }
         }
     }
+
     gl_Position = projection * model * vec4( p, 1.0 );
     normal = vec3(normalMat * vec4(raw_normal, 1.0));
     fogValue = abs(movement) > 0.0001 ? getFogValue() : 1.0;

@@ -86,6 +86,7 @@ vec3 getMaterialBlending()
             mat = snowColor;
         }
     }
+    
     return mat;
 }
 
