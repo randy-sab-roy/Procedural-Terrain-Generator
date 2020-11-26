@@ -8,7 +8,6 @@ uniform mat4 model;
 uniform mat4 projection;
 uniform mat4 normalMat;
 uniform mat4 inverseMat;
-uniform float time;
 uniform sampler2D heightMap;
 uniform float res;
 uniform float waterLevel;

@@ -1,91 +1,61 @@
 class Quad {
-    RES = 500;
-
-    /** @type {WebGLRenderingContext} */
+    
     gl = null;
     program = null;
     transforms = {}
     locations = {};
-    time = 0;
-
-    // Controlled by UI
-    enableWire;
-    KA;
-    KD;
-    rotation;
-    cameraPos;
-    mode;
-    shadows;
-    light;
-
-    forceDefaultvalues(){
-        document.getElementById("waterLevel").value = document.getElementById("waterLevel").defaultValue;
-    }
+    RES = 500;
 
     async init(gl) {
         this.gl = gl;
         this.buffers = this.createBuffers();
         this.program = await GlUtils.createWebGLProgramFromPath(gl, "quad/quad_vertex.glsl", "quad/quad_fragment.glsl");
         gl.useProgram(this.program);
+
         this.bindLocations();
-        this.forceDefaultvalues();
         gl.enable(gl.DEPTH_TEST);
     }
 
     draw() {
         const gl = this.gl;
         gl.useProgram(this.program);
-        this.getValuesFromControls();
+        this.updateResolution();
 
         this.computeModelMatrix();
         this.computePerspectiveMatrix();
         this.updateAttributesAndUniforms();
 
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-        gl.drawElements(this.enableWire ? gl.LINES : gl.TRIANGLES, (this.RES * this.RES) * 6, gl.UNSIGNED_INT, 0);
-        this.time += 0.05;
+        gl.drawElements(document.getElementById("wire").checked ? gl.LINES : gl.TRIANGLES, (this.RES * this.RES) * 6, gl.UNSIGNED_INT, 0);
     };
 
-    getValuesFromControls() {
+    updateResolution() {
         const newRes = document.getElementById("res").value * 1.0;
-        if (newRes != this.RES)
-        {
+        if (newRes != this.RES) {
             this.RES = newRes
             this.regenQuad();
         }
-        this.enableWire = document.getElementById("wire").checked;
-        this.KA = document.getElementById("ka").value;
-        this.KD = document.getElementById("kd").value;
-        this.rotation = document.getElementById("rotation").value;
-        this.cameraPos = document.getElementById("camera").value;
-        this.mode = document.querySelector('input[name="mode"]:checked').value;
-        this.shadows = document.getElementById("shadows").checked ? 0.0:1.0;
-
-        const sunAngle = document.getElementById("ld").value;
-        this.light = [-Math.cos(sunAngle), -Math.sin(sunAngle), 0];
-
     }
 
     computeModelMatrix() {
         const model = mat4.create();
         const inverseMat = mat4.create();
-
-        mat4.translate(model, model, [0, -1.5, this.cameraPos]);
+        
+        mat4.translate(model, model, [0, -1.5, document.getElementById("camera").value]);
         mat4.scale(model, model, [5, 5, 5]);
 
+        // Save rotation data in seperate matrix to allow shadows in vertex shader
         mat4.rotate(inverseMat, inverseMat, Math.PI / 2.8, [-1, 0, 0]);
-        mat4.rotate(inverseMat, inverseMat, this.rotation, [0, 0, 1]);
+        mat4.rotate(inverseMat, inverseMat, document.getElementById("rotation").value, [0, 0, 1]);
         mat4.mul(model, model, inverseMat);
-        
-        this.transforms.model = model;
+        mat4.invert(inverseMat, inverseMat);
 
-        
         const normalMat = mat4.create();
         mat4.invert(normalMat, model);
         mat4.transpose(normalMat, normalMat);
-        this.transforms.normalMat = normalMat;
         
-        mat4.invert(inverseMat, inverseMat);
+        this.transforms.model = model;
+        this.transforms.normalMat = normalMat;
         this.transforms.inverseMat = inverseMat;
     };
 
@@ -109,9 +79,6 @@ class Quad {
         gl.uniformMatrix4fv(this.locations.inverseMat, false, new Float32Array(this.transforms.inverseMat));
         gl.uniformMatrix4fv(this.locations.projection, false, new Float32Array(this.transforms.projection));
 
-        // Time
-        gl.uniform1f(this.locations.time, this.time);
-
         // Texture
         gl.uniform1i(this.locations.heightMap, 0);
         gl.enableVertexAttribArray(this.locations.uv);
@@ -129,11 +96,14 @@ class Quad {
         gl.vertexAttribPointer(this.locations.color, 4, gl.FLOAT, false, 0, 0);
 
         // Light
-        gl.uniform1f(this.locations.ka, this.KA);
-        gl.uniform1f(this.locations.kd, this.KD);
+        const sunAngle = document.getElementById("ld").value;
+        const light = [-Math.cos(sunAngle), -Math.sin(sunAngle), 0];
+        gl.uniform3fv(this.locations.light, light);
+        gl.uniform1f(this.locations.ka, document.getElementById("ka").value);
+        gl.uniform1f(this.locations.kd, document.getElementById("kd").value);
         gl.uniform1f(this.locations.res, this.RES);
-        gl.uniform1i(this.locations.mode, this.mode);
-        gl.uniform1f(this.locations.shadows, this.shadows);
+        gl.uniform1i(this.locations.mode, document.querySelector('input[name="mode"]:checked').value);
+        gl.uniform1f(this.locations.shadows, document.getElementById("shadows").checked ? 0.0 : 1.0);
 
         // Terrain
         gl.uniform1f(this.locations.waterLevel, document.getElementById("waterLevel").value);
@@ -143,10 +113,8 @@ class Quad {
         gl.uniform1f(this.locations.movement, document.getElementById("terrainOffset").value);
         gl.uniform1f(this.locations.rotation, document.getElementById("rotation").value);
         gl.uniform1f(this.locations.ld, document.getElementById("ld").value);
-        gl.uniform3fv(this.locations.light, this.light);
 
-
-
+        // Indices
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
     };
 
@@ -201,7 +169,6 @@ class Quad {
         this.locations.normalMat = gl.getUniformLocation(this.program, "normalMat");
         this.locations.inverseMat = gl.getUniformLocation(this.program, "inverseMat");
         this.locations.projection = gl.getUniformLocation(this.program, "projection");
-        this.locations.time = gl.getUniformLocation(this.program, "time");
         this.locations.heightMap = gl.getUniformLocation(this.program, "heightMap");
         this.locations.colorMap = gl.getUniformLocation(this.program, "colorMap");
         this.locations.position = gl.getAttribLocation(this.program, "position");
