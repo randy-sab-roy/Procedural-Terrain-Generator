@@ -97,6 +97,7 @@ class Generator {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.uv);
         gl.vertexAttribPointer(this.locations.uv, 2, gl.FLOAT, false, 0, 0);
 
+        // Terrain generation
         this.offset += document.getElementById("terrainOffset").value * 1;
         gl.uniform1f(this.locations.terrainOffset, this.offset);
         gl.uniform1f(this.locations.time, (new Date() - this.startTime) / 1000.0);
@@ -124,6 +125,7 @@ class Generator {
         gl.uniform1f(this.locations.h3Amp, h3amp);
         gl.uniform1f(this.locations.h3Contrast, document.getElementById("h3Contrast").value);
 
+        // Indices
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.elements);
     };
 

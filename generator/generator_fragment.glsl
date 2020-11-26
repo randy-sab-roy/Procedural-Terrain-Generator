@@ -22,7 +22,7 @@ uniform float h2Contrast;
 uniform float h3Amp;
 uniform float h3Contrast;
 
-const float fFreq = 2.0; // texturing
+const float fFreq = 2.0;  // Texturing
 const float h1Freq = 2.1; // Sparse hills
 const float h2Freq = 3.0; // Mountains
 const float h3Freq = 6.0; // Small hills
@@ -34,9 +34,8 @@ const int MAX_ITERATIONS = 12;
 varying vec2 point;
 
 
-// NOISE GENERATION SECTION
-
-// https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
+// Utility functions used by noise generation
+// Source: https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 vec2 fade(vec2 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
 vec4 permute(vec4 x) {return mod(((x*34.0)+1.0)*x, 289.0);}
 vec3 permute(vec3 x) {return mod(((x*34.0)+1.0)*x, 289.0);}
@@ -56,9 +55,8 @@ vec2 rand2dTo2d(vec2 value){
     );
 }
 
-//	Classic Perlin 2D Noise 
-//	by Stefan Gustavson
-//  https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
+// Classic Perlin 2D Noise 
+// Source: https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 float perlin(vec2 P){
     vec4 Pi = floor(vec4(P,P)) + vec4(0.0, 0.0, 1.0, 1.0);
     vec4 Pf = fract(vec4(P,P)) - vec4(0.0, 0.0, 1.0, 1.0);
@@ -142,7 +140,8 @@ float voronoiNoise(vec2 P) {
     return (d1.x-0.5)*2.0+1.0;
 }
 
-// https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
+// Fractional Brownian Motion
+// Source: https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 float fbm(vec2 x, bool isPerlin)
 {    
     float G = exp(-H);
@@ -160,7 +159,8 @@ float fbm(vec2 x, bool isPerlin)
     return t;
 }
 
-// https://www.classes.cs.uchicago.edu/archive/2015/fall/23700-1/final-project/MusgraveTerrain00.pdf
+// Hybrid Multifractal
+// Source: https://www.classes.cs.uchicago.edu/archive/2015/fall/23700-1/final-project/MusgraveTerrain00.pdf
 float hyrbidMultifractal(vec2 point, bool isPerlin){
     float frequency, result, signal, weight, noise;
     float exponent_array[100];
@@ -202,7 +202,7 @@ float hyrbidMultifractal(vec2 point, bool isPerlin){
     return result;
 }
 
-// Combine different fractals
+// Combines different fractals
 float computeHeight(vec2 pos, bool usePerlin){
     vec2 p = pos;
     float b2 = ((fbm(p*fFreq, usePerlin)-0.5)*fContrast+0.5)*fAmp;
@@ -222,26 +222,26 @@ float computeWaterAnimation(float height, vec2 fractalPoint)
     return waterLevel - 0.15 + min((firstNoise + secondNoise)/2.5, 0.15);
 }
 
-// https://stackoverflow.com/questions/18453302/how-do-you-pack-one-32bit-int-into-4-8bit-ints-in-glsl-webgl
-const vec4 bitEnc = vec4(1.,255.,65025.,16581375.);
+// Allows to encode floating point values to vec4
 vec4 EncodeFloatRGBA (float v) {
-    vec4 enc = bitEnc * v;
+    vec4 enc = vec4(1.,255.,65025.,16581375.) * min(v, 0.9999999);
     enc = fract(enc);
     enc -= enc.yzww * vec2(1./255., 0.).xxxy;
     return enc;
 }
 
 void main() {
-    // Allow to offset and scale the terrain
+    // Offset and scale the terrain
     vec2 fractalPoint = ((point - vec2(0.5)) * terrainScale) + vec2(terrainOffset);
     bool usePerlin = noise == 0;
     
+    // Compute height
     float value = computeHeight(fractalPoint, usePerlin);
     if (value <= waterLevel)
     {
         value = computeWaterAnimation(value, fractalPoint);
     }
 
-    // We ensure the value is <= 1.0 in order for the vector encoding to work properly
-    gl_FragColor = EncodeFloatRGBA(min(value, 0.9999999));
+    // Encode result in RGB
+    gl_FragColor = EncodeFloatRGBA(value);
 }
