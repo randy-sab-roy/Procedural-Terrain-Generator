@@ -1,4 +1,5 @@
 precision mediump float;
+precision mediump int;
 
 attribute vec3 position;
 attribute vec4 color;
@@ -11,10 +12,10 @@ uniform mat4 inverseMat;
 uniform sampler2D heightMap;
 uniform float res;
 uniform float waterLevel;
-uniform float shadows;
 uniform float rotation;
 uniform float movement;
 uniform vec3 light;
+uniform int shadows;
 
 varying vec4 fcolor;
 varying vec3 normal;
@@ -115,7 +116,7 @@ void main() {
         if(uv.x > delta && uv.y > delta && uv.x < (1.0 - delta) && uv.y < (1.0 - delta))
         {
             raw_normal = getNormal();
-            bool shadowEnabled = shadows == 0.0;
+            bool shadowEnabled = shadows == 0;
             if (shadowEnabled)
             {
                 // Light rotation from slider

@@ -1,9 +1,11 @@
 precision mediump float;
+precision mediump int;
+
 uniform float Ka;
 uniform float Kd;
 uniform int mode;
+uniform int shadows;
 uniform float movement;
-uniform float shadows;
 uniform vec3 light;
 uniform sampler2D heightMap;
 uniform float waterLevel;
@@ -86,7 +88,7 @@ vec3 getMaterialBlending()
             mat = snowColor;
         }
     }
-    
+
     return mat;
 }
 
@@ -122,7 +124,7 @@ vec4 getLightColor() {
     // Fog
     material_color = mix(vec3(0.5,0.52,0.53) , material_color, fogValue);
 
-    bool shadowsEnabled = (shadows == 0.0);
+    bool shadowsEnabled = (shadows == 0);
     if (shadowsEnabled)
     {
         float shadowWeight = (shadow-0.5)*0.8+1.0;

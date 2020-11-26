@@ -103,7 +103,7 @@ class Quad {
         gl.uniform1f(this.locations.kd, document.getElementById("kd").value);
         gl.uniform1f(this.locations.res, this.RES);
         gl.uniform1i(this.locations.mode, document.querySelector('input[name="mode"]:checked').value);
-        gl.uniform1f(this.locations.shadows, document.getElementById("shadows").checked ? 0.0 : 1.0);
+        gl.uniform1i(this.locations.shadows, document.getElementById("shadows").checked ? 0 : 1);
 
         // Terrain
         gl.uniform1f(this.locations.waterLevel, document.getElementById("waterLevel").value);
