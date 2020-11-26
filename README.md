@@ -10,15 +10,15 @@ npx http-server
 Une version fonctionnelle est également disponible sur la [page gitlab du projet](https://randy-sab-roy.gitlab.io/inf8702-project/).
 
 ## Hiérarchie de fichier
-|                |                                                           |
-|----------------|-----------------------------------------------------------|
-| `index.html`     | Contient l'interface d'utilisateur                        |
-| `index.css`      | Défini l'aspect visuel de l'interface                     |
-| `index.js`       | Point d'entré de l'application. Charge le contexte WebGL  |
-| `generator/`     | Générateur de terrain procédural                          |
-| `quad/`          | Grille qui affiche le terrain à l'écran                   |
-| `generatorView/` | Permet de visualiser la carte des hauteurs généré         |
-| `utils/`         | Contient la librairie `glMatrix` et fonctions utilitaires |
+| Fichier / Dossier | Description                                               |
+|-------------------|-----------------------------------------------------------|
+| `index.html`      | Contient l'interface d'utilisateur                        |
+| `index.css`       | Défini l'aspect visuel de l'interface                     |
+| `index.js`        | Point d'entré de l'application. Charge le contexte WebGL  |
+| `generator/`      | Générateur de terrain procédural                          |
+| `quad/`           | Grille qui affiche le terrain à l'écran                   |
+| `generatorView/`  | Permet de visualiser la carte des hauteurs généré         |
+| `utils/`          | Contient la librairie `glMatrix` et fonctions utilitaires |
 
 
 ## Pipeline graphique
