@@ -1,6 +1,4 @@
 class Generator {
-
-    /** @type {WebGLRenderingContext} */
     gl = null;
 
     program = null;
@@ -9,21 +7,6 @@ class Generator {
     capture = false;
     offset = 0;
     tempAmp = 0;
-    // Initial values
-    fAmp = 0.4;
-    fContrast = 0.3;
-
-    h1Amp = 0.75;
-    h1Contrast = 1.5;
-
-
-    h2Amp = 0.3;
-    h2Contrast = 0.4;
-
-
-    h3Amp = 0.25;
-    h3Contrast = 0.4;
-
     time = 0.0;
     startTime;
     newTime;
@@ -46,34 +29,15 @@ class Generator {
         this.locations.globalContrast = gl.getUniformLocation(this.program, "globalContrast");
         this.locations.globalBrightness = gl.getUniformLocation(this.program, "globalBrightness");
         this.locations.nOctaves = gl.getUniformLocation(this.program, "nOctaves");
-
-        // 16 sliders
         this.locations.fAmp = gl.getUniformLocation(this.program, "fAmp");
         this.locations.fContrast = gl.getUniformLocation(this.program, "fContrast");
-
-        document.getElementById("fContrast").value = this.fContrast;
-        document.getElementById("fAmp").value = this.fAmp;
-
         this.locations.h1Amp = gl.getUniformLocation(this.program, "h1Amp");
         this.locations.h1Contrast = gl.getUniformLocation(this.program, "h1Contrast");
-
-        document.getElementById("h1Contrast").value = this.h1Contrast;
-        document.getElementById("h1Amp").value = this.h1Amp;
-
         this.locations.h2Amp = gl.getUniformLocation(this.program, "h2Amp");
         this.locations.h2Contrast = gl.getUniformLocation(this.program, "h2Contrast");
-
-        document.getElementById("h2Contrast").value = this.h2Contrast;
-        document.getElementById("h2Amp").value = this.h2Amp;
-
         this.locations.h3Amp = gl.getUniformLocation(this.program, "h3Amp");
         this.locations.h3Contrast = gl.getUniformLocation(this.program, "h3Contrast");
-
-        document.getElementById("h3Contrast").value = this.h3Contrast;
-        document.getElementById("h3Amp").value = this.h3Amp;
-        //
         this.locations.waterLevel = gl.getUniformLocation(this.program, "waterLevel");
-        document.getElementById("waterLevel").value = this.waterLevel;
 
         gl.enable(gl.DEPTH_TEST);
     }
